@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ROCKY AXIS ESPORTS - Authentication Gate</title>
+  
+  <!-- Firebase Compat Core & Auth Client SDKs (Required for secure, client-side authentication handshakes) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Decoupled UI Stylesheet -->
+  <link rel="stylesheet" href="css/loginAuthStyles.css">
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Decorative Background Glow Vector Nodes -->
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+  
+  <!-- Interactive Toast Notification Dialog -->
+  <div class="notification" id="notification"></div>
+  
+  <!-- Full Screen Processing Shield Loader -->
+  <div class="loader-overlay" id="globalLoader">
+    <div class="loader"></div>
+    <p style="margin-top: 15px; color: var(--accent); font-weight: 600; text-shadow: 0 0 10px var(--accent-glow);">Processing Request Node...</p>
+  </div>
+
+  <!-- Branding Logo Module -->
+  <div class="logo">
+    <h1><span><i class="fas fa-crown"></i></span> ROCKY AXIS</h1>
+    <p>Competitive Battlegrounds Platform Gateway</p>
+  </div>
+
+  <div class="auth-container">
+    <!-- Screen View Navigation Panels -->
+    <div class="tabs" id="tabsContainer">
+      <button class="tab active" data-tab="login" id="loginTabBtn">Login</button>
+      <button class="tab" data-tab="register" id="registerTabBtn">Register</button>
+    </div>
+
+    <!-- 1. LOGIN INTERFACE -->
+    <div class="form active" id="loginForm">
+      <div class="field">
+        <label>Login Method</label>
+        <div class="input-wrapper">
+          <select id="loginType" style="padding-left:16px;">
+            <option value="email">Email Address</option>
+            <option value="phone">Phone Number</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Email login wrapper -->
+      <div class="field" id="loginEmailWrapper">
+        <label>Email Address</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope left-icon"></i>
+          <input type="email" id="loginEmail" placeholder="your@email.com">
+        </div>
+        <div class="error-msg" id="loginEmailError"></div>
+      </div>
+
+      <!-- Phone login wrapper -->
+      <div class="field" id="loginPhoneWrapper" style="display: none;">
+        <label>Phone Number</label>
+        <div class="phone-group">
+          <select id="loginCountryCode">
+            <option value="+977">🇳🇵 +977</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+1">🇺🇸 +1</option>
+          </select>
+          <input type="text" id="loginPhoneNumber" placeholder="10-digit number" maxlength="10" inputmode="numeric">
+        </div>
+        <div class="error-msg" id="loginPhoneError"></div>
+      </div>
+
+      <!-- Secure password validation field -->
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock left-icon"></i>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+          <i class="fas fa-eye toggle-password" id="toggleLoginPass"></i>
+        </div>
+        <div class="error-msg" id="loginPasswordError"></div>
+      </div>
+      
+      <!-- Persisted user session gate -->
+      <label style="display:flex; align-items:center; gap:0.5rem; margin:0.5rem 0 1rem; font-size:0.9rem; color:var(--muted); cursor:pointer;">
+        <input type="checkbox" id="rememberMe"> Remember me on this device
+      </label>
+      
+      <button class="btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      
+      <div class="divider"><span>or</span></div>
+      
+      <!-- Shared Authentication Portals -->
+      <div class="social-btns">
+        <button class="social-btn google-btn" id="googleLoginBtn"><i class="fab fa-google"></i> Google</button>
+        <button class="social-btn facebook-btn" id="facebookLoginBtn"><i class="fab fa-facebook-f"></i> Facebook</button>
+      </div>
+      
+      <div class="link">Don't have an account? <a id="linkToRegister">Register</a></div>
+      <div class="link" style="margin-top:0.5rem;"><a id="linkToForgot">Forgot password?</a></div>
+    </div>
+
+    <!-- 2. REGISTER INTERFACE -->
+    <div class="form" id="registerForm">
+      <!-- Admin dynamic block message -->
+      <div style="background: rgba(243,156,18,0.1); border:1px solid var(--warning); padding:0.8rem; border-radius:8px; margin-bottom:1.5rem; display: none;" id="registrationClosedNotice">
+        <i class="fas fa-lock" style="color:var(--warning); margin-right:0.5rem;"></i>
+        <span style="color:var(--warning);">New registrations are temporarily disabled by the administrator.</span>
+      </div>
+
+      <!-- Platform Profile Picture Editor -->
+      <div class="avatar-section">
+        <div class="avatar-preview" id="avatarPreview">U</div>
+        <label class="upload-btn" for="avatarFile"><i class="fas fa-camera"></i> Upload Picture</label>
+        <input type="file" id="avatarFile" accept="image/*" style="display:none;">
+        <input type="hidden" id="avatarDataURL">
+      </div>
+
+      <!-- Secure unique platform username -->
+      <div class="field">
+        <label>Username</label>
+        <div class="input-wrapper">
+          <i class="fas fa-user left-icon"></i>
+          <span class="username-prefix">@</span>
+          <input type="text" id="regUsername" placeholder="yourname" autocomplete="off">
+          <span class="username-status" id="usernameStatus"></span>
+        </div>
+        <div class="error-msg" id="regUsernameError"></div>
+      </div>
+
+      <!-- Dynamic Credentials Form Container -->
+      <div class="credential-box">
+        <span style="font-size:11px; color:var(--accent); font-weight:700; text-transform:uppercase;">Registration Credentials</span>
+        <p style="font-size:12px; color:var(--muted); margin:4px 0 12px; line-height: 1.4;">Provide at least an Email address, a Phone number, or both.</p>
+
+        <!-- Dynamic User Inputs -->
+        <div class="field" id="registerEmailWrapper">
+          <label>Email Address</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope left-icon"></i>
+            <input type="email" id="regEmail" placeholder="you@example.com">
+          </div>
+          <div class="error-msg" id="regEmailError"></div>
+        </div>
+
+        <div class="field" id="registerPhoneWrapper">
+          <label>Phone Number</label>
+          <div class="phone-group">
+            <select id="countryCode">
+              <option value="+977">🇳🇵 +977</option>
+              <option value="+91">🇮🇳 +91</option>
+              <option value="+1">🇺🇸 +1</option>
+            </select>
+            <input type="text" id="phoneNumber" placeholder="10-digit number" maxlength="10" inputmode="numeric">
+          </div>
+          <div class="error-msg" id="phoneError"></div>
+        </div>
+      </div>
+
+      <!-- Multi-tier validation password blocks -->
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock left-icon"></i>
+          <input type="password" id="regPassword" placeholder="Min. 6 characters">
+          <i class="fas fa-eye toggle-password" id="toggleRegPass"></i>
+        </div>
+        <div class="password-strength"><div class="bar" id="strengthBar"></div></div>
+        <div class="strength-text" id="strengthText"></div>
+        <div class="error-msg" id="regPasswordError"></div>
+      </div>
+
+      <div class="field">
+        <label>Confirm Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock left-icon"></i>
+          <input type="password" id="regConfirmPassword" placeholder="Re-enter password">
+          <i class="fas fa-eye toggle-password" id="toggleRegConfirmPass"></i>
+        </div>
+        <div class="error-msg" id="regConfirmPasswordError"></div>
+      </div>
+
+      <!-- Referral identification tracking and reward triggers -->
+      <div class="field">
+        <label>Referral Code (Optional)</label>
+        <div class="input-wrapper">
+          <i class="fas fa-gift left-icon"></i>
+          <input type="text" id="regReferralCode" placeholder="Enter referral code" autocomplete="off" style="text-transform: uppercase;">
+        </div>
+        <div class="error-msg" id="regReferralError"></div>
+      </div>
+
+      <button class="btn" id="regBtn"><i class="fas fa-user-plus"></i> Create Account</button>
+      <div class="link">Already have an account? <a id="linkToLogin">Sign in</a></div>
+    </div>
+
+    <!-- 3. FORGOT PASSWORD INTERFACE -->
+    <div class="form" id="forgotForm">
+      <h2 style="text-align:center; margin-bottom:1.5rem; color:#fff;">Reset Password</h2>
+      <div class="field">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope left-icon"></i>
+          <input type="email" id="resetEmail" placeholder="Enter your email">
+        </div>
+      </div>
+      <button class="btn" id="resetPasswordBtn"><i class="fas fa-paper-plane"></i> Send Reset Link</button>
+      <div class="link"><a id="linkBackToLogin">Back to Login</a></div>
+    </div>
+
+    <!-- 4. SOCIAL AUTHENTICATION USER PROFILE FINALIZATION -->
+    <div class="form" id="completeProfileForm">
+      <h2 style="text-align:center; margin-bottom:1.2rem;">Finish Your Profile</h2>
+      <div class="avatar-section">
+        <div class="avatar-preview" id="avatarPreview2">U</div>
+        <label class="upload-btn" for="avatarFile2"><i class="fas fa-camera"></i> Change Photo</label>
+        <input type="file" id="avatarFile2" accept="image/*" style="display:none;">
+        <input type="hidden" id="avatarDataURL2">
+      </div>
+      
+      <div class="field">
+        <label>Email Address</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope left-icon" id="profileEmailIcon"></i>
+          <input type="email" id="profileEmail" placeholder="Enter your email address">
+          <i class="fas fa-lock" id="profileEmailLock" style="position: absolute; right: 16px; color: var(--success); font-size: 14px; display: none;"></i>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Profile Username</label>
+        <div class="input-wrapper">
+          <i class="fas fa-user left-icon"></i>
+          <span class="username-prefix">@</span>
+          <input type="text" id="profileUsername" placeholder="username" autocomplete="off">
+          <span class="username-status" id="profileUsernameStatus"></span>
+        </div>
+        <div class="error-msg" id="profileUsernameError"></div>
+      </div>
+
+      <div class="field">
+        <label>Set Account Password</label>
+        <p style="font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: none; line-height: 1.3;">
+          Required so you can use the "Change Password" feature on your profile page later.
+        </p>
+        <div class="input-wrapper">
+          <i class="fas fa-lock left-icon"></i>
+          <input type="password" id="profilePassword" placeholder="Min 6 characters">
+          <i class="fas fa-eye toggle-password" id="toggleProfilePass"></i>
+        </div>
+        <div class="error-msg" id="profilePasswordError"></div>
+      </div>
+
+      <div class="field">
+        <label>Phone Number (Optional)</label>
+        <div class="phone-group">
+          <select id="profileCountryCode">
+            <option value="+977">🇳🇵 +977</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+1">🇺🇸 +1</option>
+          </select>
+          <input type="text" id="profilePhone" placeholder="10-digit number" maxlength="10" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Referral Code (Optional)</label>
+        <div class="input-wrapper">
+          <i class="fas fa-gift left-icon"></i>
+          <input type="text" id="profileReferralCode" placeholder="Enter referral code" autocomplete="off" style="text-transform: uppercase;">
+        </div>
+        <div class="error-msg" id="profileReferralError"></div>
+      </div>
+
+      <button class="btn" id="saveProfileBtn">Save & Continue</button>
+    </div>
+  </div>
+
+  <!-- Primary Application Controller (Invokes ES6 dynamic routing) -->
+  <script type="module" src="js/loginAuthScripts.js"></script>
+</body>
+</html>
