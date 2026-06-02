@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - Admin Hub</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    /* Premium Cyberpunk Theme Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.35);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 16px;
+      --header-height: 70px;
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 95px;
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 85% 85%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--card-light); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Header */
+    .custom-header {
+      position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display); font-weight: 800; font-size: 24px;
+      color: var(--accent); letter-spacing: 1.5px; display: flex; align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span { font-size: 28px; margin-right: 8px; color: #fff; }
+
+    .back-btn {
+      background: rgba(231, 76, 60, 0.08); border: 1px solid rgba(231, 76, 60, 0.3);
+      border-radius: 8px; color: var(--error); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .back-btn:hover { background: rgba(231, 76, 60, 0.2); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
+
+    /* Auth Glass Screen Overlay */
+    .admin-auth-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg); z-index: 10050; display: flex; align-items: center;
+      justify-content: center; padding: 24px;
+    }
+
+    .auth-card {
+      background: var(--card); border: 1.5px solid var(--accent);
+      border-radius: var(--radius); width: 100%; max-width: 440px; padding: 32px;
+      box-shadow: 0 10px 40px var(--accent-glow); text-align: center;
+    }
+
+    .auth-title {
+      font-family: var(--font-display); font-size: 28px; font-weight: 800;
+      color: #fff; margin-bottom: 8px; letter-spacing: 0.5px;
+    }
+
+    /* Tab controls */
+    .admin-tab-nav {
+      display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px; overflow-x: auto; white-space: nowrap;
+    }
+
+    .admin-tab-btn {
+      background: transparent; border: none; color: var(--muted);
+      font-family: var(--font-display); font-size: 18px; font-weight: 700;
+      padding: 8px 16px; cursor: pointer; transition: all 0.2s; position: relative;
+    }
+
+    .admin-tab-btn.active { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+    .admin-tab-btn.active::after {
+      content: ''; position: absolute; bottom: -13px; left: 0; width: 100%; height: 2px;
+      background: var(--accent); box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* Primary layout container */
+    .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+    .tab-section-panel { display: none; animation: tabFadeIn 0.3s ease-in-out; }
+    .tab-section-panel.active { display: block; }
+    @keyframes tabFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Bubble Match Card */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius); padding: 24px; margin-bottom: 24px;
+      border: 1px solid rgba(0, 234, 255, 0.15); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+    .bubble-card:hover { border-color: rgba(0, 234, 255, 0.3); box-shadow: 0 15px 45px rgba(0, 234, 255, 0.15); }
+
+    .card-top-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06); padding-bottom: 14px;
+      margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+    }
+
+    .card-details-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; font-size: 13px;
+    }
+
+    /* Table layouts */
+    .table-responsive {
+      width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    .admin-table th, .admin-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .admin-table th { background: rgba(255,255,255,0.02); color: var(--muted); font-family: var(--font-display); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .admin-table tr:hover { background: rgba(255,255,255,0.02); }
+
+    /* Interactive Inputs Fields */
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; }
+
+    .form-input, .form-select {
+      width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff;
+      font-size: 13.5px; transition: all 0.2s;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+    .form-select option { background: var(--card); color: #fff; }
+    .form-textarea { min-height: 90px; resize: vertical; }
+
+    /* Buttons */
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg); border: none; padding: 12px 20px; border-radius: 8px;
+      cursor: pointer; font-weight: 700; font-size: 14px; transition: all 0.2s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+    .btn-danger { background: linear-gradient(135deg, var(--error) 0%, #c0392b 100%) !important; color: #fff !important; }
+
+    /* Modal Popups Layout */
+    .admin-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 8, 18, 0.9); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center; z-index: 10040; padding: 24px;
+    }
+    .admin-modal-overlay.show { display: flex; }
+    .admin-modal-card {
+      background: var(--card); border: 2px solid var(--accent); border-radius: var(--radius);
+      width: 100%; max-width: 600px; padding: 28px; box-shadow: 0 0 30px var(--accent-glow);
+      max-height: 90vh; overflow-y: auto;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; 
+      font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid transparent; white-space: nowrap;
+    }
+    .badge-success { background: rgba(46, 204, 113, 0.1); color: var(--success); border-color: rgba(46, 204, 113, 0.2); }
+    .badge-error { background: rgba(231, 76, 60, 0.1); color: var(--error); border-color: rgba(231, 76, 60, 0.2); }
+    .badge-warning { background: rgba(243, 156, 18, 0.1); color: var(--warning); border-color: rgba(243, 156, 18, 0.2); }
+    .badge-accent { background: rgba(0, 234, 255, 0.1); color: var(--accent); border-color: rgba(0, 234, 255, 0.2); }
+    .badge-purple { background: rgba(155, 89, 182, 0.1); color: var(--purple); border-color: rgba(155, 89, 182, 0.2); }
+
+    .gamer-profile-compact { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+    .gamer-avatar-compact { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; }
+
+    /* 🛡️ PROOFS & BALLOTS STYLING */
+    .proof-player-card {
+      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px; padding: 16px; margin-bottom: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;
+    }
+    @media (max-width: 500px) { .proof-player-card { grid-template-columns: 1fr; } }
+    
+    .proof-player-info { display: flex; flex-direction: column; gap: 4px; }
+    .proof-vote-data { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); }
+    .evidence-thumbnail {
+      width: 100px; height: 70px; border-radius: 8px; object-fit: cover;
+      border: 1.5px solid var(--accent); cursor: pointer; transition: transform 0.2s; margin-top: 8px;
+    }
+    .evidence-thumbnail:hover { transform: scale(1.05); }
+
+    /* ⚡ TOP-FIXED NEON ACTION LOADING BAR */
+    .loading-bar-container {
+      position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+      background: rgba(0, 234, 255, 0.05); z-index: 10060; overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    .loading-bar-container.hidden { opacity: 0; pointer-events: none; }
+    .loading-bar-fill {
+      height: 100%; width: 50%; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    @keyframes loadMove { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+
+    #notificationBox {
+      position: fixed; top: 85px; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 8px;
+      background: var(--card); border-left: 4px solid var(--accent); color: #fff; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10055; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    #notificationBox.show { opacity: 1; }
+    #notificationBox.success { border-left-color: var(--success); }
+    #notificationBox.error { border-left-color: var(--error); }
+
+    /* Lightbox style zoom */
+    .lightbox-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5,8,18,0.95); z-index: 10100; display: none;
+      align-items: center; justify-content: center; padding: 24px; cursor: zoom-out;
+    }
+    .lightbox-content {
+      max-width: 90%; max-height: 85vh; border-radius: 12px;
+      border: 2px solid var(--accent); box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    /* Bottom Navigation Row */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
+      background: rgba(11, 18, 32, 0.95); backdrop-filter: blur(16px);
+      display: flex; flex-direction: row; justify-content: space-around; align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 1000;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--muted); text-decoration: none; font-size: 11px; font-weight: 600; gap: 4px;
+      flex: 1; height: 100%; transition: all 0.2s ease;
+    }
+    .nav-item i { font-size: 18px; }
+    .nav-item.active { color: var(--accent); text-shadow: 0 0 10px rgba(0, 234, 255, 0.3); }
+
+    .home-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-family: var(--font-primary);
+    }
+    
+    .home-btn:hover {
+      background: rgba(0, 234, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Lightbox zoom utility -->
+  <div class="lightbox-overlay" id="lightboxZoom" onclick="closeLightbox()">
+    <img class="lightbox-content" id="lightboxImg" src="" alt="Scoreboard Evidence Zoom">
+  </div>
+
+  <header class="custom-header">
+    <div class="logo-container"><span><i class="fas fa-terminal"></i></span> MAKE TREND COMMAND CENTER</div>
+    <button class="home-btn" onclick="window.location.href='/'">
+      <i class="fas fa-home"></i> Home
+    </button>
+    <button class="back-btn" onclick="goBackToReferrer()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </header>
+
+  <div id="notificationBox">Command Console Active</div>
+
+  <!-- AUTH GLASS COVER SCREEN -->
+  <div class="admin-auth-overlay" id="authOverlay">
+    <div class="auth-card">
+      <div style="font-size: 48px; color: var(--accent); margin-bottom: 15px;"><i class="fas fa-shield-halved"></i></div>
+      <h2 class="auth-title">ADMINISTRATOR GATE</h2>
+      <p style="color: var(--muted); font-size: 13px; margin-bottom: 24px;">Please authenticate with verified administrator credentials to access command logs.</p>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label">Email Node</label>
+        <input type="email" id="authEmail" class="form-input" placeholder="admin@rockyaxis.com">
+      </div>
+      <div class="form-group" style="text-align: left; margin-bottom: 24px;">
+        <label class="form-label">Key Password</label>
+        <input type="password" id="authPassword" class="form-input" placeholder="••••••••">
+      </div>
+      <button class="btn" onclick="executeAdminAuthentication()" style="width: 100%;">
+        <i class="fas fa-key"></i> Decrypt Node Access
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: WALLET ADJUSTMENT COMMAND -->
+  <div class="admin-modal-overlay" id="walletAdjustmentModal">
+    <div class="admin-modal-card">
+      <h3 class="section-header" style="margin-bottom: 10px;">
+        <span><i class="fas fa-wallet"></i> Adjust User Security Balance</span>
+        <i class="fas fa-times" style="cursor: pointer; color: var(--muted);" onclick="closeAdminModal('walletAdjustmentModal')"></i>
+      </h3>
+      <input type="hidden" id="walletModalUserId">
+      <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 20px;">
+        Adjusting funds for user: <strong id="walletModalUserLabel" style="color: #fff;">@username</strong>
+      </p>
+      <div class="form-group">
+        <label class="form-label">Transaction Type</label>
+        <select class="form-select" id="walletModalType">
+          <option value="deposit">Deposit (Add Funds)</option>
+          <option value="deduct">Deduction (Subtract Funds)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Adjustment Amount (NPR)</label>
+        <input type="number" id="walletModalAmount" class="form-input" placeholder="e.g. 500.00" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Audit Log Explanation Description</label>
+        <input type="text" id="walletModalDesc" class="form-input" placeholder="e.g. Compensation refund for Match dispute #M3409">
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 24px;">
+        <button class="btn" style="flex: 1;" onclick="commitWalletLedgerAdjustment()"><i class="fas fa-check"></i> Commit Ledger Payout</button>
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeAdminModal('walletAdjustmentModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT MATCH PARAMETERS -->
+  <div class="admin-modal-overlay" id="editMatchModal">
+    <div class="admin-modal-card">
+      <h3 class="section-header" style="margin-bottom: 10px;">
+        <span><i class="fas fa-edit"></i> Edit Match Details</span>
+        <i class="fas fa-times" style="cursor: pointer; color: var(--muted);" onclick="closeAdminModal('editMatchModal')"></i>
+      </h3>
+      <input type="hidden" id="editMatchModalDocId">
+      
+      <div class="form-group">
+        <label class="form-label">Match Title</label>
+        <input type="text" id="editMatchTitle" class="form-input">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">Platform Game</label>
+          <select class="form-select" id="editMatchPlatform">
+            <option value="Free Fire">Free Fire</option>
+            <option value="PUBG Mobile">PUBG Mobile</option>
+            <option value="Call of Duty">Call of Duty</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Entry Fee (NPR)</label>
+          <input type="number" id="editMatchEntryFee" class="form-input" step="0.01">
+        </div>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">Map Environment</label>
+          <input type="text" id="editMatchMap" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mode Sizing</label>
+          <select class="form-select" id="editMatchMode">
+            <option value="Solo">Solo</option>
+            <option value="Duo">Duo</option>
+            <option value="Squad">Squad</option>
+            <option value="1v1">1v1</option>
+            <option value="2v2">2v2</option>
+            <option value="4v4">4v4</option>
+            <option value="6v6">6v6</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">Character Skill</label>
+          <select class="form-select" id="editMatchCharacterSkill">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Limited Ammo</label>
+          <select class="form-select" id="editMatchLimitedAmmo">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">Rounds</label>
+          <input type="number" id="editMatchRounds" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Coins</label>
+          <input type="text" id="editMatchCoin" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Headshot Mode</label>
+          <select class="form-select" id="editMatchHeadshotMode">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" id="brPrizesInputsBlock" style="display: none; background: rgba(0,234,255,0.05); padding:12px; border-radius:8px;">
+        <label class="form-label" style="color:var(--accent);">Creator-Sponsor Escrow Prizes</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px;">
+          <div><span style="font-size:10px;color:var(--muted);">1st</span><input type="number" id="editMatchPrize1" class="form-input" placeholder="1st"></div>
+          <div><span style="font-size:10px;color:var(--muted);">2nd</span><input type="number" id="editMatchPrize2" class="form-input" placeholder="2nd"></div>
+          <div><span style="font-size:10px;color:var(--muted);">3rd</span><input type="number" id="editMatchPrize3" class="form-input" placeholder="3rd"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 24px;">
+        <button class="btn" style="flex: 1;" onclick="commitEditMatchDetails()"><i class="fas fa-save"></i> Save Parameters</button>
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeAdminModal('editMatchModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MATCH CONFLICT WINNERS MANUAL RESOLVER -->
+  <div class="admin-modal-overlay" id="matchResolverModal">
+    <div class="admin-modal-card">
+      <h3 class="section-header" style="margin-bottom: 10px;">
+        <span><i class="fas fa-gavel"></i> Authoritative Match Overrides</span>
+        <i class="fas fa-times" style="cursor: pointer; color: var(--muted);" onclick="closeAdminModal('matchResolverModal')"></i>
+      </h3>
+      <input type="hidden" id="resolverModalDocId">
+      <input type="hidden" id="resolverModalStyle">
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
+        Overriding outcomes for Match ID: <strong id="resolverModalMatchLabel" style="color: #fff; font-family: var(--font-mono);">#M0000</strong>
+      </p>
+
+      <div class="vote-panel-inputs" id="resolverDynamicOptionsBox">
+        <!-- Ranks or Solo selectors injected here dynamically -->
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 24px;">
+        <button class="btn" style="flex: 1;" onclick="commitAuthoritativeOverrideResult()"><i class="fas fa-gavel"></i> Finalize Resolution</button>
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeAdminModal('matchResolverModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: VIEW PROOFS & BALLOTS EXPLICIT DETAIL DIALOG -->
+  <div class="admin-modal-overlay" id="viewProofsModal">
+    <div class="admin-modal-card" style="max-width: 800px;">
+      <h3 class="section-header" style="margin-bottom: 15px;">
+        <span><i class="fas fa-file-invoice"></i> Player Proofs & Ballots Data</span>
+        <i class="fas fa-times" style="cursor: pointer; color: var(--muted);" onclick="closeAdminModal('viewProofsModal')"></i>
+      </h3>
+      <div id="proofsModalContent" style="display:flex; flex-direction:column; gap:12px;">
+        <!-- Dynamic proof cards rendering -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN AREA LAYOUT Command Grid -->
+  <div class="container">
+    
+    <nav class="admin-tab-nav">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('matches', this)"><i class="fas fa-gamepad"></i> Match Registry</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('users', this)"><i class="fas fa-users-cog"></i> Users Registry</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('support', this)"><i class="fas fa-headset"></i> Support Desk</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('broadcast', this)"><i class="fas fa-bullhorn"></i> Broadcast Centre</button>
+    </nav>
+
+    <!-- TAB 1: MATCH LOBBIES REGISTRY -->
+    <section class="tab-section-panel active" id="tabSectionMatches">
+      <div id="adminMatchesListContainer">
+        <!-- Match Cards are loaded here dynamically -->
+      </div>
+    </section>
+
+    <!-- TAB 2: USER DIRECTORIES (Real-Time Sync) -->
+    <section class="tab-section-panel" id="tabSectionUsers">
+      <div class="bubble-card">
+        <h3 class="section-header" style="margin-bottom: 10px;">
+          <span><i class="fas fa-users-cog"></i> User Command Console</span>
+          <div style="width: 250px;">
+            <input type="text" id="adminUsersSearchInput" class="form-input" style="padding: 8px 12px; font-size:12px;" placeholder="Filter by username/UID..." oninput="renderUsersTableHTML()">
+          </div>
+        </h3>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>UID</th>
+                <th>Profile Identifiers</th>
+                <th>Game Specifics</th>
+                <th>Level</th>
+                <th>Platform</th>
+                <th>Secure Wallet</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--muted); padding: 40px;">Syncing users database node...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: HELPDESK TICKETS -->
+    <section class="tab-section-panel" id="tabSectionSupport">
+      <div class="bubble-card">
+        <h3 class="section-header"><i class="fas fa-headset"></i> Support Desk Helpline Streams</h3>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Sender Profile</th>
+                <th>Subject & Category</th>
+                <th>Details Description</th>
+                <th>Screenshot Evidence</th>
+                <th>Admin Response</th>
+              </tr>
+            </thead>
+            <tbody id="adminSupportTableBody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--muted); padding: 40px;">Syncing support tickets node...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: BROADCAST -->
+    <section class="tab-section-panel" id="tabSectionBroadcast">
+      <div class="bubble-card" style="max-width: 600px; margin: 0 auto;">
+        <h3 class="section-header"><i class="fas fa-bullhorn"></i> Global Broadcast System Node</h3>
+        
+        <div class="form-group">
+          <label class="form-label">Broadcast Method</label>
+          <select class="form-select" id="broadcastTargetType" onchange="toggleBroadcastTargetField()">
+            <option value="global">Global Broadcast (All Registered Users)</option>
+            <option value="targeted">Targeted Broadcast (Manual Username Search)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="targetedUserField" style="display: none;">
+          <label class="form-label">Target Gamer Username</label>
+          <input type="text" id="broadcastTargetUsername" class="form-input" placeholder="e.g. rockyaxis">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Message Title</label>
+          <input type="text" id="broadcastTitle" class="form-input" placeholder="e.g. System Wallet Maintenance Completed">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Message Summary Description</label>
+          <textarea id="broadcastMsg" class="form-input form-textarea" placeholder="Input support logs announcement description details here..."></textarea>
+        </div>
+
+        <div style="text-align: right; margin-top: 15px;">
+          <button class="btn" style="width: 100%;" onclick="dispatchBroadcastNotification()"><i class="fas fa-paper-plane"></i> Deploy Message Node Broadcast</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Bottom Navigation Row -->
+
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentAdminProfile = null;
+    let matchesList = [];
+    let usersList = [];
+    let ticketsList = [];
+    let dynamicProfileCache = {}; // Cache for resolving names/avatars across the app
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        if (!firebase.apps.length) app = firebase.initializeApp(firebaseConfig);
+        else app = firebase.app();
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase init issue:", err);
+        showNotificationToast("Command center failed to establish sandbox bridge.", "error");
+        return;
+      }
+
+      // Check auth state
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          showLoading(true);
+          const userDoc = await db.collection('users').doc(user.uid).get();
+          if (userDoc.exists && userDoc.data().role === 'admin') {
+            currentAdminProfile = userDoc.data();
+            document.getElementById('authOverlay').style.display = 'none';
+            await bootstrapAdminRealtimeStreams();
+          } else {
+            showNotificationToast("Insufficient clearance. Auth node blocked.", "error");
+            await auth.signOut();
+          }
+          showLoading(false);
+        } else {
+          document.getElementById('authOverlay').style.display = 'flex';
+          showLoading(false);
+        }
+      });
+    });
+
+    async function executeAdminAuthentication() {
+      const email = document.getElementById('authEmail').value.trim();
+      const pass = document.getElementById('authPassword').value.trim();
+
+      if(!email || !pass) {
+        showNotificationToast("Both email and secret key inputs are required.", "error");
+        return;
+      }
+
+      showLoading(true);
+      try {
+        // Authenticate session
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch (err) {
+        console.error("Admin Login Failed: ", err);
+        showNotificationToast("Auth failure. Decryption node mismatch.", "error");
+        showLoading(false);
+      }
+    }
+
+    // Resolves and caches joined competitor metadata for UI display
+    async function preloadProfiles(uidsList) {
+      for (const uid of uidsList) {
+        if (!uid || dynamicProfileCache[uid]) continue;
+        try {
+          const userDoc = await db.collection('users').doc(uid).get();
+          if (userDoc.exists) {
+            const userData = userDoc.data();
+            dynamicProfileCache[uid] = {
+              name: userData.gamename || userData.username || 'Competitor',
+              username: userData.username ? `@${userData.username.toLowerCase()}` : '@gamer',
+              gameUid: userData.gameUid || userData.gameuid || 'N/A',
+              avatar: userData.avatarDataURL || userData.profilePic || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`,
+              level: userData.level || 50
+            };
+          } else {
+            dynamicProfileCache[uid] = {
+              name: 'Competitor', username: '@gamer', gameUid: 'N/A',
+              avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`, level: 50
+            };
+          }
+        } catch (err) { console.warn("Failed resolving profile:", uid); }
+      }
+    }
+
+    // Real-time synchronization of matches, support tickets, and users
+    async function bootstrapAdminRealtimeStreams() {
+      // 1. Synchronize Lobbies with dynamic vote fetches nested
+      getPublicCollection('matches').onSnapshot(async (snap) => {
+        matchesList = [];
+        const matchPromises = [];
+        const uidsToLoad = new Set();
+
+        snap.forEach(doc => {
+          const m = doc.data();
+          const matchData = { docId: doc.id, ...m, votes: [] };
+          matchesList.push(matchData);
+
+          if (m.creatorUid) uidsToLoad.add(m.creatorUid);
+          if (m.players) m.players.forEach(p => uidsToLoad.add(p.uid));
+
+          const votePromise = doc.ref.collection('votes').get().then(voteSnap => {
+            voteSnap.forEach(vDoc => {
+              matchData.votes.push({ voterId: vDoc.id, ...vDoc.data() });
+              uidsToLoad.add(vDoc.id);
+            });
+          });
+          matchPromises.push(votePromise);
+        });
+
+        await Promise.all(matchPromises);
+        await preloadProfiles(Array.from(uidsToLoad));
+
+        matchesList.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        renderMatchesTableHTML();
+      }, err => {
+        console.error("Match synchronization failure: ", err);
+      });
+
+      // 2. Synchronize Users Nodes Real-Time
+      db.collection('users').onSnapshot((snap) => {
+        usersList = [];
+        snap.forEach(doc => {
+          usersList.push({ uid: doc.id, ...doc.data(), balance: 0 });
+        });
+        
+        // Render instantly with 0 balances
+        renderUsersTableHTML();
+
+        // Dynamically fetch wallet balances in background so UI doesn't freeze
+        usersList.forEach(async (user) => {
+          try {
+            const wDoc = await getPrivateCollection(user.uid, 'wallets').doc('wallet').get();
+            if (wDoc.exists) {
+               user.balance = wDoc.data().balance || 0;
+               renderUsersTableHTML(); // Live re-render as balances map
+            }
+          } catch(e) {}
+        });
+      }, err => {
+        console.error("Users synchronization failure: ", err);
+      });
+
+      // 3. Synchronize All Global Helpticket Logs
+      db.collection('artifacts').doc(appId).collection('users').onSnapshot(usersRootSnap => {
+        ticketsList = [];
+        const ticketPromises = [];
+
+        usersRootSnap.forEach(userDoc => {
+          const ticketPromise = userDoc.ref.collection('tickets').get().then(ticketsSnap => {
+            ticketsSnap.forEach(tDoc => {
+              ticketsList.push({ docId: tDoc.id, userId: userDoc.id, ...tDoc.data() });
+            });
+          });
+          ticketPromises.push(ticketPromise);
+        });
+
+        Promise.all(ticketPromises).then(() => {
+          ticketsList.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+          renderSupportTableHTML();
+        });
+      }, err => {
+        console.error("Support listener error:", err);
+      });
+    }
+
+    // ==========================================================================
+    // RENDER MATCH LOBBIES (Dynamic Premium Bubble Cards)
+    // ==========================================================================
+    function renderMatchesTableHTML() {
+      const container = document.getElementById('adminMatchesListContainer');
+      container.innerHTML = '';
+
+      if (matchesList.length === 0) {
+        container.innerHTML = `<p style="text-align: center; color: var(--muted); padding: 40px 0;">No active matches registered.</p>`;
+        return;
+      }
+
+      matchesList.forEach(m => {
+        const competitors = m.players || [];
+        const isCsOrLw = m.type === 'CS' || m.type === 'LW';
+        
+        let cap = competitors.length + ' / ' + (m.maxPlayers || (isCsOrLw ? 2 : 50));
+        let divisor = (m.mode === 'Duo') ? 2 : (m.mode === 'Squad') ? 4 : 1;
+        if (!isCsOrLw) {
+          const currentSlots = competitors.length;
+          const maxSlots = Math.floor((m.maxPlayers || 20) / divisor);
+          cap = `${currentSlots} / ${maxSlots} Teams (${competitors.length} joined)`;
+        }
+
+        let statusClass = 'badge-warning';
+        if (['Winner Declared', 'Winner Finalized', 'completed'].includes(m.status)) statusClass = 'badge-success';
+        else if (m.status === 'Expired') statusClass = 'badge-error';
+        else if (m.status === 'Waiting for Verification') statusClass = 'badge-accent';
+
+        const entryFee = parseFloat(m.entryFee || 0);
+        let rewardTextVal = parseFloat(m.prize || 0);
+        if (m.type === 'BR' && m.brType === 'nonpaid') {
+          rewardTextVal = entryFee * competitors.length;
+        } else if (isCsOrLw && m.matchType === 'profit') {
+          rewardTextVal = entryFee * 2;
+        } else if (m.type === 'BR' && m.brType === 'creator') {
+          rewardTextVal = (m.prizes?.top1 || 0) + (m.prizes?.top2 || 0) + (m.prizes?.top3 || 0);
+        }
+
+        const matchCard = document.createElement('div');
+        matchCard.className = 'bubble-card';
+        matchCard.innerHTML = `
+          <div class="card-top-row">
+            <div>
+              <strong style="color: var(--accent); font-family: var(--font-display); font-size: 20px;">#${m.matchId} — ${escapeHtml(m.title)}</strong><br>
+              <span style="font-size: 11.5px; color: var(--muted); font-family: var(--font-mono);">${m.startTime?.toDate().toLocaleString()}</span>
+            </div>
+            <span class="badge ${statusClass}">${m.status || 'upcoming'}</span>
+          </div>
+
+          <div class="card-details-grid">
+            <div><span style="color:var(--muted)">Platform Game:</span> <strong style="color:#fff;">${m.platform}</strong></div>
+            <div><span style="color:var(--muted)">Map / Mode:</span> <strong style="color:#fff;">${m.map || 'Bermuda'} (${m.mode || m.teamSize || 'Solo'})</strong></div>
+            <div><span style="color:var(--muted)">Entry Fee:</span> <strong style="color:var(--warning);">NPR ${entryFee.toFixed(2)}</strong></div>
+            <div><span style="color:var(--muted)">Total Prize Pool:</span> <strong style="color:var(--success);">NPR ${rewardTextVal.toFixed(2)}</strong></div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px; border-top:1px solid rgba(255,255,255,0.06); padding-top:16px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="openEditMatchModal('${m.docId}')"><i class="fas fa-edit"></i> Edit Options</button>
+            <button class="btn" style="background:linear-gradient(135deg, var(--purple) 0%, #8e44ad 100%); color:#fff; box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);" onclick="openProofsModal('${m.docId}')"><i class="fas fa-users-viewfinder"></i> View Ballots & Proofs</button>
+            <button class="btn" onclick="openMatchManualResolver('${m.docId}', '${m.matchId}', '${m.type}')"><i class="fas fa-gavel"></i> Override Winner</button>
+            <button class="btn btn-danger" onclick="executeForcedMatchDeletion('${m.docId}', '${m.matchId}')"><i class="fas fa-trash-alt"></i> Delete Match</button>
+          </div>
+        `;
+        container.appendChild(matchCard);
+      });
+    }
+
+    // ==========================================================================
+    // ACTION: OPEN PROOFS & BALLOTS EXPLICIT DETAIL MODAL
+    // ==========================================================================
+    function openProofsModal(docId) {
+      const m = matchesList.find(match => match.docId === docId);
+      if(!m) return;
+
+      const container = document.getElementById('proofsModalContent');
+      container.innerHTML = '';
+
+      const competitors = m.players || [];
+      const isCsOrLw = m.type === 'CS' || m.type === 'LW';
+
+      if (competitors.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--muted); padding:30px;">No players joined this match.</p>';
+        openAdminModal('viewProofsModal');
+        return;
+      }
+
+      competitors.forEach(p => {
+        const resolved = dynamicProfileCache[p.uid] || {
+          name: p.gamename || p.username || 'Competitor',
+          username: p.username ? `@${p.username}` : '@gamer',
+          gameUid: p.gameUid || p.gameuid || 'N/A',
+          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(p.uid)}`,
+          level: p.level || 50
+        };
+
+        const isCreator = p.role === 'creator' || p.uid === m.creatorUid;
+        let roleBadge = isCreator ? `<span class="badge badge-purple">Host</span>` : `<span class="badge badge-accent">Player</span>`;
+
+        // Check if user voted
+        const vote = m.votes.find(v => v.voterId === p.uid);
+        let voteHtml = `<div style="color:var(--warning); font-size:12px; font-weight:600;"><i class="fas fa-clock"></i> No ballot submitted</div>`;
+        let proofHtml = ``;
+
+        if (vote) {
+          if (m.type === 'BR') {
+             voteHtml = `
+              <div style="font-size:12px; display:flex; flex-direction:column; gap:3px;">
+                <span style="color:var(--success); font-weight:700;"><i class="fas fa-check"></i> Voted:</span>
+                <span style="color:var(--muted);">1st: <strong style="color:#fff;">${dynamicProfileCache[vote.winnerSelected]?.name || vote.winnerSelected || 'N/A'}</strong></span>
+                <span style="color:var(--muted);">2nd: <strong style="color:#fff;">${dynamicProfileCache[vote.rank2Selected]?.name || vote.rank2Selected || 'N/A'}</strong></span>
+                <span style="color:var(--muted);">3rd: <strong style="color:#fff;">${dynamicProfileCache[vote.rank3Selected]?.name || vote.rank3Selected || 'N/A'}</strong></span>
+              </div>
+             `;
+          } else {
+             voteHtml = `
+              <div style="font-size:12px;">
+                <span style="color:var(--success); font-weight:700;"><i class="fas fa-check"></i> Voted Winner:</span>
+                <strong style="color:#fff;">${dynamicProfileCache[vote.winnerSelected]?.name || vote.winnerSelected || 'N/A'}</strong>
+              </div>
+             `;
+          }
+
+          if (vote.screenshotProof || vote.proofBase64) {
+             const imgData = vote.screenshotProof || vote.proofBase64;
+             proofHtml = `
+               <div style="margin-top: 10px; border-top:1px dashed rgba(255,255,255,0.1); padding-top:10px;">
+                 <span style="font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase;">Attached Evidence (${vote.personalRankClaim || 'Solo'}):</span><br>
+                 <img src="${imgData}" onclick="zoomLightbox('${imgData}')" class="evidence-thumbnail" alt="Proof">
+                 <div style="font-size:10px; color:var(--muted); font-family:var(--font-mono); margin-top:4px;">At: ${vote.timestamp?.toDate().toLocaleString()}</div>
+               </div>
+             `;
+          }
+        }
+
+        container.innerHTML += `
+          <div class="proof-player-card">
+            <div class="gamer-profile-compact" style="align-items:flex-start;">
+              <img class="gamer-avatar-compact" style="width:45px; height:45px;" src="${resolved.avatar}" alt="Icon">
+              <div class="profile-meta-text">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+                  <strong style="font-size:15px; color:var(--accent);">${resolved.username}</strong>
+                  ${roleBadge}
+                </div>
+                <span style="color:#fff;">${resolved.name}</span>
+                <span>UID: ${resolved.gameUid} • Level: ${resolved.level}</span>
+              </div>
+            </div>
+            <div class="proof-vote-data">
+              ${voteHtml}
+              ${proofHtml}
+            </div>
+          </div>
+        `;
+      });
+
+      openAdminModal('viewProofsModal');
+    }
+
+    // ==========================================================================
+    // RENDER USER Command Console & Search
+    // ==========================================================================
+    function renderUsersTableHTML() {
+      const tbody = document.getElementById('adminUsersTableBody');
+      const search = document.getElementById('adminUsersSearchInput').value.trim().toLowerCase();
+      tbody.innerHTML = '';
+
+      let filteredUsers = usersList;
+      if (search) {
+        filteredUsers = usersList.filter(u => 
+          (u.username || '').toLowerCase().includes(search) || 
+          (u.gameuid || '').toLowerCase().includes(search) ||
+          (u.gamename || '').toLowerCase().includes(search) ||
+          (u.email || '').toLowerCase().includes(search)
+        );
+      }
+
+      if (filteredUsers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--muted); padding:30px;">No users found.</td></tr>`;
+        return;
+      }
+
+      filteredUsers.forEach(u => {
+        tbody.innerHTML += `
+          <tr>
+            <td style="font-family: var(--font-mono); font-size: 11.5px; color: var(--muted);">${u.uid.substring(0,8)}...</td>
+            <td>
+              <div class="gamer-profile-compact">
+                <img class="gamer-avatar-compact" src="${u.avatarDataURL || u.profilePic || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(u.username)}`}" alt="Avatar">
+                <div style="display:flex; flex-direction:column;">
+                  <strong style="color: #fff;">@${u.username}</strong>
+                  <span style="font-size:11px; color: var(--muted);">${u.email}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div>${escapeHtml(u.gamename || 'No Game Nickname')}</div>
+              <span style="font-family: var(--font-mono); font-size: 11px; color: var(--accent);">UID: ${u.gameuid || 'N/A'}</span>
+            </td>
+            <td><strong style="color: var(--success);">${u.level || '50'}</strong></td>
+            <td><span class="badge badge-accent">${u.platform || 'Free Fire'}</span></td>
+            <td><strong style="color: #fff;">NPR ${(u.balance || 0).toFixed(2)}</strong></td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px;" onclick="openWalletAdjustmentModal('${u.uid}', '${u.username}')">
+                <i class="fas fa-wallet"></i> Adjust Funds
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // ==========================================================================
+    // RENDER SUPPORT TICKET STREAM
+    // ==========================================================================
+    function renderSupportTableHTML() {
+      const tbody = document.getElementById('adminSupportTableBody');
+      tbody.innerHTML = '';
+
+      if (ticketsList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--muted); padding:30px;">No support tickets logged.</td></tr>`;
+        return;
+      }
+
+      ticketsList.forEach(t => {
+        let statusBadgeClass = 'badge-warning';
+        if (t.status === 'resolved' || t.status === 'closed') statusBadgeClass = 'badge-success';
+
+        let imagePreviewHtml = `<span style="font-size:11.5px; color: var(--muted);">No Evidence</span>`;
+        if (t.screenshotBase64) {
+          imagePreviewHtml = `<img src="${t.screenshotBase64}" style="max-height: 80px; max-width: 120px; border-radius: 6px; border: 1px solid var(--accent); cursor: zoom-in;" onclick="zoomLightbox('${t.screenshotBase64}')">`;
+        }
+
+        tbody.innerHTML += `
+          <tr>
+            <td style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">#${t.id}</td>
+            <td>
+              <strong>${escapeHtml(t.userName || 'Sender')}</strong><br>
+              <span style="font-size:11px; color: var(--muted);">@${t.userUsername || 'gamer'} • ${t.userEmail}</span>
+            </td>
+            <td>
+              <span class="badge ${statusBadgeClass}" style="margin-bottom: 4px;">${t.type} / ${t.status || 'open'}</span><br>
+              <strong style="color:#fff;">${escapeHtml(t.title)}</strong>
+            </td>
+            <td>
+              <div style="font-size: 12.5px; color: var(--muted); max-width: 250px; line-height: 1.4;">${escapeHtml(t.description)}</div>
+              ${t.adminReply ? `<div style="margin-top:8px; border-left: 2px solid var(--success); padding-left:6px; font-size:11.5px; color:var(--success); background:rgba(46,204,113,0.03); padding:6px; border-radius:4px;"><strong>Admin:</strong> ${escapeHtml(t.adminReply)}</div>` : ''}
+            </td>
+            <td>${imagePreviewHtml}</td>
+            <td>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <input type="text" id="ticketReplyInput-${t.userId}-${t.docId}" class="form-input" style="padding: 6px 10px; font-size:12px;" placeholder="Admin Response Text...">
+                <div style="display:flex; gap:4px;">
+                  <button class="btn" style="padding: 5px 10px; font-size:11px; flex:1;" onclick="submitSupportTicketReply('${t.userId}', '${t.docId}', '${t.id}')">
+                    <i class="fas fa-reply"></i> Reply
+                  </button>
+                  <button class="btn btn-secondary" style="padding: 5px 10px; font-size:11px; color: var(--success); border-color: var(--success);" onclick="setSupportTicketStatus('${t.userId}', '${t.docId}', 'resolved')">
+                    <i class="fas fa-check"></i> Close
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // ==========================================================================
+    // ACTION: DIRECT HELPDESK REPLIES INJECTOR
+    // ==========================================================================
+    async function submitSupportTicketReply(userId, docId, ticketId) {
+      const input = document.getElementById(`ticketReplyInput-${userId}-${docId}`);
+      const text = input.value.trim();
+
+      if (!text) {
+        showNotificationToast("Reply text cannot be empty.", "error");
+        return;
+      }
+
+      showLoading(true);
+      try {
+        await db.collection('artifacts').doc(appId).collection('users').doc(userId).collection('tickets').doc(docId).update({
+          adminReply: text,
+          status: 'resolved',
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Push immediate support alert notification payload to the customer private feed path
+        const supportNotificationRef = getPrivateCollection(userId, 'notifications').doc();
+        await supportNotificationRef.set({
+          userId: userId,
+          type: 'system',
+          title: `Support Ticket Response Resolved`,
+          message: `Ticket Ref #${ticketId} responded by Rocky Axis Team: "${text}"`,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showNotificationToast(`Response dispatched for Support Ticket #${ticketId}!`, "success");
+        input.value = '';
+      } catch (err) {
+        console.error("Failed sending ticket reply: ", err);
+        showNotificationToast("Helpline transaction failed.", "error");
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    async function setSupportTicketStatus(userId, docId, statusStr) {
+      showLoading(true);
+      try {
+        await db.collection('artifacts').doc(appId).collection('users').doc(userId).collection('tickets').doc(docId).update({
+          status: statusStr,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showNotificationToast("Support request marked as completed.", "success");
+      } catch (err) {
+        console.error("Support status write issue:", err);
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // ==========================================================================
+    // ACTION: SECURE WALLET LEDGER ADJUSTMENTS (WITH DUAL ALERTS & TRANSACTIONS)
+    // ==========================================================================
+    function openWalletAdjustmentModal(uid, username) {
+      document.getElementById('walletModalUserId').value = uid;
+      document.getElementById('walletModalUserLabel').textContent = `@${username}`;
+      document.getElementById('walletModalAmount').value = '';
+      document.getElementById('walletModalDesc').value = '';
+      
+      openAdminModal('walletAdjustmentModal');
+    }
+
+    async function commitWalletLedgerAdjustment() {
+      const targetUid = document.getElementById('walletModalUserId').value;
+      const adjustType = document.getElementById('walletModalType').value;
+      const rawAmount = parseFloat(document.getElementById('walletModalAmount').value) || 0;
+      const desc = document.getElementById('walletModalDesc').value.trim();
+
+      if (rawAmount <= 0) {
+        showNotificationToast("Please specify a valid transaction amount greater than 0.", "error");
+        return;
+      }
+      if (!desc) {
+        showNotificationToast("Audit log description required.", "error");
+        return;
+      }
+
+      showLoading(true);
+      try {
+        const walletRef = getPrivateCollection(targetUid, 'wallets').doc('wallet');
+        const transactionValue = adjustType === 'deposit' ? rawAmount : -rawAmount;
+
+        await db.runTransaction(async (transaction) => {
+          const walletSnap = await transaction.get(walletRef);
+          const currentBal = walletSnap.exists ? (walletSnap.data().balance || 0) : 0;
+          const finalBal = currentBal + transactionValue;
+
+          if (finalBal < 0) throw new Error("Deduction failed. Wallet cannot balance below zero.");
+
+          transaction.set(walletRef, {
+            balance: finalBal,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          const transRef = getPrivateCollection(targetUid, 'transactions').doc();
+          transaction.set(transRef, {
+            userId: targetUid,
+            type: adjustType === 'deposit' ? 'admin_deposit_adjust' : 'admin_deduct_adjust',
+            amount: transactionValue,
+            description: `Admin Ledger Adjustment: ${desc}`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'completed'
+          });
+        });
+
+        // Trigger target user alert notification
+        const userAlertRef = getPrivateCollection(targetUid, 'notifications').doc();
+        await userAlertRef.set({
+          userId: targetUid,
+          type: 'payment',
+          title: `Wallet balance adjusted by Admin`,
+          message: `${desc} • Amount: ${transactionValue > 0 ? '+' : ''}NPR ${transactionValue.toFixed(2)}`,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showNotificationToast("Secured transaction committed successfully!", "success");
+        closeAdminModal('walletAdjustmentModal');
+      } catch (err) {
+        console.error("Wallet adjustments crashed:", err);
+        showNotificationToast(err.message || "Financial ledger transactional error.", "error");
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // ==========================================================================
+    // ACTION: EDIT MATCH LOBBY DETAILS (modal + live update)
+    // ==========================================================================
+    function openEditMatchModal(docId) {
+      const match = matchesList.find(m => m.docId === docId);
+      if(!match) return;
+
+      document.getElementById('editMatchModalDocId').value = docId;
+      document.getElementById('editMatchTitle').value = match.title || '';
+      document.getElementById('editMatchPlatform').value = match.platform || 'Free Fire';
+      document.getElementById('editMatchEntryFee').value = match.entryFee || 0;
+      document.getElementById('editMatchMap').value = match.map || 'Bermuda';
+      document.getElementById('editMatchMode').value = match.mode || match.teamSize || 'Solo';
+      document.getElementById('editMatchCharacterSkill').value = match.characterSkill || 'yes';
+      document.getElementById('editMatchRounds').value = match.rounds || 7;
+      document.getElementById('editMatchCoin').value = match.coin || 'default';
+      document.getElementById('editMatchHeadshotMode').value = match.headshotMode || 'no';
+      document.getElementById('editMatchLimitedAmmo').value = match.limitedAmmo || 'yes';
+      
+      const brPrizes = document.getElementById('brPrizesInputsBlock');
+      if (match.type === 'BR') {
+        brPrizes.style.display = 'block';
+        document.getElementById('editMatchPrize1').value = match.prizes?.top1 || 0;
+        document.getElementById('editMatchPrize2').value = match.prizes?.top2 || 0;
+        document.getElementById('editMatchPrize3').value = match.prizes?.top3 || 0;
+      } else {
+        brPrizes.style.display = 'none';
+      }
+
+      openAdminModal('editMatchModal');
+    }
+
+    async function commitEditMatchDetails() {
+      const docId = document.getElementById('editMatchModalDocId').value;
+      const title = document.getElementById('editMatchTitle').value.trim();
+      const platform = document.getElementById('editMatchPlatform').value;
+      const entryFee = parseFloat(document.getElementById('editMatchEntryFee').value) || 0;
+      const map = document.getElementById('editMatchMap').value.trim();
+      const mode = document.getElementById('editMatchMode').value;
+      const characterSkill = document.getElementById('editMatchCharacterSkill').value;
+      const rounds = parseInt(document.getElementById('editMatchRounds').value) || 7;
+      const coin = document.getElementById('editMatchCoin').value.trim();
+      const headshotMode = document.getElementById('editMatchHeadshotMode').value;
+      const limitedAmmo = document.getElementById('editMatchLimitedAmmo').value;
+
+      if(!title || !map) {
+        showNotificationToast("Title and map parameters are required.", "error");
+        return;
+      }
+
+      showLoading(true);
+      try {
+        const updatePayload = {
+          title,
+          platform,
+          entryFee,
+          map,
+          mode,
+          teamSize: mode, // Syncing both field structures
+          characterSkill,
+          rounds,
+          coin,
+          headshotMode,
+          limitedAmmo,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        const prizesBlock = document.getElementById('brPrizesInputsBlock');
+        if (prizesBlock.style.display === 'block') {
+          updatePayload.prizes = {
+            top1: parseFloat(document.getElementById('editMatchPrize1').value) || 0,
+            top2: parseFloat(document.getElementById('editMatchPrize2').value) || 0,
+            top3: parseFloat(document.getElementById('editMatchPrize3').value) || 0
+          };
+        }
+
+        await getPublicCollection('matches').doc(docId).update(updatePayload);
+        showNotificationToast("Match configurations saved successfully!", "success");
+        closeAdminModal('editMatchModal');
+      } catch (err) {
+        console.error("Match edit failed:", err);
+        showNotificationToast("Lobby edit transaction failed.", "error");
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // ==========================================================================
+    // ACTION: MANUAL RESOLVER OVERRIDES
+    // ==========================================================================
+    async function openMatchManualResolver(docId, matchId, type) {
+      const match = matchesList.find(m => m.docId === docId);
+      if(!match) return;
+
+      document.getElementById('resolverModalDocId').value = docId;
+      document.getElementById('resolverModalStyle').value = type;
+      document.getElementById('resolverModalMatchLabel').textContent = `#${matchId}`;
+
+      const box = document.getElementById('resolverDynamicOptionsBox');
+      box.innerHTML = '';
+
+      const competitors = match.players || [];
+
+      if (type === 'BR') {
+        box.innerHTML = `
+          <div class="vote-input-box">
+            <label>TOP 1 WINNER CHAMPION</label>
+            <select class="form-select" id="overrideWinner1" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);"><option value="">-- Choose Profile --</option></select>
+          </div>
+          <div class="vote-input-box">
+            <label>TOP 2 RUNNER UP</label>
+            <select class="form-select" id="overrideWinner2" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);"><option value="">-- Choose Profile --</option></select>
+          </div>
+          <div class="vote-input-box">
+            <label>TOP 3 PLACE</label>
+            <select class="form-select" id="overrideWinner3" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);"><option value="">-- Choose Profile --</option></select>
+          </div>
+        `;
+
+        setTimeout(() => {
+          const selectors = [document.getElementById('overrideWinner1'), document.getElementById('overrideWinner2'), document.getElementById('overrideWinner3')];
+          selectors.forEach(select => {
+            competitors.forEach(p => {
+              const r = dynamicProfileCache[p.uid] || { name: p.gamename || p.username };
+              select.innerHTML += `<option value="${p.uid}">${r.name}</option>`;
+            });
+          });
+        }, 100);
+
+      } else {
+        box.innerHTML = `
+          <div class="vote-input-box">
+            <label>DECLARE LOBBY WINNER</label>
+            <select class="form-select" id="overrideWinner1" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1);"><option value="">-- Choose Profile --</option></select>
+          </div>
+        `;
+
+        setTimeout(() => {
+          const select = document.getElementById('overrideWinner1');
+          competitors.forEach(p => {
+            const r = dynamicProfileCache[p.uid] || { name: p.gamename || p.username };
+            select.innerHTML += `<option value="${p.uid}">${r.name} (${(p.role === 'creator') ? 'Player A' : 'Player B'})</option>`;
+          });
+        }, 100);
+      }
+
+      openAdminModal('matchResolverModal');
+    }
+
+    async function commitAuthoritativeOverrideResult() {
+      const docId = document.getElementById('resolverModalDocId').value;
+      const type = document.getElementById('resolverModalStyle').value;
+
+      const match = matchesList.find(m => m.docId === docId);
+      if(!match) return;
+
+      const w1 = document.getElementById('overrideWinner1')?.value;
+      const w2 = document.getElementById('overrideWinner2')?.value || '';
+      const w3 = document.getElementById('overrideWinner3')?.value || '';
+
+      if (!w1) {
+        showNotificationToast("Lobby must contain at least Rank #1 Winner choice.", "error");
+        return;
+      }
+
+      if (type === 'BR' && (!w2 || !w3 || w1 === w2 || w1 === w3 || w2 === w3)) {
+        showNotificationToast("BR override require unique selections across top 3 ranks.", "error");
+        return;
+      }
+
+      showLoading(true);
+      try {
+        const matchRef = getPublicCollection('matches').doc(docId);
+        const competitors = match.players || [];
+
+        const updatedCompetitors = competitors.map(player => {
+          const obj = { ...player };
+          if (type === 'BR') {
+            if (player.uid === w1) { obj.rank = 1; obj.lobbyRank = 1; }
+            else if (player.uid === w2) { obj.rank = 2; obj.lobbyRank = 2; }
+            else if (player.uid === w3) { obj.rank = 3; obj.lobbyRank = 3; }
+            else { obj.rank = 4; delete obj.lobbyRank; }
+          } else {
+            if (player.uid === w1) { obj.gameOutcome = 'winner'; obj.outcome = 'winner'; obj.rank = 1; }
+            else { obj.gameOutcome = 'loser'; obj.outcome = 'loser'; obj.rank = 2; }
+          }
+          return obj;
+        });
+
+        // Save outcomes directly. Payout is processed instantly on subsequent page triggers dynamically
+        await matchRef.update({
+          players: updatedCompetitors,
+          status: 'Winner Declared',
+          outcomeDeclared: true,
+          outcomeDeclaredAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Dispatch alert notification to participants
+        for (const p of competitors) {
+          const notificationRef = getPrivateCollection(p.uid, 'notifications').doc();
+          await notificationRef.set({
+            userId: p.uid,
+            type: 'system',
+            title: `Admin Overrode Match Outcome Result`,
+            message: `Admin has verified and completed Match #${match.matchId}. Balance settling running...`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        showNotificationToast("Match outcome modified authoritatively!", "success");
+        closeAdminModal('matchResolverModal');
+      } catch (err) {
+        console.error("Match result override failure:", err);
+        showNotificationToast("Outcome override transaction failed.", "error");
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // ==========================================================================
+    // ACTION: FORCE CANCEL & DELETE LOBBIES
+    // ==========================================================================
+    async function executeForcedMatchDeletion(docId, matchId) {
+      const confirmAction = confirm(`WARNING: Are you sure you want to forcibly DELETE Match #${matchId}?\nThis will completely remove the lobby from database parameters and refund any upfront creator escrow fees directly.`);
+      if (!confirmAction) return;
+
+      showLoading(true);
+      try {
+        const matchRef = getPublicCollection('matches').doc(docId);
+        const matchSnap = await matchRef.get();
+        
+        if (!matchSnap.exists) throw new Error("Lobby not found.");
+        const matchData = matchSnap.data();
+
+        let refundAmount = parseFloat(matchData.entryFee || 0);
+        if (matchData.type === 'BR' && matchData.brType === 'creator') {
+          const prizes = matchData.prizes || {};
+          refundAmount += (parseFloat(prizes.top1||0) + parseFloat(prizes.top2||0) + parseFloat(prizes.top3||0));
+        }
+
+        const walletRef = getPrivateCollection(matchData.creatorUid, 'wallets').doc('wallet');
+        
+        await db.runTransaction(async (transaction) => {
+          const walletSnap = await transaction.get(walletRef);
+          const currentBal = walletSnap.exists ? (walletSnap.data().balance || 0) : 0;
+          
+          transaction.set(walletRef, {
+            balance: currentBal + refundAmount,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          const transRef = getPrivateCollection(matchData.creatorUid, 'transactions').doc();
+          transaction.set(transRef, {
+            userId: matchData.creatorUid,
+            type: 'admin_forced_refund',
+            amount: refundAmount,
+            description: `Admin Deleted Match #${matchId} • Full Refund`,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'completed'
+          });
+
+          transaction.delete(matchRef);
+        });
+
+        showNotificationToast(`Lobby #${matchId} forcibly deleted and refunded.`, "success");
+      } catch (err) {
+        console.error(err);
+        showNotificationToast(err.message || "Failed forced deletion.", "error");
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // ==========================================================================
+    // ACTION: DISPATCH UNIVERSAL BROADCAST NOTIFICATIONS
+    // ==========================================================================
+    async function dispatchBroadcastNotification() {
+      const targetType = document.getElementById('broadcastTargetType').value;
+      const username = document.getElementById('broadcastTargetUsername').value.trim();
+      const title = document.getElementById('broadcastTitle').value.trim();
+      const text = document.getElementById('broadcastMsg').value.trim();
+
+      if (!title || !text) {
+        showNotificationToast("Message Title and Description summary are required.", "error");
+        return;
+      }
+
+      showLoading(true);
+      try {
+        if (targetType === 'targeted') {
+          if (!username) { showNotificationToast("Username target required.", "error"); showLoading(false); return; }
+          const userQuery = await db.collection('users').where('username', '==', username).limit(1).get();
+          
+          if (userQuery.empty) {
+            showNotificationToast(`User @${username} not found in database registry.`, "error");
+            showLoading(false);
+            return;
+          }
+          const targetUserUid = userQuery.docs[0].id;
+          const ref = getPrivateCollection(targetUserUid, 'notifications').doc();
+          await ref.set({
+            userId: targetUserUid,
+            type: 'admin',
+            title,
+            message: text,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          showNotificationToast(`Targeted message deployed successfully to @${username}!`, "success");
+        } else {
+          // Rule 2 compliant broadcast loop
+          const usersQuery = await db.collection('users').get();
+          const batchPromises = [];
+          
+          usersQuery.forEach(doc => {
+            const ref = getPrivateCollection(doc.id, 'notifications').doc();
+            batchPromises.push(ref.set({
+              userId: doc.id,
+              type: 'admin',
+              title,
+              message: text,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }));
+          });
+          await Promise.all(batchPromises);
+          showNotificationToast(`Global Broadcast deployed successfully to all ${usersQuery.size} active nodes!`, "success");
+        }
+
+        document.getElementById('broadcastTitle').value = '';
+        document.getElementById('broadcastMsg').value = '';
+        document.getElementById('broadcastTargetUsername').value = '';
+      } catch (err) {
+        console.error(err);
+        showNotificationToast("System broadcast failure.", "error");
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    function toggleBroadcastTargetField() {
+      const val = document.getElementById('broadcastTargetType').value;
+      document.getElementById('targetedUserField').style.display = (val === 'targeted') ? 'block' : 'none';
+    }
+
+    // Zoom Lightbox functions
+    function zoomLightbox(imgSrc) {
+      const lightbox = document.getElementById('lightboxZoom');
+      const img = document.getElementById('lightboxImg');
+      img.src = imgSrc;
+      lightbox.style.display = 'flex';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightboxZoom').style.display = 'none';
+    }
+
+    // Modal helpers
+    function openAdminModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeAdminModal(id) { document.getElementById(id).classList.remove('show'); }
+    function switchAdminTab(targetId, btn) {
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-section-panel').forEach(s => s.classList.remove('active'));
+      
+      btn.classList.add('active');
+      
+      if(targetId === 'matches') document.getElementById('tabSectionMatches').classList.add('active');
+      else if(targetId === 'users') document.getElementById('tabSectionUsers').classList.add('active');
+      else if(targetId === 'support') document.getElementById('tabSectionSupport').classList.add('active');
+      else if(targetId === 'broadcast') document.getElementById('tabSectionBroadcast').classList.add('active');
+    }
+
+    async function terminateSession() {
+      const confirmLog = confirm("Are you sure you want to exit the admin command console?");
+      if(confirmLog) {
+        await auth.signOut();
+        window.location.href = "/";
+      }
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    function showNotificationToast(msg, type='success') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = msg;
+      box.className = `show ${type}`;
+      setTimeout(() => box.classList.remove('show'), 5000);
+    }
+    function showLoading(show) {
+      const loader = document.getElementById('loadingOverlay');
+      if (show) loader.classList.remove('hidden');
+      else loader.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - Battlegrounds</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.35);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look matching inmatchjoin */
+      --header-height: 75px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      --br-gradient: linear-gradient(135deg, #ff7b00, #ff5500);
+      --cs-gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      --lw-gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px); 
+      padding-bottom: 95px; /* space for bottom navigation bar */
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* Fixed App Header Styles */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    /* Top-Right Profile Widget */
+    .user-profile-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-profile-summary:hover {
+      background: rgba(0, 234, 255, 0.05);
+      border-color: rgba(0, 234, 255, 0.2);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--card-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--accent);
+      border: 1px solid rgba(0, 234, 255, 0.2);
+      overflow: hidden;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-profile-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-gamename {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .profile-username {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Main Container Layout */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Bubble Cards - Reduced vertical padding & margins */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 16px 20px; 
+      margin-bottom: 16px; 
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+
+    .bubble-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    /* Wallet Bar Positioned Below Profile Header */
+    .wallet-status-row {
+      background: rgba(52, 152, 219, 0.06);
+      border: 1px solid rgba(52, 152, 219, 0.25);
+      border-radius: 12px;
+      padding: 10px 16px; /* Compact padding */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .wallet-status-lbl {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wallet-status-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Interactive Buttons */
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg);
+      border: none;
+      padding: 11px 18px; /* Tighter button padding */
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      width: 100%;
+      font-family: var(--font-primary);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 234, 255, 0.5);
+    }
+
+    /* Filters Layout Accordions */
+    .filter-group-header {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-options-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .filter-badge-option {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 6px 12px; /* Tighter badge spacing */
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--muted);
+    }
+
+    .filter-badge-option:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    .filter-badge-option.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .advanced-toggle-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 8px; /* Tighter padding */
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .advanced-toggle-trigger:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .advanced-options-grid-area {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 8px;
+    }
+
+    .advanced-options-grid-area.show {
+      display: flex;
+    }
+
+    .filter-grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .filter-grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .filter-input-styled {
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12.5px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .filter-input-styled:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* Range price label formatting */
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Bubble Tournaments Feed Renders */
+    .tournament-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      margin-bottom: 16px; 
+      overflow: hidden;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .tournament-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 234, 255, 0.35) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    /* Tactile Click override - Forces cards to handle redirection beautifully */
+    .tournament-card .btn {
+      pointer-events: none;
+    }
+
+    /* Dynamic Banner Area */
+    .banner-view {
+      width: 100%;
+      height: 120px; /* Slimmed header banner heights slightly */
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+    }
+
+    /* Professional header style for no picture - tight */
+    .card-header-no-pic {
+      padding: 16px 20px 8px 20px; 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .banner-view::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(5,8,18,0.95) 100%);
+      z-index: 1;
+    }
+
+    .banner-badge-admin {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 800;
+      z-index: 3;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .banner-badge-new {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--success);
+      color: var(--bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 800;
+      z-index: 3;
+      box-shadow: 0 0 10px rgba(46,204,113,0.5);
+    }
+
+    .banner-label-wrap {
+      position: relative;
+      z-index: 2;
+      padding: 12px 16px; /* Compact padding */
+      width: 100%;
+    }
+    
+    /* Spacing when no banner image exists */
+    .card-header-no-pic .banner-label-wrap {
+      padding: 0;
+    }
+
+    /* 💎 Redesigned Cyberpunk Framed Title Box with Accented Left Neon Border */
+    .premium-title-wrapper {
+      border-left: 4px solid var(--accent);
+      background: linear-gradient(90deg, rgba(0, 234, 255, 0.08) 0%, rgba(15, 23, 42, 0.45) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 4px 16px 16px 4px;
+      padding: 12px 18px;
+      margin-bottom: 12px;
+      box-shadow: inset 10px 0 20px rgba(0, 234, 255, 0.01), 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .premium-title-text {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
+    }
+
+    /* Subtitle Border Divider below text */
+    .banner-main-sub {
+      font-size: 11.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      border-bottom: 1.5px solid rgba(0, 234, 255, 0.15); /* Clean border below text */
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    /* New Modern Lobby ID Capsule */
+    .lobby-id-badge {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .lobby-id-badge .highlight {
+      color: var(--accent);
+      font-weight: 700;
+      text-shadow: 0 0 5px var(--accent-glow);
+    }
+
+    .tournament-body-wrap {
+      padding: 16px; /* Reduced vertically from 20px */
+      display: flex;
+      flex-direction: column;
+      gap: 12px; /* Tight layout gaps */
+    }
+
+    /* Structured Header Badge Rows */
+    .t-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .status-pill-badge.upcoming { background: rgba(0, 234, 255, 0.08); color: var(--accent); border-color: rgba(0, 234, 255, 0.2); }
+    .status-pill-badge.live { background: rgba(255, 0, 80, 0.08); color: #ff0050; border-color: rgba(255, 0, 80, 0.3); }
+    .status-pill-badge.joined { background: rgba(46, 204, 113, 0.08); color: var(--success); border-color: rgba(46, 204, 113, 0.3); }
+    .status-pill-badge.full { background: rgba(231, 76, 60, 0.08); color: var(--error); border-color: rgba(231, 76, 60, 0.3); }
+
+    /* Highly Prominent Double Badge Row */
+    .badge-financial-grid {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .prize-badge-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      background: rgba(46, 204, 113, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      white-space: nowrap;
+      font-family: var(--font-display);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.15);
+    }
+
+    .entry-badge-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      background: rgba(243, 156, 18, 0.1);
+      color: var(--warning);
+      border: 1px solid rgba(243, 156, 18, 0.3);
+      white-space: nowrap;
+      font-family: var(--font-display);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.15);
+    }
+
+    /* Structured Specs Metric Card Grid Area */
+    .specs-metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px; 
+      background: rgba(255, 255, 255, 0.01);
+      border: 1.5px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 12px 14px; 
+    }
+
+    .spec-details-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Double Column Spec sheet layout */
+    .specs-columns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px; 
+    }
+
+    .spec-rule-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 2px 0;
+    }
+    
+    .spec-rule-lbl {
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .spec-rule-lbl i {
+      color: var(--accent);
+      font-size: 11px;
+      width: 14px;
+      text-align: left;
+    }
+
+    .spec-rule-val {
+      font-weight: 700;
+      color: #fff;
+      font-size: 12.5px;
+      padding-left: 20px;
+    }
+
+    /* Highlighted banner rules for Map and Type */
+    .single-full-spec-highlight {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px; 
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 10px;
+      font-size: 12.5px;
+    }
+    
+    .single-full-spec-lbl {
+      color: var(--muted);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .single-full-spec-lbl i {
+      color: var(--accent);
+    }
+    
+    .single-full-spec-val {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .creator-attribution-tag {
+      font-size: 11.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px dashed rgba(255,255,255,0.05);
+      padding-top: 8px;
+    }
+
+    .roster-info-text {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* 🔒 CYBERPUNK SLIDER / PROGRESS BAR CUSTOM CSS */
+    .roster-progress-container {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .roster-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .roster-progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .roster-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+      border-radius: 10px;
+      box-shadow: 0 0 8px var(--accent);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 🛡️ GAME PLATFORM/TITLE COMPACT GLOWING CSS BADGES */
+    .platform-badge-compact {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px; /* Touches / extremely close */
+      background: rgba(0, 234, 255, 0.06);
+      border: 1px solid rgba(0, 234, 255, 0.15);
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      white-space: nowrap; 
+    }
+
+    /* Game Platform Image Icon Style */
+    .game-platform-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+    }
+
+    /* Activity Rows */
+    .activity-row {
+      padding: 10px 0; /* Reduced vertically */
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .activity-row:hover {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .activity-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Fixed Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; 
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+
+    /* Loading Overlay Screen */
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    #loadingScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10004;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    #loadingScreen.show {
+      opacity: 1;
+    }
+
+    .loader {
+      border: 4px solid var(--card);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px rgba(0, 234, 255, 0.3);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Social Link Icons */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 12px; 
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: white;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .social-link:hover {
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .social-link.youtube { background: linear-gradient(135deg, #ff0000, #cc0000); }
+    .social-link.tiktok { background: #000000; border: 1px solid rgba(255,255,255,0.15); }
+    .social-link.whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 16px;
+      color: var(--muted);
+    }
+
+    /* Notifications Box */
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #notificationBox.show { top: 85px; }
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+    #notificationBox.info { background: rgba(19, 24, 43, 0.95); border: 1px solid var(--accent); }
+
+    /* Custom Input Wrapper */
+    .search-box-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .search-box-wrapper i {
+      position: absolute;
+      left: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(0, 234, 255, 0.15);
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding-top: calc(var(--header-height) + 10px);
+      }
+      .logo-container {
+        font-size: 18px;
+      }
+      .user-profile-summary {
+        padding: 4px 10px;
+      }
+      .user-profile-info {
+        display: none; 
+      }
+      .bubble-card {
+        padding: 14px 16px;
+        border-radius: 20px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="custom-header">
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    
+    <div class="user-profile-summary" id="profileWidget" onclick="window.location.href='/Profile'">
+      <div class="user-avatar" id="avatarLetter">U</div>
+      <div class="user-profile-info">
+        <div class="profile-gamename" id="userName">Competitor</div>
+        <div class="profile-username" id="userUsername">@player</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Alerts Box -->
+  <div id="notificationBox"></div>
+
+  <!-- Loading Screen overlay -->
+  <div id="loadingScreen" class="show">
+    <div class="loader"></div>
+    <p style="color: var(--accent); font-weight: 600; margin-top: 15px; text-shadow: 0 0 10px var(--accent-glow);">Loading....</p>
+  </div>
+
+  <div class="container">
+    
+    <!-- Welcome Header Card -->
+    <div class="bubble-card" style="text-align: center; padding: 20px 24px;">
+      <h2 style="margin:0; color:var(--accent); font-family: var(--font-display); font-size: 26px; font-weight:800; letter-spacing: 0.5px; text-shadow: 0 0 10px var(--accent-glow);">Welcome to the Battlegrounds</h2>
+      <p style="margin:6px 0 0; font-size:13.5px; color: var(--muted); line-height: 1.5;">Join Free Fire tournaments, win cash prizes, and climb the public leaderboards!</p>
+      
+      <div class="social-links">
+        <a href="https://youtube.com/@rockyxsiyu?si=_YVs4Iw1Cm1U8nH5" target="_blank" class="social-link youtube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://www.tiktok.com/@cheatxrocky?_t=ZS-90en4mZPuHk&_r=1" target="_blank" class="social-link tiktok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://whatsapp.com/channel/0029VbB6Ii0GufImWWm1UT0F" target="_blank" class="social-link whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Security Wallet Status Positioned Cleanly -->
+    <div class="wallet-status-row">
+      <span class="wallet-status-lbl"><i class="fas fa-wallet"></i> My Wallet Balance</span>
+      <span class="wallet-status-val" id="walletBalance">NPR 0.00</span>
+    </div>
+
+    <!-- Voting Reminder Banner -->
+    <div id="votingReminder" class="bubble-card" style="border-color: rgba(243, 156, 18, 0.3); background: rgba(243, 156, 18, 0.03); display: none; padding: 14px;">
+      <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <i class="fas fa-vote-yea" style="color: var(--warning); font-size: 22px;"></i>
+        <div style="flex: 1; min-width: 200px;">
+          <strong style="color: var(--warning); font-size: 14px;">Pending Ballot Votes Waiting</strong>
+          <p style="margin: 2px 0 0; font-size: 12.5px; color: var(--muted);" id="votingReminderText">Concluded match is awaiting your vote.</p>
+        </div>
+        <div style="width: auto;">
+          <button id="viewVotingBtn" class="btn" style="padding: 8px 16px; font-size: 12.5px;">Submit Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Match Filters Panel -->
+    <div class="bubble-card" style="padding: 16px 20px;">
+      
+      <!-- Fuzzy search bar input -->
+      <div class="search-box-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="feedSearchInput" class="search-input" placeholder="Search by title, map, or ID..." oninput="applyFilteredTournamentsDisplay()">
+      </div>
+
+      <!-- Row 1: Mode Filter tabs -->
+      <div class="filter-section">
+        <div class="filter-group-header">Match Mode</div>
+        <div class="filter-options-wrap" id="modeFilters">
+          <div class="filter-badge-option active" data-mode="all">All</div>
+          <div class="filter-badge-option" data-mode="BR">Battle Royale</div>
+          <div class="filter-badge-option" data-mode="CS">Clash Squad</div>
+          <div class="filter-badge-option" data-mode="LW">Lone Wolf</div>
+        </div>
+      </div>
+
+      <!-- Row 2: Ticket pricing presets -->
+      <div class="filter-section" style="margin-top: 10px;">
+        <div class="filter-group-header">Entry Ticket Type</div>
+        <div class="filter-options-wrap" id="entryFilters">
+          <div class="filter-badge-option active" data-entry="all">All</div>
+          <div class="filter-badge-option" data-entry="free">Free Lobbies</div>
+          <div class="filter-badge-option" data-entry="paid">Paid Lobbies</div>
+        </div>
+      </div>
+
+      <button class="advanced-toggle-trigger" onclick="toggleAdvancedFiltersPanel()">
+        <i class="fas fa-sliders-h"></i>
+        <span>Advanced Specs Filter</span>
+        <i class="fas fa-chevron-down" id="advChevron"></i>
+      </button>
+
+      <!-- Advanced Filters Section Accordion -->
+      <div class="advanced-options-grid-area" id="advancedFilterPanel">
+        <div class="filter-grid-layout">
+          <div class="filter-section">
+            <div class="filter-group-header">Lobby Map Selection</div>
+            <select id="filterMap" class="filter-input-styled" onchange="applyFilteredTournamentsDisplay()">
+              <option value="all">Any Map</option>
+              <option value="Bermuda">Bermuda</option>
+              <option value="Purgatory">Purgatory</option>
+              <option value="Kalahari">Kalahari</option>
+              <option value="Alpine">Alpine</option>
+            </select>
+          </div>
+          <div class="filter-section">
+            <div class="filter-group-header">Game Platform</div>
+            <select id="filterPlatform" class="filter-input-styled" onchange="applyFilteredTournamentsDisplay()">
+              <option value="all">Any Platform</option>
+              <option value="Free Fire">Free Fire</option>
+              <option value="PUBG Mobile">PUBG Mobile</option>
+              <option value="Call of Duty">COD Mobile</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-grid-layout" style="margin-top: 8px;">
+          <div class="filter-section">
+            <div class="filter-group-header">BR Financial Format</div>
+            <select id="filterBRType" class="filter-input-styled" onchange="applyFilteredTournamentsDisplay()">
+              <option value="all">Any Format</option>
+              <option value="normal">Casual Normal (Free)</option>
+              <option value="nonpaid">NonPaid-Profit</option>
+              <option value="creator">Creator-Profit</option>
+            </select>
+          </div>
+          <div class="filter-section">
+            <div class="filter-group-header">Lobby team size (mode)</div>
+            <select id="filterTeamSize" class="filter-input-styled" onchange="applyFilteredTournamentsDisplay()">
+              <option value="all">Any Team Size</option>
+              <option value="Solo">Solo</option>
+              <option value="Duo">Duo</option>
+              <option value="Squad">Squad</option>
+              <option value="1v1">1v1 Bracket</option>
+              <option value="2v2">2v2 Bracket</option>
+              <option value="4v4">4v4 Bracket</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-grid-layout" style="margin-top: 8px;">
+          <div class="filter-section">
+            <div class="filter-group-header">Max Entry Fee: <span id="entryFeeSliderVal" style="color:var(--warning)">Any</span></div>
+            <input type="range" id="filterEntryRange" min="0" max="1000" value="1000" class="filter-input-styled" style="padding:0; height:8px;" oninput="updateSliderLabelAndFilter(this.value)">
+            <div class="range-labels">
+              <span>0 NPR</span>
+              <span>1000 NPR</span>
+            </div>
+          </div>
+          <div class="filter-section">
+            <div class="filter-group-header">Scheduled Date Constraints</div>
+            <input type="date" id="filterCreationDate" class="filter-input-styled" onchange="applyFilteredTournamentsDisplay()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activities Feed -->
+    <div class="bubble-card" style="padding: 16px 20px;">
+      <h3 style="margin-bottom: 10px; color: var(--accent); font-family: var(--font-display); font-size: 17px; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-history"></i> Recent Activity Logs
+      </h3>
+      <div id="recentNotificationsArea">
+        <div class="empty-state" style="padding: 10px 0;">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Syncing activity registries...</p>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+        <a href="/Notifications" style="color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 700;">
+          <i class="fas fa-external-link-alt"></i> View All Alerts Feed
+        </a>
+      </div>
+    </div>
+
+    <!-- Tournaments List title -->
+    <div class="feed-container-title">
+      <i class="fas fa-gamepad"></i> Active Esport Lobbies
+    </div>
+    
+    <div id="tournamentListContainer">
+      <div class="empty-state">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p>Syncing public matchmaking servers...</p>
+      </div>
+    </div>
+
+    <!-- Quick Play Guide -->
+    <h3 style="margin-top:25px; margin-bottom:12px; font-family: var(--font-display); font-size:20px; font-weight:800; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px; color:var(--accent); text-shadow: 0 0 8px rgba(0,234,255,0.3); display: flex; align-items: center; gap: 10px;">
+      <i class="fas fa-info-circle"></i> Matchmaking Guide
+    </h3>
+    <div class="bubble-card" style="padding: 16px 20px;">
+      <ol style="color:var(--muted); padding-left: 18px; line-height:1.6; font-size: 13px; display: flex; flex-direction: column; gap: 6px;">
+        <li><strong>Verify Credentials:</strong> Authenticate or set up your gamer profile level.</li>
+        <li><strong>Find Lobby Feed:</strong> Browse public rooms, check level 50+ verifications, and purchase entry tickets.</li>
+        <li><strong>Deposit Escrow:</strong> Maintain NPR wallet balances to cover tournament tickets.</li>
+        <li><strong>Join Custom Room:</strong> Fetch Room ID & Pass credentials directly from <a href="/My_Matches" style="color:var(--accent); text-decoration:none;">My Matches</a> once host publishes details.</li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item active">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/inmatchjoin" class="nav-item">
+      <i class="fas fa-gamepad"></i>
+      <span>Games</span>
+    </a>
+    <a href="/My_Matches" class="nav-item">
+      <i class="fas fa-trophy"></i>
+      <span>Joined Games</span>
+    </a>
+    <a href="/Profile" class="nav-item">
+      <i class="fas fa-user-cog"></i>
+      <span>Control</span>
+    </a>
+  </nav>
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let currentProfileData = null;
+    let currentMatchesList = [];
+    const activeBackgroundPayoutsSet = new Set(); 
+    const dynamicHostNameCache = {}; // Local memory cache to store creator in-game name and uid
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase load issue:", err);
+        showNotificationToast("Failed to establish sandbox network hook.", "error");
+        return;
+      }
+
+      // Check auth state
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await loadUserProfileAndWallet();
+          await synchronizeMatchesStream();
+          await loadRecentNotifications();
+          await checkBallotsPendingReminders();
+          hideInitialLoadingScreen();
+
+          // Real-time auto-refresh: Re-filter and render feed every 30 seconds to hide matches that have started
+          setInterval(() => {
+            applyFilteredTournamentsDisplay();
+          }, 30000);
+        } else {
+          window.location.href = "/LoginAuth";
+        }
+      });
+
+      // Hook static filter clicks
+      setupFilterButtonsListeners();
+    });
+
+    async function loadUserProfileAndWallet() {
+      try {
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+          currentProfileData = userDoc.data();
+          const name = currentProfileData.gamename || currentProfileData.username || 'Competitor';
+          
+          document.getElementById('userName').textContent = name;
+          document.getElementById('userUsername').textContent = `@${(currentProfileData.username || 'gamer').toLowerCase()}`;
+          document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
+
+          if (currentProfileData.profilePic) {
+            document.getElementById('avatarLetter').innerHTML = `<img src="${currentProfileData.profilePic}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" alt="Avatar">`;
+          }
+        }
+
+        // Wallet live stream listener (Rule 3 protected)
+        getPrivateCollection(currentUser.uid, 'wallets').doc('wallet').onSnapshot(snap => {
+          if (snap.exists) {
+            document.getElementById('walletBalance').textContent = `NPR ${(snap.data().balance || 0).toFixed(2)}`;
+          } else {
+            document.getElementById('walletBalance').textContent = `NPR 0.00`;
+          }
+        }, err => {
+          console.error("Wallet hook failure:", err);
+        });
+
+      } catch (err) {
+        console.error("Profile payload sync warning:", err);
+      }
+    }
+
+    // Helper to evaluate scaled dynamic capacities
+    function getCapacityLimits(match) {
+      const playersList = match.players || [];
+      const playersCount = playersList.length;
+      
+      const isCsOrLw = match.type === 'CS' || match.type === 'LW';
+      const defaultCap = isCsOrLw ? 2 : 20;
+      const totalMaxPlayers = parseInt(match.maxPlayers) || defaultCap;
+      
+      const modeSize = match.mode || match.teamSize || 'Solo';
+      
+      let divisor = 1;
+      if (modeSize === 'Duo') {
+        divisor = 2;
+      } else if (modeSize === 'Squad') {
+        divisor = 4;
+      }
+
+      // Every 1 member counts as 1 slot/team against the denominator
+      const maxSlotsLimit = Math.floor(totalMaxPlayers / divisor) || 1;
+      const currentSlotDisplay = playersCount; 
+
+      const isLobbyFull = currentSlotDisplay >= maxSlotsLimit;
+
+      return {
+        playersCount,
+        totalMaxPlayers,
+        divisor,
+        currentSlotDisplay,
+        maxSlotsLimit,
+        isLobbyFull,
+        modeSize
+      };
+    }
+
+    // Instantly auto-expires unjoined matches past scheduled start time in database
+    async function autoExpireMatchIfNeeded(docId, matchData) {
+      if (matchData.status !== 'upcoming') return;
+
+      const now = Date.now();
+      const startTimeMs = matchData.startTime?.seconds ? matchData.startTime.seconds * 1000 : now;
+
+      if (now >= startTimeMs) {
+        const players = matchData.players || [];
+        const otherCompetitors = players.some(p => p.uid !== matchData.creatorUid);
+
+        if (!otherCompetitors) {
+          try {
+            const matchRef = getPublicCollection('matches').doc(docId);
+            const walletRef = getPrivateCollection(matchData.creatorUid, 'wallets').doc('wallet');
+
+            await db.runTransaction(async (transaction) => {
+              const matchSnap = await transaction.get(matchRef);
+              if (!matchSnap.exists) return;
+              const freshData = matchSnap.data();
+              if (freshData.status !== 'upcoming') return;
+
+              let refundAmount = parseFloat(freshData.entryFee || 0);
+              if (freshData.type === 'BR' && freshData.brType === 'creator') {
+                const prizes = freshData.prizes || {};
+                refundAmount += (parseFloat(prizes.top1 || 0) + parseFloat(prizes.top2 || 0) + parseFloat(prizes.top3 || 0));
+              }
+
+              const walletSnap = await transaction.get(walletRef);
+              const currentBal = walletSnap.exists ? (walletSnap.data().balance || 0) : 0;
+
+              // Full refund back to creator wallet
+              transaction.set(walletRef, {
+                balance: currentBal + refundAmount,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+
+              const transRef = getPrivateCollection(matchData.creatorUid, 'transactions').doc();
+              transaction.set(transRef, {
+                userId: matchData.creatorUid,
+                type: 'match_auto_expire_refund',
+                amount: refundAmount,
+                description: `Instant auto-expire refund for unjoined Match #${freshData.matchId}`,
+                matchId: freshData.matchId,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'completed'
+              });
+
+              transaction.update(matchRef, {
+                status: 'expired',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            });
+            console.log(`Auto-expired unjoined Match #${matchData.matchId} at match time.`);
+          } catch (err) {
+            console.error("Instant auto-expiration daemon error: ", err);
+          }
+        }
+      }
+    }
+
+    // Real-time synchronization of matches (Memory filtered, Rule 2 Compliant)
+    async function synchronizeMatchesStream() {
+      try {
+        getPublicCollection('matches').onSnapshot(async (snap) => {
+          currentMatchesList = [];
+          const creatorsToResolve = new Set();
+
+          const tempMatches = [];
+          snap.forEach(doc => {
+            tempMatches.push({ id: doc.id, data: doc.data() });
+          });
+
+          // Run background auto-expiration check first
+          for (const item of tempMatches) {
+            await autoExpireMatchIfNeeded(item.id, item.data);
+          }
+
+          snap.forEach(doc => {
+            const data = doc.data();
+            currentMatchesList.push({ id: doc.id, ...data });
+            if (data.creatorUid) {
+              creatorsToResolve.add(data.creatorUid);
+            }
+          });
+
+          // Resolve hosts usernames in background asynchronously
+          resolveHostsMetadata(Array.from(creatorsToResolve));
+
+          // Sort matches: Pin admin matches first, then newest first
+          currentMatchesList.sort((a, b) => {
+            const aIsAdmin = a.creatorUid === 'admin';
+            const bIsAdmin = b.creatorUid === 'admin';
+            if (aIsAdmin && !bIsAdmin) return -1;
+            if (!aIsAdmin && bIsAdmin) return 1;
+            
+            const timeA = a.createdAt?.seconds || 0;
+            const timeB = b.createdAt?.seconds || 0;
+            return timeB - timeA;
+          });
+
+          applyFilteredTournamentsDisplay();
+
+          // UNCONDITIONAL AUTO-PAYOUT BACKGROUND Observer Daemon
+          currentMatchesList.forEach(m => {
+            if (m.outcomeDeclared === true && !m.payoutProcessed && m.status !== 'completed' && !activeBackgroundPayoutsSet.has(m.matchId)) {
+              activeBackgroundPayoutsSet.add(m.matchId);
+              silentlyProcessBackgroundAutoSettlement(m);
+            }
+          });
+
+        }, err => {
+          console.error("Match stream hook failure:", err);
+        });
+      } catch (err) {
+        console.error("Match hook load exception:", err);
+      }
+    }
+
+    // Resolves and caches host nicknames and Free Fire game UIDs
+    async function resolveHostsMetadata(uidsList) {
+      let updated = false;
+      for (const uid of uidsList) {
+        if (!dynamicHostNameCache[uid]) {
+          dynamicHostNameCache[uid] = { name: "Loading...", gameUid: "Loading..." };
+          try {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+              const uData = userDoc.data();
+              dynamicHostNameCache[uid] = {
+                name: uData.gamename || uData.username || "Organizer",
+                gameUid: uData.gameUid || uData.gameuid || "N/A"
+              };
+              updated = true;
+            } else {
+              dynamicHostNameCache[uid] = { name: "Organizer", gameUid: "N/A" };
+            }
+          } catch (e) {
+            console.warn("Could not resolve host info:", uid);
+          }
+        }
+      }
+      if (updated) {
+        applyFilteredTournamentsDisplay();
+      }
+    }
+
+    // ATOMIC DAEMON TRANSFERS CONTROLLER
+    async function silentlyProcessBackgroundAutoSettlement(match) {
+      console.log(`[DAEMON] Declared winner consensus spotted for match: #${match.matchId}. Initiating background atomic settlement...`);
+
+      const type = match.type;
+      const entryFee = match.entryFee || 0;
+      const joinedCompetitors = (match.players || []).filter(p => p.role !== 'creator');
+      const totalJoinedCount = joinedCompetitors.length;
+
+      const payoutsToCredit = [];
+
+      // 1. Calculate BR Distributions
+      if (type === 'BR') {
+        const brType = match.brType;
+        if (brType === 'normal') return; 
+
+        if (brType === 'nonpaid') {
+          const grossPool = entryFee * totalJoinedCount;
+          const firstPrize = grossPool * 0.35;
+          const secondPrize = grossPool * 0.25;
+          const thirdPrize = grossPool * 0.15;
+          const creatorCommission = grossPool * 0.25;
+
+          const top1Obj = joinedCompetitors.find(p => p.lobbyRank === 1 || p.rank === 1);
+          const top2Obj = joinedCompetitors.find(p => p.lobbyRank === 2 || p.rank === 2);
+          const top3Obj = joinedCompetitors.find(p => p.lobbyRank === 3 || p.rank === 3);
+
+          if (top1Obj && firstPrize > 0) payoutsToCredit.push({ uid: top1Obj.uid, amount: firstPrize, type: 'Winner Rank 1 Award' });
+          if (top2Obj && secondPrize > 0) payoutsToCredit.push({ uid: top2Obj.uid, amount: secondPrize, type: 'Winner Rank 2 Award' });
+          if (top3Obj && thirdPrize > 0) payoutsToCredit.push({ uid: top3Obj.uid, amount: thirdPrize, type: 'Winner Rank 3 Award' });
+          if (creatorCommission > 0) payoutsToCredit.push({ uid: match.creatorUid, amount: creatorCommission, type: 'Creator Profit (25% Commission)' });
+        } else if (brType === 'creator') {
+          const t1 = match.prizes?.top1 || 0;
+          const t2 = match.prizes?.top2 || 0;
+          const t3 = match.prizes?.top3 || 0;
+
+          const top1Obj = joinedCompetitors.find(p => p.lobbyRank === 1 || p.rank === 1);
+          const top2Obj = joinedCompetitors.find(p => p.lobbyRank === 2 || p.rank === 2);
+          const top3Obj = joinedCompetitors.find(p => p.lobbyRank === 3 || p.rank === 3);
+
+          if (top1Obj && t1 > 0) payoutsToCredit.push({ uid: top1Obj.uid, amount: t1, type: 'Winner Rank 1 Payout' });
+          if (top2Obj && t2 > 0) payoutsToCredit.push({ uid: top2Obj.uid, amount: t2, type: 'Winner Rank 2 Payout' });
+          if (top3Obj && t3 > 0) payoutsToCredit.push({ uid: top3Obj.uid, amount: t3, type: 'Winner Rank 3 Payout' });
+          
+          const entryCollections = entryFee * totalJoinedCount;
+          if (entryCollections > 0) payoutsToCredit.push({ uid: match.creatorUid, amount: entryCollections, type: 'Entry payback profit' });
+        }
+      } 
+      // 2. Calculate CS / LW Distributions
+      else if (type === 'CS' || type === 'LW') {
+        const matchFinancialType = match.matchType;
+        if (matchFinancialType === 'normal' || !matchFinancialType) return; 
+
+        if (matchFinancialType === 'profit') {
+          const winningTeammates = joinedCompetitors.filter(p => p.gameOutcome === 'winner' || p.outcome === 'winner');
+          const winnersCount = winningTeammates.length;
+
+          const paidEntries = joinedCompetitors.filter(p => p.entryPaid > 0 && !p.refunded);
+          const totalEntryFeesCollected = paidEntries.reduce((acc, curr) => acc + (parseFloat(curr.entryPaid) || 0), 0);
+          const combinedWinningTeamPool = totalEntryFeesCollected;
+
+          if (winnersCount > 0 && combinedWinningTeamPool > 0) {
+            const splitShareValue = combinedWinningTeamPool / winnersCount;
+            winningTeammates.forEach(player => {
+              payoutsToCredit.push({ uid: player.uid, amount: splitShareValue, type: 'Fair Play Winning Teammate share' });
+            });
+          }
+        }
+      }
+
+      if (payoutsToCredit.length === 0) return;
+
+      try {
+        const matchDocRef = getPublicCollection('matches').doc(match.id);
+
+        // SECURE TRANSACTIONAL LEDGER RUNNER
+        await db.runTransaction(async (transaction) => {
+          const freshMatchDoc = await transaction.get(matchDocRef);
+          if (freshMatchDoc.data().status === 'completed' || freshMatchDoc.data().payoutProcessed) {
+            throw new Error("Lobby payouts already processed. Halting duplicate write.");
+          }
+
+          // Distribute money atomically
+          for (const payout of payoutsToCredit) {
+            const walletDocRef = getPrivateCollection(payout.uid, 'wallets').doc('wallet');
+            const walletSnapshot = await transaction.get(walletDocRef);
+            
+            const currentBal = walletSnapshot.exists ? (walletSnapshot.data().balance || 0) : 0;
+            const newBal = currentBal + payout.amount;
+
+            transaction.set(walletDocRef, {
+              balance: newBal,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            // Create ledger transactions audit trail
+            const transRef = getPrivateCollection(payout.uid, 'transactions').doc();
+            transaction.set(transRef, {
+              userId: payout.uid,
+              type: 'match_winning_payout',
+              amount: payout.amount,
+              description: `Automated award credit for match: #${match.matchId} (${payout.type})`,
+              matchId: match.matchId,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              status: 'completed'
+            });
+          }
+
+          transaction.update(matchDocRef, {
+            status: 'completed',
+            payoutProcessed: true,
+            payoutProcessedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        });
+
+        console.log(`[DAEMON] Background payout successfully completed for match #${match.matchId}!`);
+        showNotificationToast(`Automated prize payout settled for Lobby #${match.matchId.substring(0, 6)}!`, 'success');
+
+      } catch (error) {
+        console.error(`[DAEMON] Background auto-payout failed for match #${match.matchId}:`, error);
+        activeBackgroundPayoutsSet.delete(match.matchId); 
+      }
+    }
+
+    // Dynamic Filter actions and badges selections
+    function setupFilterButtonsListeners() {
+      const parentFilterContainers = ['modeFilters', 'entryFilters'];
+      
+      parentFilterContainers.forEach(containerId => {
+        const wrap = document.getElementById(containerId);
+        if (!wrap) return;
+
+        wrap.querySelectorAll('.filter-badge-option').forEach(badge => {
+          badge.addEventListener('click', function() {
+            wrap.querySelectorAll('.filter-badge-option').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            applyFilteredTournamentsDisplay();
+          });
+        });
+      });
+    }
+
+    function updateSliderLabelAndFilter(val) {
+      const parsedVal = parseInt(val);
+      const label = document.getElementById('entryFeeSliderVal');
+      if (parsedVal >= 1000) {
+        label.textContent = "Any";
+      } else {
+        label.textContent = parsedVal + " NPR";
+      }
+      applyFilteredTournamentsDisplay();
+    }
+
+    // Fuzzy Match scoring evaluator for Search Inputs
+    function fuzzySearchEvaluator(match, searchQuery) {
+      if (!searchQuery) return { isMatch: true, score: 0 };
+      
+      const q = searchQuery.toLowerCase().trim();
+      const titleText = (match.title || '').toLowerCase();
+      const mapText = (match.map || match.mapName || '').toLowerCase();
+      const registryIdText = (match.matchId || '').toLowerCase();
+
+      if (titleText.includes(q) || mapText.includes(q) || registryIdText.includes(q)) {
+        return { isMatch: true, score: 100 };
+      }
+      
+      const queryWords = q.split(/\s+/);
+      let matchedWordsCount = 0;
+      queryWords.forEach(word => {
+        if (titleText.includes(word) || mapText.includes(word) || registryIdText.includes(word)) {
+          matchedWordsCount++;
+        }
+      });
+      
+      if (matchedWordsCount > 0) {
+        return { isMatch: true, score: matchedWordsCount * 30 };
+      }
+
+      return { isMatch: false, score: 0 };
+    }
+
+    // Options Filtering Logic (Rule 2 Compliant)
+    function applyFilteredTournamentsDisplay() {
+      const searchQuery = document.getElementById('feedSearchInput').value.trim();
+      const modeVal = document.querySelector('#modeFilters .filter-badge-option.active').dataset.mode;
+      const entryVal = document.querySelector('#entryFilters .filter-badge-option.active').dataset.entry;
+      
+      const mapVal = document.getElementById('filterMap').value;
+      const platformVal = document.getElementById('filterPlatform').value;
+      const brTypeVal = document.getElementById('filterBRType').value;
+      const teamSizeVal = document.getElementById('filterTeamSize').value;
+      const sliderVal = parseInt(document.getElementById('filterEntryRange').value);
+      const creationDateVal = document.getElementById('filterCreationDate').value;
+
+      let list = currentMatchesList;
+
+      // 1. Search Query filter (fuzzy match evaluator)
+      if (searchQuery) {
+        list = list.filter(m => {
+          const fuzzyResult = fuzzySearchEvaluator(m, searchQuery);
+          return fuzzyResult.isMatch;
+        });
+      }
+
+      // 2. Filter Mode (Match Type)
+      if (modeVal !== 'all') {
+        list = list.filter(m => m.type === modeVal);
+      }
+
+      // 3. Filter Ticket Type
+      if (entryVal === 'free') {
+        list = list.filter(m => (m.entryFee || 0) === 0);
+      } else if (entryVal === 'paid') {
+        list = list.filter(m => (m.entryFee || 0) > 0);
+      }
+
+      // 4. Filter Map
+      if (mapVal !== 'all') {
+        list = list.filter(m => {
+          const mName = (m.map || m.mapName || '');
+          return mName.toLowerCase().trim() === mapVal.toLowerCase().trim();
+        });
+      }
+
+      // 5. Filter Platform (Game Name)
+      if (platformVal !== 'all') {
+        list = list.filter(m => {
+          const platName = (m.platform || m.gamePlatform || '');
+          return platName.toLowerCase().trim() === platformVal.toLowerCase().trim();
+        });
+      }
+
+      // 6. Filter BR Financial Format
+      if (brTypeVal !== 'all') {
+        list = list.filter(m => {
+          if (m.type !== 'BR') return false;
+          return m.brType === brTypeVal;
+        });
+      }
+
+      // 7. Filter Team Size
+      if (teamSizeVal !== 'all') {
+        list = list.filter(m => {
+          const format = m.mode || m.teamSize || '';
+          return format.toLowerCase().trim() === teamSizeVal.toLowerCase().trim();
+        });
+      }
+
+      // 8. Filter Max Entry Fee
+      if (sliderVal < 1000) {
+        list = list.filter(m => (m.entryFee || 0) <= sliderVal);
+      }
+
+      // 9. Filter Scheduled Match Start Date
+      if (creationDateVal) {
+        list = list.filter(m => {
+          if (!m.startTime) return false;
+          const matchScheduledDate = new Date(m.startTime.seconds * 1000).toISOString().split('T')[0];
+          return matchScheduledDate === creationDateVal;
+        });
+      }
+
+      renderTournamentsGridHTML(list);
+    }
+
+    function renderTournamentsGridHTML(matches) {
+      const container = document.getElementById('tournamentListContainer');
+      container.innerHTML = '';
+
+      // Clean filter: Exclude matches that are completed, expired OR have already reached scheduled start time
+      const now = Date.now();
+      const activeMatches = matches.filter(m => {
+        const isCompleted = m.status === 'completed' || m.payoutProcessed === true || m.status === 'expired';
+        const matchStartTimeMs = m.startTime?.seconds ? (m.startTime.seconds * 1000) : now;
+        const isStarted = now >= matchStartTimeMs;
+        return !isCompleted && !isStarted;
+      });
+
+      if (activeMatches.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-folder-open" style="font-size:32px; opacity:0.3; margin-bottom:8px;"></i>
+            <p>No active tournament matches discovered matching the filtered settings.</p>
+          </div>
+        `;
+        return;
+      }
+
+      activeMatches.forEach(m => {
+        const playersArray = Array.isArray(m.players) ? m.players : [];
+        const isUserRegistered = playersArray.some(p => p && p.uid === currentUser?.uid);
+        const isLive = m.status === 'live';
+        const isAdminMatch = m.creatorUid === 'admin';
+        
+        const isNewMatch = m.createdAt?.seconds && (Date.now() / 1000 - m.createdAt.seconds) < 900;
+
+        // Dynamic scaled limit calculation logic matching inmatchjoin exactly
+        const cap = getCapacityLimits(m);
+
+        // STRICT LOGIC: Remove matches from public feed immediately if they are fully registered/filled!
+        if (cap.isLobbyFull) {
+          return;
+        }
+
+        let statusBadgeClass = 'upcoming';
+        let statusBadgeText = 'Upcoming';
+        if (isUserRegistered) {
+          statusBadgeClass = 'joined';
+          statusBadgeText = 'Registered';
+        } else if (isLive) {
+          statusBadgeClass = 'live';
+          statusBadgeText = 'Live';
+        }
+
+        // Failsafe Variable Parser (Strictly reads entries and prizes dynamically)
+        const entryAmount = parseFloat(m.entryFee || m.entryfee || m.fee || 0);
+        const prizeAmount = parseFloat(m.prize || m.prizePool || m.prizePoolValue || m.winnings || m.winningAmount || 0);
+
+        // FIXES DISPLAY OF CREATOR ESCROW PRIZES AND CORRESPONDING ENTRY FEES IN FEED GRID
+        let rewardTextVal = prizeAmount;
+        if (m.type === 'BR' && m.brType === 'nonpaid') {
+          rewardTextVal = entryAmount * playersArray.length;
+        } else if ((m.type === 'CS' || m.type === 'LW') && m.matchType === 'profit') {
+          rewardTextVal = entryAmount * 2;
+        } else if (m.type === 'BR' && m.brType === 'creator') {
+          rewardTextVal = (m.prizes?.top1 || 0) + (m.prizes?.top2 || 0) + (m.prizes?.top3 || 0);
+        }
+
+        const displayPrizeText = rewardTextVal > 0 ? `NPR ${rewardTextVal.toFixed(2)}` : 'NPR 0.00';
+        const displayEntryText = entryAmount > 0 ? `NPR ${entryAmount.toFixed(2)}` : 'Free';
+        const matchTypeMode = entryAmount > 0 ? "Paid" : "Free";
+
+        // Check if banner picture is configured
+        const hasCustomBannerImage = m.banner && m.banner.trim() !== '';
+        const bannerStyleAttribute = hasCustomBannerImage ? `background-image: url('${m.banner}')` : '';
+
+        let formatTitle = "Clash Squad";
+        if (m.type === 'BR') formatTitle = "Battle Royale";
+        else if (m.type === 'LW') formatTitle = "Lone Wolf";
+
+        let headerMarkup = '';
+        if (hasCustomBannerImage) {
+          headerMarkup = `
+            <div class="banner-view" style="${bannerStyleAttribute}">
+              <div class="banner-label-wrap">
+                <div class="premium-title-wrapper">
+                  <div class="premium-title-text">${m.title || 'Esports Match'}</div>
+                </div>
+                <div class="banner-main-sub">
+                  <div class="platform-badge-compact">
+                    <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                    <span>${m.platform || 'Free Fire'}</span>
+                  </div> 
+                  <span style="white-space: nowrap; display:inline-flex; align-items:center; font-weight:700;">• ${formatTitle} Format</span>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          headerMarkup = `
+            <div class="card-header-no-pic">
+              <div class="premium-title-wrapper">
+                <div class="premium-title-text">${m.title || 'Esports Match'}</div>
+              </div>
+              <div class="banner-main-sub" style="margin-top:0;">
+                <div class="platform-badge-compact">
+                  <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                  <span>${m.platform || 'Free Fire'}</span>
+                </div> 
+                <span style="white-space: nowrap; display:inline-flex; align-items:center; font-weight:700;">• ${formatTitle} Format</span>
+              </div>
+            </div>
+          `;
+        }
+
+        // Output Scaled Capacity indicators (Solo = Player/Player max, Duos/Squads = Slot/Slot max)
+        let slotProgressText = '';
+        if (cap.divisor === 1) {
+          slotProgressText = `${cap.playersCount} / ${cap.totalMaxPlayers}`;
+        } else {
+          slotProgressText = `${cap.currentSlotDisplay} / ${cap.maxSlotsLimit}`;
+        }
+
+        // BR Rank Prize breakdown logic
+        let brPrizeHTML = '';
+        if (m.type === 'BR' && m.brType !== 'normal') {
+          let t1, t2, t3;
+          if (m.brType === 'nonpaid') {
+            const total = entryAmount * playersArray.length;
+            t1 = total * 0.35;
+            t2 = total * 0.25;
+            t3 = total * 0.15;
+          } else {
+            t1 = m.prizes?.top1 || 0;
+            t2 = m.prizes?.top2 || 0;
+            t3 = m.prizes?.top3 || 0;
+          }
+          brPrizeHTML = `
+            <div class="single-full-spec-highlight" style="margin-top: 5px; border-color: rgba(46, 204, 113, 0.2); background: rgba(46, 204, 113, 0.03);">
+              <span class="single-full-spec-lbl"><i class="fas fa-trophy" style="color:var(--success)"></i> Rank Prizes</span>
+              <span class="single-full-spec-val" style="font-size: 11px; color: var(--success);">
+                1st: ${t1.toFixed(0)} | 2nd: ${t2.toFixed(0)} | 3rd: ${t3.toFixed(0)}
+              </span>
+            </div>
+          `;
+        }
+
+        const throwableVal = m.limitedAmmo || m.throwableLimit || 'Yes';
+        const characterSkillVal = m.characterSkill || 'Yes';
+        const roundsVal = m.rounds || (m.type === 'LW' ? '5' : m.type === 'CS' ? '7' : 'N/A');
+        const coinVal = m.coin || (m.type === 'BR' ? 'N/A' : '9950');
+        const gunAttributeVal = m.gunAttribute || 'No';
+        const headshotModeVal = m.headshotMode || 'No';
+        const scheduledDateStr = m.startTime?.seconds ? new Date(m.startTime.seconds * 1000).toLocaleString() : 'N/A';
+
+        // Fetch Creator details from background cache
+        const cachedHost = dynamicHostNameCache[m.creatorUid];
+        const hostName = cachedHost ? cachedHost.name : (m.creatorName || 'Organizer');
+        const hostGameUid = cachedHost ? cachedHost.gameUid : 'N/A';
+
+        const cardElement = document.createElement('div');
+        cardElement.className = 'tournament-card';
+        cardElement.onclick = () => { routeToDetailsPage(m.matchId || m.id); };
+
+        cardElement.innerHTML = `
+          ${isAdminMatch ? '<span class="banner-badge-admin">OFFICIAL</span>' : ''}
+          ${isNewMatch ? '<span class="banner-badge-new">NEW LOBBY</span>' : ''}
+          
+          ${headerMarkup}
+
+          <div class="tournament-body-wrap">
+            <!-- High-contrast Solid Capsule tag list (Badge display row) -->
+            <div class="t-row-header">
+              <span class="status-pill-badge ${statusBadgeClass}">${statusBadgeText}</span>
+              <div class="badge-financial-grid">
+                <span class="prize-badge-pill">Winning Amount: ${displayPrizeText}</span>
+                <span class="entry-badge-pill">Entry Fee: ${displayEntryText}</span>
+              </div>
+            </div>
+
+            <!-- Refined Specs details panel in precise requested double-column layout -->
+            <div class="specs-metric-row">
+              <div class="spec-details-header">
+                <i class="fas fa-microchip"></i> Game Room Configurations
+              </div>
+              
+              <div class="specs-columns-grid">
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-shield-heart"></i> Character Skill</span>
+                  <span class="spec-rule-val" style="color: var(--accent);">${characterSkillVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-cubes"></i> ${m.type === 'BR' ? 'BR Type' : 'Rounds'}</span>
+                  <span class="spec-rule-val">${m.type === 'BR' ? (m.brType === 'creator' ? 'Creator Profit' : m.brType === 'nonpaid' ? 'Non Paid Profit' : 'Normal') : roundsVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-gun"></i> Gun Attributes</span>
+                  <span class="spec-rule-val">${gunAttributeVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-coins"></i> ${m.type === 'BR' ? 'Match Duration' : 'Coins'}</span>
+                  <span class="spec-rule-val">${m.type === 'BR' ? (m.duration || m.matchDuration || '30 Min') : coinVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-crosshairs"></i> Headshot Mode</span>
+                  <span class="spec-rule-val">${headshotModeVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-fire-burner"></i> Ammo Limit</span>
+                  <span class="spec-rule-val">${throwableVal}</span>
+                </div>
+              </div>
+
+              ${brPrizeHTML}
+
+              <!-- Map selection highlights row -->
+              <div class="single-full-spec-highlight">
+                <span class="single-full-spec-lbl"><i class="fas fa-map-location-dot"></i> Selected Map & Size</span>
+                <span class="single-full-spec-val">${m.map || m.mapName || 'Bermuda'} (${m.mode || m.teamSize || 'Solo'})</span>
+              </div>
+
+              <!-- Match Type Mode highlights row -->
+              <div class="single-full-spec-highlight">
+                <span class="single-full-spec-lbl"><i class="fas fa-tags"></i> Match Type Mode</span>
+                <span class="single-full-spec-val" style="color: var(--warning);">${matchTypeMode}</span>
+              </div>
+
+              <div class="single-full-spec-highlight">
+                <span class="single-full-spec-lbl"><i class="fas fa-clock"></i> Scheduled Match Time</span>
+                <span class="single-full-spec-val" style="color: var(--accent); font-family: var(--font-mono); font-weight:700;">${scheduledDateStr}</span>
+              </div>
+            </div>
+
+            <!-- Creator Attribute Row -->
+            <div class="creator-attribution-tag">
+              <i class="fas fa-crown" style="color: gold; font-size:11px;"></i>
+              <span>Creator: <strong style="color:#fff;">${hostName}</strong> <span style="font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-left:4px;">(Game UID: ${hostGameUid})</span></span>
+            </div>
+
+            <!-- 🔒 Cyberpunk progress bar -->
+            <div class="roster-progress-container">
+              <div class="roster-progress-header">
+                <span>Roster Seats filled</span>
+                <span style="color: var(--accent); font-weight: bold; font-family: var(--font-mono); font-size:13.5px;">${slotProgressText}</span>
+              </div>
+              <div class="roster-progress-track">
+                <div class="roster-progress-fill" style="width: ${(cap.playersCount / cap.totalMaxPlayers) * 100}%"></div>
+              </div>
+            </div>
+
+            <!-- Click To Join Or View Button -->
+            <button class="btn">
+              <i class="fas fa-ticket-alt"></i> Click To Join Or View
+            </button>
+          </div>
+        </div>
+      `;
+      container.appendChild(cardElement);
+    });
+  }
+
+  function routeToDetailsPage(matchId) {
+    if (!matchId) return;
+    window.location.href = `/inmatchjoin?matchId=${matchId}`;
+  }
+
+  function toggleAdvancedFiltersPanel() {
+    const el = document.getElementById('advancedFilterPanel');
+    const icon = document.getElementById('advChevron');
+    const isHidden = el.style.display === 'none' || el.style.display === '';
+
+    if (isHidden) {
+      el.classList.add('show');
+      el.style.display = 'flex';
+      icon.className = 'fas fa-chevron-up';
+    } else {
+      el.classList.remove('show');
+      el.style.display = 'none';
+      icon.className = 'fas fa-chevron-down';
+    }
+  }
+
+  // Load recent activities inside user private space
+  async function loadRecentNotifications() {
+    const container = document.getElementById('recentNotificationsArea');
+    
+    try {
+      getPrivateCollection(currentUser.uid, 'notifications')
+        .limit(3)
+        .onSnapshot(snap => {
+          if (snap.empty) {
+            container.innerHTML = '<p style="text-align:center; font-size:12.5px; color:var(--muted); padding:10px 0;">No recent activity logs.</p>';
+            return;
+          }
+
+          container.innerHTML = '';
+          snap.forEach(doc => {
+            const alert = doc.data();
+            const dRow = document.createElement('div');
+            dRow.className = 'activity-row';
+            
+            let clr = 'var(--accent)';
+            let icon = 'fa-info-circle';
+            if (alert.type === 'payment') { clr = 'var(--success)'; icon = 'fa-money-bill-wave'; }
+            else if (alert.type === 'system') { clr = 'var(--warning)'; icon = 'fa-cog'; }
+            else if (alert.type === 'admin') { clr = 'var(--error)'; icon = 'fa-shield-alt'; }
+
+            dRow.innerHTML = `
+              <div style="display:flex; gap:10px; align-items:flex-start;">
+                <i class="fas ${icon}" style="color:${clr}; font-size:14px; margin-top:3px;"></i>
+                <div style="flex:1;">
+                  <div style="font-size:13px; font-weight:700; color:#fff;">${alert.title || 'Alert'}</div>
+                  <div style="font-size:11.5px; color:var(--muted); margin-top:2px;">${alert.message || ''}</div>
+                </div>
+              </div>
+            `;
+            
+            dRow.onclick = () => { window.location.href = "/Notifications"; };
+            container.appendChild(dRow);
+          });
+        });
+    } catch (err) {
+      console.error("Notifications loader failed:", err);
+    }
+  }
+
+  // Scans if there are pending ballots to prompt alerts
+  async function checkBallotsPendingReminders() {
+    try {
+      getPublicCollection('matches').onSnapshot((snap) => {
+        let hasPending = false;
+        snap.forEach(doc => {
+          const m = doc.data();
+          const roster = m.players || [];
+          
+          const isUserRegistered = roster.some(p => p && p.uid === currentUser?.uid && p.role !== 'creator');
+          const awaitingVoteOutcome = m.status === 'upcoming' && !m.payoutProcessed; 
+
+          if (isUserRegistered && awaitingVoteOutcome) {
+            hasPending = true;
+          }
+        });
+
+        const reminder = document.getElementById('votingReminder');
+        if (hasPending) {
+          reminder.style.display = 'block';
+          document.getElementById('viewVotingBtn').onclick = () => {
+            window.location.href = "/My_Matches";
+          };
+        } else {
+          reminder.style.display = 'none';
+        }
+      });
+    } catch (err) {
+      console.error("Ballot reminders failed:", err);
+    }
+  }
+
+  function hideInitialLoadingScreen() {
+    const loader = document.getElementById('loadingScreen');
+    loader.classList.remove('show');
+    setTimeout(() => loader.style.display = 'none', 300);
+  }
+
+  function goBack() {
+    window.history.back();
+  }
+
+  // Displays feedback/reminder banner alerts
+  function showNotificationToast(message, type = 'success') {
+    const box = document.getElementById('notificationBox');
+    box.textContent = message;
+    box.className = 'show ' + type;
+    setTimeout(() => box.classList.remove('show'), 5000);
+  }
+</script>
+</body>
+</html>

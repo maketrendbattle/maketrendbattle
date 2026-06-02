@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - Match Settlement</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.35);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Matches Premium Bubble Look */
+      --header-height: 70px;
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --br-gradient: linear-gradient(135deg, #ff7b00, #ff5500);
+      --cs-gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      --lw-gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 95px;
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 20%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 28px;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 234, 255, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(0, 234, 255, 0.15);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .section-header {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.06);
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Settlement Summary Info List */
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 14.5px;
+      gap: 8px;
+    }
+
+    .info-label {
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      font-weight: 700;
+      color: #fff;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    /* Action Buttons */
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg);
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 5px 20px rgba(0, 234, 255, 0.25);
+      width: 100%;
+      font-family: var(--font-primary);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--accent-glow);
+    }
+
+    .btn:disabled {
+      background: rgba(255, 255, 255, 0.06) !important;
+      color: var(--muted) !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    /* Payout breakdowns */
+    .payout-breakdown-card {
+      background: var(--card-light);
+      border-left: 4px solid var(--success);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .math-formula {
+      font-family: monospace;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      margin: 10px 0;
+      font-size: 13px;
+      border: 1.5px solid rgba(255, 255, 255, 0.05);
+      word-break: break-all;
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-upcoming { background: rgba(52, 152, 219, 0.15); color: #3498db; border: 1px solid #3498db; }
+    .status-completed { background: rgba(46, 204, 113, 0.15); color: var(--success); border: 1px solid var(--success); }
+    .status-expired { background: rgba(231, 76, 60, 0.15); color: var(--error); border: 1px solid var(--error); }
+    .status-pending { background: rgba(243, 156, 18, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+
+    .loader-mini {
+      border: 3px solid rgba(0, 234, 255, 0.1);
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    #loadingScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10010;
+    }
+
+    #loadingScreen.show {
+      display: flex;
+    }
+
+    .loader {
+      border: 4px solid var(--card);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #notificationBox.show {
+      top: 85px;
+    }
+
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+    #notificationBox.info { background: rgba(19, 24, 43, 0.95); border: 1px solid var(--accent); }
+
+    .recipient-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .recipient-row {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .recipient-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .recipient-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .recipient-sub {
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .payout-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--success);
+      flex-shrink: 0;
+    }
+
+    /* Success interface overlay */
+    .success-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 10, 19, 0.99);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10020;
+      padding: 24px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .success-animation.show {
+      display: flex;
+    }
+
+    .success-icon-wrap {
+      font-size: 80px;
+      color: var(--success);
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+    }
+
+    /* Celebratory Cards styling */
+    .winner-congrats-wrapper {
+      width: 100%;
+      max-width: 580px;
+      background: linear-gradient(180deg, var(--card) 0%, rgba(15, 20, 38, 0.8) 100%);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 30px var(--accent-glow);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .winner-badge-showcase {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .winner-congrats-card {
+      background: var(--card-light);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 20px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 200px;
+      max-width: 100%;
+    }
+
+    .winner-congrats-card i {
+      font-size: 24px;
+      color: gold;
+      flex-shrink: 0;
+    }
+
+    .winner-congrats-card div {
+      min-width: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    /* Fixed Bottom Navigation (HORIZONTAL ROW STYLE FIX) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; /* FORCE horizontal alignment */
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-item i {
+      font-size: 18px;
+    }
+    
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+    }
+
+    /* ⚡ TOP-FIXED NEON ACTION LOADING BAR */
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <div id="notificationBox"></div>
+
+  <!-- Loading Screen overlay -->
+  <div id="loadingScreen">
+    <div class="loader"></div>
+    <p style="color: var(--accent); font-weight: 600; margin-top: 15px;">Executing batch ledger distribution transactions...</p>
+  </div>
+
+  <!-- Success Interface Layout with Dynamic Congratulations card -->
+  <div id="successAnimation" class="success-animation">
+    <div class="success-icon-wrap"><i class="fas fa-trophy"></i></div>
+    
+    <div class="winner-congrats-wrapper">
+      <h2 style="color: var(--accent); font-family: var(--font-display); font-size: 32px; font-weight: 800; letter-spacing: 1px;">
+        CONGRATULATIONS CHAMPIONS!
+      </h2>
+      <p style="color: var(--muted); font-size: 14px; margin-top: 6px;">
+        All winner wallets have been dynamically credited. Batch ledger transaction logs updated with strict verification tokens.
+      </p>
+
+      <div class="winner-badge-showcase" id="congratsWinnersList">
+        <!-- Programmatically filled with victorious competitors -->
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 380px;">
+      <button class="btn" onclick="redirectToIndex()"><i class="fas fa-home"></i> Go to Dashboard</button>
+      <button class="btn btn-secondary" onclick="goBack()"><i class="fas fa-arrow-left"></i> Previous Page</button>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    <!-- Main Left Column -->
+    <div class="main-column">
+      
+      <!-- Auto Settlement Status Tracker Card -->
+      <div class="card" id="autoSettlementTrackerCard" style="border-color: var(--accent); background: rgba(0, 234, 255, 0.02); display: none;">
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+          <i class="fas fa-robot fa-spin" style="color: var(--accent); font-size: 24px;" id="autoSettlementIcon"></i>
+          <div style="flex: 1; min-width: 200px;">
+            <strong style="color: var(--accent); font-size: 16px;" id="autoSettlementTitle">Auto-Payout Initiated</strong>
+            <p style="margin: 3px 0 0; font-size: 13px; color: var(--muted);" id="autoSettlementStatusText">Checking registry credentials...</p>
+          </div>
+          <div class="loader-mini" id="autoSettlementLoaderMini" style="display: block;"></div>
+        </div>
+      </div>
+
+      <!-- General Match Overview Card -->
+      <div class="card">
+        <h3 class="section-header"><i class="fas fa-trophy"></i> Concluded Match Details</h3>
+        
+        <div id="matchSummaryEmpty" class="empty-state">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Handshaking registry match parameters...</p>
+        </div>
+
+        <div id="matchSummaryDetails" style="display: none;">
+          <div class="info-list">
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-hashtag"></i> Match Registry ID</span>
+              <span class="info-value" id="dispMatchId" style="color: var(--accent);">N/A</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-crown"></i> Match Title Name</span>
+              <span class="info-value" id="dispMatchTitle">N/A</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-gamepad"></i> Game Mode Style</span>
+              <span class="info-value" id="dispMatchType">N/A</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-info-circle"></i> Match Status</span>
+              <span class="status-badge" id="dispMatchStatus">N/A</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-ticket-alt"></i> Entry Registration Fee</span>
+              <span class="info-value" id="dispEntryFee">NPR 0.00</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label"><i class="fas fa-users"></i> Total Joined Contenders</span>
+              <span class="info-value" id="dispJoinedCount">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settlement Breakdown Card -->
+      <div class="card" id="distributionBreakdownCard" style="display: none;">
+        <h3 class="section-header"><i class="fas fa-calculator"></i> Prize Pool Calculations</h3>
+        
+        <!-- Interactive Math Visualizer Card -->
+        <div class="payout-breakdown-card" id="mathBreakdownVisualizer">
+          <!-- Populated from JS depending on formulas -->
+        </div>
+
+        <!-- Calculated Recipients block -->
+        <h4 style="font-size: 15px; color: var(--accent); margin-bottom: 12px;"><i class="fas fa-wallet"></i> Direct Wallet Transfers Pending</h4>
+        <div class="recipient-list" id="calculatedRecipients">
+          <!-- Populated in JS dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Sidebar Column Info -->
+    <div class="side-column">
+      <div class="card" style="position: sticky; top: 90px;">
+        <h3 class="section-header"><i class="fas fa-shield-alt"></i> Security Handshakes</h3>
+        <p style="color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 15px;">
+          This settlement utility runs under Make Trend security frameworks:
+        </p>
+        <ul style="list-style: none; padding: 0; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px;">
+          <li><i class="fas fa-check-circle" style="color: var(--success); margin-right: 8px;"></i> Status locked to prevent duplicate double-spend payout trials.</li>
+          <li><i class="fas fa-check-circle" style="color: var(--success); margin-right: 8px;"></i> Atomic database ledger transaction processes.</li>
+          <li><i class="fas fa-check-circle" style="color: var(--success); margin-right: 8px;"></i> Platform margins are dynamically deducted and deposited.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Row Style Fix -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/inmatchjoin" class="nav-item">
+      <i class="fas fa-gamepad"></i>
+      <span>Games</span>
+    </a>
+    <a href="/My_Matches" class="nav-item">
+      <i class="fas fa-trophy"></i>
+      <span>Joined Games</span>
+    </a>
+    <a href="/Profile" class="nav-item">
+      <i class="fas fa-user-cog"></i>
+      <span>Control</span>
+    </a>
+  </nav>
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Fallback static configuration if env is undefined
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let matchIdParam = null;
+    let loadedMatchData = null;
+    let loadedMatchDocId = null;
+    let calculatedPayoutsList = []; 
+    let autoTransferAttempted = false;
+
+    // Memory Cache for User Profiles resolution
+    const dynamicProfileCache = {};
+
+    // Sandbox Strict Environment Variables Check (RULE 1 & 3 Compliance)
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+      const urlParams = new URLSearchParams(window.location.search);
+      matchIdParam = urlParams.get('matchId') || urlParams.get('id');
+
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+
+        // Rule 3: Auth Before Queries
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await auth.signInWithCustomToken(__initial_auth_token);
+        } else {
+          await auth.signInAnonymously();
+        }
+      } catch (err) {
+        console.error("Firebase setup issue: ", err);
+        showNotification("Failed to configure database handshake.", "error");
+        return;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          if (matchIdParam) {
+            await retrieveConcludedMatchDetails(matchIdParam);
+          } else {
+            showNotification("No concluded match ID provided.", "error");
+            document.getElementById('matchSummaryEmpty').innerHTML = `
+              <i class="fas fa-exclamation-triangle" style="font-size: 16px; color: var(--error);"></i>
+              <p style="margin-top: 10px;">Lobby parameters missing. Open this page directly from active match lists.</p>
+            `;
+          }
+        } else {
+          window.location.href = "/LoginAuth";
+        }
+      });
+    });
+
+    // Resolves and caches joined competitor metadata (Gamer nicknames & avatars)
+    async function resolveProfiles(uidsList) {
+      let updated = false;
+      for (const uid of uidsList) {
+        if (!dynamicProfileCache[uid]) {
+          dynamicProfileCache[uid] = { loading: true };
+          try {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+              const userData = userDoc.data();
+              dynamicProfileCache[uid] = {
+                name: userData.gamename || userData.username || 'Competitor',
+                username: userData.username ? `@${userData.username.toLowerCase()}` : '@gamer',
+                gameUid: userData.gameUid || userData.gameuid || 'N/A'
+              };
+              updated = true;
+            } else {
+              dynamicProfileCache[uid] = {
+                name: 'Competitor',
+                username: '@gamer',
+                gameUid: 'N/A'
+              };
+            }
+          } catch (err) {
+            console.warn("Failed resolving profile for uid:", uid);
+          }
+        }
+      }
+      if (updated) {
+        // Redraw list when profile data returns
+        renderRecipientsListUI();
+        buildCongratsWinnersShowcase();
+      }
+    }
+
+    // Retrieve match details from database with Real-time synchronization
+    async function retrieveConcludedMatchDetails(targetMatchId) {
+      try {
+        // Rule 2 Compliant: Sync the match state inside real-time listener (avoids complex multi-index requirements)
+        getPublicCollection('matches').onSnapshot(async (snapshot) => {
+          let matchDoc = null;
+          snapshot.forEach(doc => {
+            if (doc.data().matchId === targetMatchId) {
+              matchDoc = doc;
+            }
+          });
+
+          if (matchDoc) {
+            loadedMatchData = matchDoc.data();
+            loadedMatchDocId = matchDoc.id;
+
+            // Gather profiles for all involved users
+            const pList = loadedMatchData.players || [];
+            const uidsToResolve = new Set(pList.map(p => p.uid).filter(Boolean));
+            if (loadedMatchData.creatorUid) uidsToResolve.add(loadedMatchData.creatorUid);
+            await resolveProfiles(Array.from(uidsToResolve));
+
+            // Render summary interface
+            renderMatchSummaryUI();
+            
+            // Execute calculations distributions logic
+            calculatePrizeEscrowDistributions();
+
+            // Coordinate automatic transfer trigger logic checks
+            evaluateAutoTransferEligibility();
+            document.getElementById('loadingOverlay').classList.add('hidden');
+          } else {
+            showNotification("Specified match could not be found.", "error");
+            document.getElementById('matchSummaryEmpty').innerHTML = `
+              <i class="fas fa-question-circle" style="font-size: 32px; color: var(--warning);"></i>
+              <p style="margin-top: 10px;">Lobby ID #${targetMatchId} not found in the tournament registry database.</p>
+            `;
+            document.getElementById('loadingOverlay').classList.add('hidden');
+          }
+        }, (err) => {
+          console.error("Matches observer error:", err);
+          showNotification("Failed to synchronize tournament ledger metrics.", "error");
+          document.getElementById('loadingOverlay').classList.add('hidden');
+        });
+      } catch (err) {
+        console.error("Lobby retrieve failed: ", err);
+        showNotification("Security failed reading match record.", "error");
+        document.getElementById('loadingOverlay').classList.add('hidden');
+      }
+    }
+
+    function renderMatchSummaryUI() {
+      document.getElementById('matchSummaryEmpty').style.display = 'none';
+      document.getElementById('matchSummaryDetails').style.display = 'block';
+
+      document.getElementById('dispMatchId').textContent = `#${loadedMatchData.matchId}`;
+      document.getElementById('dispMatchTitle').textContent = loadedMatchData.title;
+      document.getElementById('dispMatchType').textContent = `${loadedMatchData.type} ${loadedMatchData.brType ? `(${loadedMatchData.brType})` : ''}`;
+      
+      const badge = document.getElementById('dispMatchStatus');
+      const isWinnerResolvedVal = isWinnerResolved(loadedMatchData);
+      
+      if (loadedMatchData.status === 'completed' || loadedMatchData.payoutProcessed) {
+        badge.textContent = "Completed & Finalized";
+        badge.className = "status-badge status-completed";
+      } else if (loadedMatchData.status === 'expired') {
+        badge.textContent = "Expired (Refunded)";
+        badge.className = "status-badge status-expired";
+      } else if (!isWinnerResolvedVal) {
+        badge.textContent = "Winner Is Being Verified";
+        badge.className = "status-badge status-pending";
+      } else {
+        badge.textContent = "Awaiting Payout Execution";
+        badge.className = "status-badge status-pending";
+      }
+
+      document.getElementById('dispEntryFee').textContent = `NPR ${(loadedMatchData.entryFee || 0).toFixed(2)}`;
+      document.getElementById('dispJoinedCount').textContent = (loadedMatchData.players || []).length;
+    }
+
+    // Finds competitors based on their rank
+    function findRankedCompetitor(competitors, rank) {
+      return competitors.find(p => p.lobbyRank === rank || p.rank === rank);
+    }
+
+    // STRICT OUTCOME RESOLUTION VERIFIER GATES
+    function isWinnerResolved(match) {
+      const type = match.type;
+      const players = match.players || [];
+      const competitors = players.filter(p => p.role !== 'creator');
+      
+      if (type === 'BR') {
+        if (match.brType === 'normal') return true; 
+        
+        const hasRank1 = players.some(p => p.lobbyRank === 1 || p.rank === 1);
+        const hasRank2 = players.some(p => p.lobbyRank === 2 || p.rank === 2);
+        const hasRank3 = players.some(p => p.lobbyRank === 3 || p.rank === 3);
+        
+        const competitorsCount = competitors.length;
+        if (competitorsCount >= 3) {
+          return hasRank1 && hasRank2 && hasRank3;
+        } else if (competitorsCount === 2) {
+          return hasRank1 && hasRank2;
+        } else if (competitorsCount === 1) {
+          return hasRank1;
+        }
+        return false;
+      } else if (type === 'CS' || type === 'LW') {
+        if (match.matchType === 'normal' || !match.matchType) return true; 
+        return players.some(p => p.gameOutcome === 'winner' || p.outcome === 'winner');
+      }
+      return false;
+    }
+
+    function renderRecipientsListUI() {
+      const container = document.getElementById('calculatedRecipients');
+      container.innerHTML = '';
+
+      const isWinnerResolvedVal = isWinnerResolved(loadedMatchData);
+      if (!isWinnerResolvedVal) {
+        container.innerHTML = `<p style="color: var(--warning); text-align: center; font-size: 13.5px; font-weight: 700; padding: 15px 0;"><i class="fas fa-exclamation-triangle"></i> Payout details hidden. Winner is being verified.</p>`;
+        return;
+      }
+
+      if (calculatedPayoutsList.length === 0) {
+        container.innerHTML = `<p style="color: var(--muted); text-align: center; font-size: 13px; padding: 10px 0;">No pending payments determined for this match.</p>`;
+        return;
+      }
+
+      calculatedPayoutsList.forEach(payout => {
+        const cached = dynamicProfileCache[payout.uid] || { name: payout.name, username: '@gamer' };
+        container.innerHTML += `
+          <div class="recipient-row">
+            <div class="recipient-meta">
+              <span class="recipient-title">${cached.name} <span style="font-size:11.5px; color:var(--muted); font-family:var(--font-mono); font-weight:normal;">(${cached.username})</span></span>
+              <span class="recipient-sub">${payout.type}</span>
+            </div>
+            <span class="payout-val">+NPR ${payout.amount.toFixed(2)}</span>
+          </div>
+        `;
+      });
+    }
+
+    // Calculates distributions based on game mode parameters
+    function calculatePrizeEscrowDistributions() {
+      const type = loadedMatchData.type;
+      const entryFee = loadedMatchData.entryFee || 0;
+      const joinedCompetitors = (loadedMatchData.players || []).filter(p => p.role !== 'creator');
+      const totalJoinedCount = joinedCompetitors.length;
+
+      calculatedPayoutsList = [];
+
+      const mathVisualizer = document.getElementById('mathBreakdownVisualizer');
+      const recipientsContainer = document.getElementById('calculatedRecipients');
+
+      document.getElementById('distributionBreakdownCard').style.display = 'block';
+
+      if (loadedMatchData.status === 'completed' || loadedMatchData.payoutProcessed) {
+        mathVisualizer.innerHTML = `
+          <div style="text-align: center; color: var(--success); font-weight: 700;">
+            <i class="fas fa-check-double" style="font-size: 24px; margin-bottom: 8px;"></i>
+            <p>Wallet transactions completed successfully and locked.</p>
+          </div>
+        `;
+        recipientsContainer.innerHTML = `<p style="color: var(--muted); text-align: center; font-size: 13px;">Transactions completed. Audit logs posted securely in ledger.</p>`;
+        return;
+      }
+
+      const isWinnerResolvedVal = isWinnerResolved(loadedMatchData);
+      if (!isWinnerResolvedVal) {
+        mathVisualizer.innerHTML = `
+          <div style="text-align: center; color: var(--warning); padding: 10px 0;">
+            <i class="fas fa-shield-halved" style="font-size: 28px; margin-bottom: 8px;"></i>
+            <p style="font-size: 14px; font-weight: 700;">Winner Is Being Verified</p>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5;">Our automatic consensus systems are validating results. Payout calculations will unlock immediately after.</p>
+          </div>
+        `;
+        renderRecipientsListUI();
+        return;
+      }
+
+      if (type === 'BR') {
+        const brType = loadedMatchData.brType;
+
+        if (brType === 'normal') {
+          mathVisualizer.innerHTML = `
+            <p><strong>BR Free Match Settlement Mode:</strong></p>
+            <div class="math-formula">Gross Pool = NPR 0.00</div>
+            <p style="font-size: 12px;">This match was created under Casual Normal rules. No entry fees or prize splits are processed.</p>
+          `;
+          recipientsContainer.innerHTML = `<p style="color: var(--muted); font-size: 13px; text-align: center;">No wallet adjustments required.</p>`;
+          return;
+        }
+
+        if (brType === 'nonpaid') {
+          const paidEntries = joinedCompetitors.filter(p => p.entryPaid > 0 && !p.refunded);
+          const grossPool = paidEntries.reduce((acc, curr) => acc + (parseFloat(curr.entryPaid) || 0), 0);
+          
+          const firstPrize = grossPool * 0.35;
+          const secondPrize = grossPool * 0.25;
+          const thirdPrize = grossPool * 0.15;
+          const creatorCommission = grossPool * 0.25;
+
+          const top1Obj = findRankedCompetitor(joinedCompetitors, 1);
+          const top2Obj = findRankedCompetitor(joinedCompetitors, 2);
+          const top3Obj = findRankedCompetitor(joinedCompetitors, 3);
+
+          if (top1Obj && firstPrize > 0) {
+            calculatedPayoutsList.push({ uid: top1Obj.uid, name: top1Obj.gamename || top1Obj.username, amount: firstPrize, type: 'Winner Rank 1 Award (35% Pool Share)', winnerFlag: true, text: `Esports Prize Credit: Ranked 1st Place (Winner) in Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+          if (top2Obj && secondPrize > 0) {
+            calculatedPayoutsList.push({ uid: top2Obj.uid, name: top2Obj.gamename || top2Obj.username, amount: secondPrize, type: 'Winner Rank 2 Award (25% Pool Share)', winnerFlag: true, text: `Esports Prize Credit: Ranked 2nd Place in Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+          if (top3Obj && thirdPrize > 0) {
+            calculatedPayoutsList.push({ uid: top3Obj.uid, name: top3Obj.gamename || top3Obj.username, amount: thirdPrize, type: 'Winner Rank 3 Award (15% Pool Share)', winnerFlag: true, text: `Esports Prize Credit: Ranked 3rd Place in Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+          
+          if (creatorCommission > 0) {
+            calculatedPayoutsList.push({ uid: loadedMatchData.creatorUid, name: loadedMatchData.creatorName || 'Creator/Organizer', amount: creatorCommission, type: 'Organizer Commission Fee (25% Host Margin)', winnerFlag: false, text: `Host Commission Payout: Received 25% organizer fee from Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+
+          mathVisualizer.innerHTML = `
+            <p><strong>BR NonPaid Auto-Pool Formula:</strong></p>
+            <div class="math-formula">Pool = Sum of paid entries (${paidEntries.length}) = NPR ${grossPool.toFixed(2)}</div>
+            <p style="font-size: 12px; line-height: 1.5;">Top 3 contenders split 75% of actual registrations collected. Host receives 25% directly as organizing profit.</p>
+          `;
+
+        } else if (brType === 'creator') {
+          const t1 = parseFloat(loadedMatchData.prizes?.top1) || 0;
+          const t2 = parseFloat(loadedMatchData.prizes?.top2) || 0;
+          const t3 = parseFloat(loadedMatchData.prizes?.top3) || 0;
+
+          const top1Obj = findRankedCompetitor(joinedCompetitors, 1);
+          const top2Obj = findRankedCompetitor(joinedCompetitors, 2);
+          const top3Obj = findRankedCompetitor(joinedCompetitors, 3);
+
+          if (top1Obj && t1 > 0) {
+            calculatedPayoutsList.push({ uid: top1Obj.uid, name: top1Obj.gamename || top1Obj.username, amount: t1, type: 'Sponsor Rank 1 Escrow Award', winnerFlag: true, text: `Sponsor Prize Credit: Won 1st Place in Sponsored Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+          if (top2Obj && t2 > 0) {
+            calculatedPayoutsList.push({ uid: top2Obj.uid, name: top2Obj.gamename || top2Obj.username, amount: t2, type: 'Sponsor Rank 2 Escrow Award', winnerFlag: true, text: `Sponsor Prize Credit: Won 2nd Place in Sponsored Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+          if (top3Obj && t3 > 0) {
+            calculatedPayoutsList.push({ uid: top3Obj.uid, name: top3Obj.gamename || top3Obj.username, amount: t3, type: 'Sponsor Rank 3 Escrow Award', winnerFlag: true, text: `Sponsor Prize Credit: Won 3rd Place in Sponsored Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+
+          const paidEntries = joinedCompetitors.filter(p => p.entryPaid > 0 && !p.refunded);
+          const entryCollections = paidEntries.reduce((acc, curr) => acc + (parseFloat(curr.entryPaid) || 0), 0);
+          
+          if (entryCollections > 0) {
+            calculatedPayoutsList.push({ uid: loadedMatchData.creatorUid, name: loadedMatchData.creatorName || 'Creator/Organizer', amount: entryCollections, type: 'Entry ticket collection payback', winnerFlag: false, text: `Host Payback Credit: Reclaimed 100% of player entry fees from Sponsored Battle Royale Match #${loadedMatchData.matchId}` });
+          }
+
+          mathVisualizer.innerHTML = `
+            <p><strong>BR Creator-Sponsor Escrow settlement:</strong></p>
+            <div class="math-formula">Entry collections returned = NPR ${entryFee.toFixed(2)} × ${paidEntries.length} entries = NPR ${entryCollections.toFixed(2)}</div>
+            <p style="font-size: 12px; line-height: 1.5;">Escrow prizes are transferred directly to winners. Collected player registration fees are paid back fully to the Creator.</p>
+          `;
+        }
+
+      } else if (type === 'CS' || type === 'LW') {
+        const matchFinancialType = loadedMatchData.matchType;
+        
+        if (matchFinancialType === 'normal' || !matchFinancialType) {
+          mathVisualizer.innerHTML = `
+            <p><strong>${type} Casual Match Settlement Mode:</strong></p>
+            <div class="math-formula">Gross Pool = NPR 0.00</div>
+            <p style="font-size: 12px;">This was a casual practice room. No entry fee payouts are calculated.</p>
+          `;
+          recipientsContainer.innerHTML = `<p style="color: var(--muted); text-align: center; font-size: 13px; text-align: center;">No wallet adjustments required.</p>`;
+          return;
+        }
+
+        if (matchFinancialType === 'profit') {
+          const winningTeammates = (loadedMatchData.players || []).filter(p => p.gameOutcome === 'winner' || p.outcome === 'winner');
+          const winnersCount = winningTeammates.length;
+
+          // CS and Lone Wolf exact custom formula: Total Winning Amount = Winner's Entry Fee + Opponent's Entry Fee
+          const paidEntries = (loadedMatchData.players || []).filter(p => p.entryPaid > 0 && !p.refunded);
+          const combinedWinningTeamPool = paidEntries.reduce((acc, curr) => acc + (parseFloat(curr.entryPaid) || 0), 0);
+
+          if (winnersCount > 0 && combinedWinningTeamPool > 0) {
+            const splitShareValue = combinedWinningTeamPool / winnersCount;
+            winningTeammates.forEach(player => {
+              calculatedPayoutsList.push({
+                uid: player.uid,
+                name: player.gamename || player.username,
+                amount: splitShareValue,
+                type: `Victory Compensation (Recovered own ticket fee + opponent's entry fee)`,
+                winnerFlag: true,
+                text: `Victory Prize Credit: Declared winner in ${type} Match #${loadedMatchData.matchId}. Entry ticket successfully recovered and opponent's entry fee added.`
+              });
+            });
+          }
+
+          mathVisualizer.innerHTML = `
+            <p><strong>${type} 1v1 Payout Formula:</strong></p>
+            <div class="math-formula">Total Winning Amount = Winner Entry Fee + Opponent Entry Fee = NPR ${combinedWinningTeamPool.toFixed(2)}</div>
+            <p style="font-size: 12.5px; line-height: 1.5; margin-top: 5px;">
+              The confirmed winner successfully recovers 100% of their own entry fee ticket and wins the complete entry ticket fee from the opposing player.
+            </p>
+          `;
+        }
+      }
+
+      // Render recipients lists
+      renderRecipientsListUI();
+    }
+
+    // --- CO-ORDINATE DYNAMIC AUTOMATIC TRANSFER PIPELINES ---
+    async function evaluateAutoTransferEligibility() {
+      if (!loadedMatchData || !currentUser) return;
+
+      const isCompleted = loadedMatchData.status === 'completed' || loadedMatchData.payoutProcessed;
+      
+      const trackerCard = document.getElementById('autoSettlementTrackerCard');
+      const trackerIcon = document.getElementById('autoSettlementIcon');
+      const trackerTitle = document.getElementById('autoSettlementTitle');
+      const trackerStatus = document.getElementById('autoSettlementStatusText');
+      const trackerLoader = document.getElementById('autoSettlementLoaderMini');
+
+      if (isCompleted) {
+        trackerCard.style.display = 'none';
+        buildCongratsWinnersShowcase();
+        document.getElementById('successAnimation').classList.add('show');
+        return;
+      }
+
+      const isWinnerResolvedVal = isWinnerResolved(loadedMatchData);
+
+      if (isWinnerResolvedVal && calculatedPayoutsList.length > 0) {
+        trackerCard.style.display = 'block';
+        trackerLoader.style.display = 'block';
+        trackerIcon.className = 'fas fa-robot fa-spin';
+        trackerIcon.style.color = 'var(--accent)';
+        
+        trackerTitle.textContent = "Automatic Ledger Payout Initiated";
+        trackerTitle.style.color = 'var(--accent)';
+        trackerStatus.textContent = "Winner Selection compiled. Safely broadcasting transactions to the ledger...";
+        
+        // Host-Independent Payout Sweep Trigger:
+        if (!autoTransferAttempted) {
+          autoTransferAttempted = true;
+          setTimeout(async () => {
+            await executeEscrowPayoutTransactions();
+          }, 1500);
+        }
+      } else {
+        // Winner outcomes not declared yet
+        trackerCard.style.display = 'block';
+        trackerLoader.style.display = 'none';
+        trackerIcon.className = 'fas fa-exclamation-triangle';
+        trackerIcon.style.color = 'var(--warning)';
+        trackerTitle.textContent = "Winner Is Being Verified";
+        trackerTitle.style.color = 'var(--warning)';
+        trackerStatus.textContent = "Our automated consensus system is verifying ballot results. Payout transactions will execute instantly once actual winners are detected.";
+      }
+    }
+
+    // ATOMIC PAYOUT TRANSACTIONS IMPLEMENTATION (STRICTLY DOUBLE-SPEND PROTECTED)
+    async function executeEscrowPayoutTransactions() {
+      document.getElementById('loadingScreen').classList.add('show');
+
+      const trackerStatus = document.getElementById('autoSettlementStatusText');
+      if (trackerStatus) {
+        trackerStatus.textContent = "Broadcasting atomic transaction blocks to Ledger nodes...";
+      }
+
+      try {
+        const matchDocRef = getPublicCollection('matches').doc(loadedMatchDocId);
+        
+        // Safety pre-check outside transaction to avoid duplicate attempts
+        const preCheck = await matchDocRef.get();
+        if (preCheck.exists && (preCheck.data().status === 'completed' || preCheck.data().payoutProcessed)) {
+          throw new Error("Lobby payouts are already finalized and completed. Action blocked.");
+        }
+
+        // EXECUTE MULTI-USER ATOMIC TRANSACTION
+        await db.runTransaction(async (transaction) => {
+          // Re-verify matches state inside transactional blocks (ensures single execution)
+          const freshMatchDoc = await transaction.get(matchDocRef);
+          if (freshMatchDoc.data().status === 'completed' || freshMatchDoc.data().payoutProcessed) {
+            throw new Error("Lobby payout verification failed. Already completed.");
+          }
+
+          // Distribute wallet values to recipients sequentially
+          for (const payoutObj of calculatedPayoutsList) {
+            const walletDocRef = getPrivateCollection(payoutObj.uid, 'wallets').doc('wallet');
+            const walletSnapshot = await transaction.get(walletDocRef);
+            
+            const currentBal = walletSnapshot.exists ? (walletSnapshot.data().balance || 0) : 0;
+            const newBal = currentBal + payoutObj.amount;
+
+            // Update user wallet balances atomically
+            transaction.set(walletDocRef, {
+              balance: newBal,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            // Write transactional audit ledger record with tailored professional text logs
+            const transRef = getPrivateCollection(payoutObj.uid, 'transactions').doc();
+            transaction.set(transRef, {
+              userId: payoutObj.uid,
+              type: 'match_winning_payout',
+              amount: payoutObj.amount,
+              description: payoutObj.text || `Award payout of NPR ${payoutObj.amount.toFixed(2)} for Match #${loadedMatchData.matchId} by Make Trend Team`,
+              matchId: loadedMatchData.matchId,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              status: 'completed'
+            });
+          }
+
+          // Complete the match document status and update records
+          transaction.update(matchDocRef, {
+            status: 'completed',
+            payoutProcessed: true,
+            payoutProcessedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        });
+
+        // Trigger completed view dashboard and congratulations screen
+        buildCongratsWinnersShowcase();
+        document.getElementById('loadingScreen').classList.remove('show');
+        document.getElementById('successAnimation').classList.add('show');
+
+      } catch (err) {
+        document.getElementById('loadingScreen').classList.remove('show');
+        autoTransferAttempted = false; // allow retry if error occurred
+        if (trackerStatus) {
+          trackerStatus.textContent = "Ledger write fault: " + (err.message || "Retry pending.");
+        }
+        console.error("Payout transaction engine failed: ", err);
+        showNotification(err.message || "Esports billing engine failed batch payouts write.", "error");
+      }
+    }
+
+    // Compiles active winners list for Congratulations Dashboard with Gamer nicknames and @usernames
+    function buildCongratsWinnersShowcase() {
+      const container = document.getElementById('congratsWinnersList');
+      container.innerHTML = '';
+
+      const winnersOnly = calculatedPayoutsList.filter(rec => rec.winnerFlag === true);
+
+      if (winnersOnly.length === 0) {
+        container.innerHTML = `
+          <div class="winner-congrats-card" style="justify-content: center;">
+            <span style="color: var(--muted);">No financial winners registered for this mode.</span>
+          </div>
+        `;
+        return;
+      }
+
+      winnersOnly.forEach(winner => {
+        const cached = dynamicProfileCache[winner.uid] || { name: winner.name, username: '@gamer' };
+        container.innerHTML += `
+          <div class="winner-congrats-card">
+            <i class="fas fa-trophy"></i>
+            <div>
+              <div style="font-weight: 800; color: #fff; font-size: 15px;">${cached.name}</div>
+              <div style="font-size: 12px; color: var(--accent); font-family: var(--font-mono); margin-bottom: 2px;">${cached.username}</div>
+              <div style="font-size: 12px; color: var(--success); font-weight: 700;">Won NPR ${winner.amount.toFixed(2)}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function redirectToIndex() { 
+      window.location.href = "/Home"; 
+    }
+    
+    function goBack() { 
+      window.location.href = "/My_Matches";
+    }
+
+    function showNotification(message, type = 'info') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,5001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make Trend Battle - Create Match</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------------- */
+/* ENHANCED UI STYLES - MODERN GAMING THEME WITH IMPROVED COLORS */
+/* ---------------------------------------------------------------------- */
+:root {
+  --bg: #050812;
+  --card: #0f172a;
+  --card-light: #1e293b;
+  --muted: #64748b;
+  --accent: #00eaff;
+  --accent-dark: #0099ff;
+  --accent-glow: rgba(0, 234, 255, 0.3);
+  --success: #2ecc71;
+  --error: #e74c3c;
+  --warning: #f39c12;
+  --purple: #9b59b6;
+  --radius: 16px;
+  --header-height: 70px;
+  --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+  --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #e8eef3;
+  padding-top: var(--header-height);
+  min-height: 100vh;
+  font-family: var(--font-primary);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+    radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+  background-attachment: fixed;
+}
+
+input, textarea, select {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.custom-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height);
+  background: rgba(11, 17, 32, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+}
+
+.logo-container {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 24px;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.logo-container span {
+  font-size: 28px;
+  margin-right: 8px;
+  color: #fff;
+}
+
+.back-btn {
+  background: rgba(0, 234, 255, 0.08);
+  border: 1px solid rgba(0, 234, 255, 0.3);
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  transition: all 0.3s;
+}
+
+.back-btn:hover {
+  background: rgba(0, 234, 255, 0.2);
+  transform: translateX(-3px);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.level-warning-banner {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(243, 156, 18, 0.3);
+  color: #fbbf24;
+  padding: 12px 20px;
+  margin: 15px 20px 0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.1);
+}
+
+/* Main Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards (Reduced padding and tighter gaps for compact view) */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s, box-shadow 0.4s ease;
+}
+
+.card:hover {
+  transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+  box-shadow: var(--shadow-3d);
+  border-color: rgba(0, 234, 255, 0.2);
+}
+
+.section-header {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--accent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header i {
+  font-size: 18px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-group i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-40%);
+  color: #64748b;
+  font-size: 16px;
+  pointer-events: none;
+  transition: all 0.2s;
+  z-index: 2;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 18px 15px 8px 42px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.auth-input:focus {
+  border-color: var(--accent);
+  background: #0f172a;
+  box-shadow: 0 0 0 4px var(--accent-glow);
+  outline: none;
+}
+
+.auth-input:focus + i {
+  color: var(--accent);
+}
+
+/* Validation icons */
+.validation-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 3;
+}
+.validation-icon.valid { color: var(--success); }
+.validation-icon.invalid { color: var(--error); }
+
+/* Tooltip icon */
+.tooltip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  font-size: 11px;
+  margin-left: 6px;
+  cursor: help;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.tooltip-icon:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Error Summary Bar */
+.error-summary {
+  background: rgba(231, 76, 60, 0.1);
+  border-left: 4px solid var(--error);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: none;
+}
+.error-summary.show {
+  display: block;
+}
+.error-summary h4 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--error);
+}
+.error-summary ul {
+  list-style: none;
+  padding-left: 0;
+}
+.error-summary li {
+  font-size: 13px;
+  padding: 4px 0;
+  cursor: pointer;
+  color: #ffaaaa;
+}
+.error-summary li:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Preset buttons row */
+.preset-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+.preset-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 30px;
+  padding: 6px 14px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.preset-btn:hover {
+  background: rgba(0,234,255,0.15);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Balance checker */
+.balance-checker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.check-balance-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.check-balance-btn:hover {
+  background: rgba(0,234,255,0.1);
+  color: var(--accent);
+}
+.balance-result {
+  font-size: 11px;
+}
+.balance-result.insufficient {
+  color: var(--error);
+}
+.balance-result.sufficient {
+  color: var(--success);
+}
+
+/* Countdown preview */
+.countdown-preview {
+  background: rgba(0,234,255,0.05);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  font-size: 13px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+/* Reminder banner */
+.reminder-banner {
+  background: rgba(243,156,18,0.1);
+  border: 1px solid rgba(243,156,18,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  color: var(--warning);
+  display: none;
+}
+.reminder-banner.show {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Auto-save restore banner */
+.restore-draft-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 15px 20px;
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10015;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+.restore-draft-banner.show {
+  display: flex;
+}
+.restore-draft-banner button {
+  background: var(--accent);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  color: var(--bg);
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+  transition: all 0.3s;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 5px 15px rgba(0, 234, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 234, 255, 0.4);
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  background: var(--muted) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--error) 0%, #c0392b 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3) !important;
+}
+
+.btn-danger:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5) !important;
+}
+
+/* Credentials Row Styling - More compact Layout */
+.cred-row-flex {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.cred-row-flex .input-group {
+  flex: 1;
+  margin-bottom: 0;
+  min-width: 120px;
+}
+.cred-row-flex .auth-input {
+  padding: 10px 10px 10px 32px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+.cred-row-flex .input-group i {
+  font-size: 13px;
+  left: 12px;
+  transform: translateY(-50%);
+}
+.cred-row-flex .auth-input:disabled {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: #1e293b;
+  color: #64748b;
+  cursor: not-allowed;
+}
+.cred-row-flex .btn {
+  flex-shrink: 0;
+  width: auto;
+  padding: 0 15px;
+  margin-top: 0;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* Banner Upload */
+.banner-preview {
+  width: 100%;
+  height: 150px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px dashed rgba(255,255,255,0.1);
+  transition: all 0.3s;
+}
+
+.banner-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-upload-label {
+  display: inline-block;
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.banner-upload-label:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.banner-upload-input {
+  display: none;
+}
+
+.match-type-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.match-type-option {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.match-type-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.match-type-option:hover {
+  background: #27354d;
+  border-color: #4b5563;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.match-type-option.selected {
+  background: rgba(0, 234, 255, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 25px rgba(0, 234, 255, 0.2);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.match-type-option.selected::before {
+  transform: scaleX(1);
+}
+
+.match-type-icon {
+  font-size: 26px;
+  margin-bottom: 5px;
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.match-type-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.match-type-desc {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Battle Royale Type Selection */
+.br-type-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.br-type-option {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.br-type-option:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-3px);
+}
+
+.br-type-option.selected {
+  background: rgba(0,234,255,0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0,234,255,0.2);
+}
+
+.br-type-icon {
+  font-size: 22px;
+  margin-bottom: 5px;
+  color: var(--accent);
+}
+
+.br-type-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.br-type-desc {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Prize Calculation Display */
+.prize-calculation {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.prize-header {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--success);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prize-breakdown {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.prize-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.prize-label {
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prize-amount {
+  font-weight: 700;
+  color: #fff;
+}
+
+.prize-total {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.total-label {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.total-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Prize Inputs for Creator-Profit */
+.prize-inputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.prize-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prize-rank {
+  width: 80px;
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prize-input {
+  flex: 1;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.prize-input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.prize-min {
+  color: var(--muted);
+  font-size: 11px;
+  width: 110px;
+}
+
+/* How It Works Section */
+.how-it-works {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.how-it-works h4 {
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.how-it-works ul {
+  list-style: none;
+  padding: 0;
+}
+
+.how-it-works li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.how-it-works li:last-child {
+  border-bottom: none;
+}
+
+.how-it-works i {
+  color: var(--accent);
+  width: 16px;
+}
+
+/* Creator Restriction Notice */
+.creator-restriction-notice {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--error);
+}
+
+/* Business Rule Validation */
+.business-rule-validation {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--success);
+}
+
+/* Wallet Info */
+.wallet-info {
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wallet-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, transparent 100%);
+  z-index: 0;
+}
+
+.wallet-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.wallet-label {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.wallet-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.create-fee-breakdown {
+  font-size: 13px;
+  color: var(--muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Conditional Options */
+.conditional-options {
+  display: none;
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.conditional-options.show {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Options Grid */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Match Preview Panel */
+.match-preview {
+  position: sticky;
+  top: 90px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s;
+  height: fit-content;
+}
+
+.match-preview:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.preview-header {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--accent);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.preview-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.preview-value {
+  font-weight: 600;
+  color: #fff;
+  font-size: 13.5px;
+}
+
+.preview-prizes {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.preview-prize-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.preview-prize-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.preview-prize-amount {
+  font-weight: 600;
+  color: #fff;
+}
+
+.preview-total {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.preview-empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 25px 0;
+}
+
+/* Smart Tips Assistant */
+.smart-tip {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10006;
+  box-shadow: 0 5px 15px rgba(0, 234, 255, 0.3);
+  transition: all 0.3s;
+}
+
+.smart-tip:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 234, 255, 0.4);
+}
+
+.smart-tip i {
+  color: var(--bg);
+  font-size: 24px;
+}
+
+.tip-box {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 320px;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 234, 255, 0.2);
+  z-index: 10007;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s;
+}
+
+.tip-box.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.tip-content {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Confirmation Modal */
+.confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10010;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.confirmation-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.confirmation-content {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 25px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,234,255,0.2);
+  animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.confirmation-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.confirmation-header i {
+  font-size: 24px;
+  color: var(--accent);
+}
+
+.confirmation-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.confirmation-body {
+  margin-bottom: 20px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.confirmation-details {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 12px 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.confirmation-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 13px;
+}
+
+.confirmation-detail:last-child {
+  border-bottom: none;
+}
+
+.confirmation-detail span:first-child {
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.confirmation-detail span:last-child {
+  color: #fff;
+  font-weight: 700;
+}
+
+.confirmation-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.confirmation-actions .btn {
+  flex: 1;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Notification */
+#notificationBox {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 450px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, top 0.3s, visibility 0s 0.3s;
+  backdrop-filter: blur(10px);
+  background: rgba(19, 24, 43, 0.9);
+  border-left: 4px solid var(--accent);
+}
+
+#notificationBox.show {
+  opacity: 1;
+  top: 75px;
+  visibility: visible;
+  transition: opacity 0.3s, top 0.3s;
+}
+
+#notificationBox i {
+  margin-right: 12px;
+  font-size: 18px;
+}
+
+#notificationBox.success { border-left-color: var(--success); background: rgba(46,204,113,0.1); }
+#notificationBox.error { border-left-color: var(--error); background: rgba(231,76,60,0.1); }
+#notificationBox.info { border-left-color: var(--accent); background: rgba(0,234,255,0.1); }
+
+/* Loading */
+#loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10004;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+}
+
+#loadingScreen.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loader {
+  border: 4px solid var(--card);
+  border-top: 4px solid var(--accent);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.3);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#loadingScreen p {
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 12px;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Error Messages */
+.input-error {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 6px;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 0.3s, transform 0.3s;
+  height: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.input-error.show {
+  opacity: 1;
+  transform: translateY(0);
+  height: auto;
+  margin-top: 6px;
+}
+
+/* Creation Limit Info */
+.creation-limit-info {
+  background: rgba(243,156,18,0.1);
+  border: 1px solid rgba(243,156,18,0.3);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.creation-limit-info i {
+  color: var(--warning);
+  font-size: 18px;
+}
+
+.creation-limit-content h4 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--warning);
+}
+
+.creation-limit-content p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Insufficient Balance / Popups Modals Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10025;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 25px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border: 1px solid rgba(0, 234, 255, 0.2);
+  animation: modalAppear 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.modal-header i {
+  font-size: 24px;
+  color: var(--error);
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, var(--warning) 0%, #e67e22 100%);
+  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+}
+
+/* Start Time Picker Modal Styles */
+.time-picker-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 8, 18, 0.95);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10020;
+  padding: 20px;
+}
+
+.time-picker-modal.show {
+  display: flex;
+}
+
+.time-picker-content {
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  padding: 25px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 30px var(--accent-glow);
+  position: relative;
+}
+
+.time-picker-header {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 8px;
+}
+
+.time-field {
+  margin-bottom: 15px;
+}
+
+.time-field label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.time-field input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.time-field input:focus {
+  border-color: var(--accent);
+}
+
+/* Hosted Match Bubble Cards */
+.hosted-matches-section {
+  margin-bottom: 30px;
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+
+.time-select-row {
+  display: flex;
+  gap: 8px;
+}
+
+.time-select {
+  flex: 1;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.time-select:focus {
+  border-color: var(--accent);
+}
+
+/* Success Animation with Confetti */
+.success-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10011;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+}
+
+.success-animation.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: var(--success);
+  stroke-miterlimit: 10;
+  margin: 20px auto;
+  box-shadow: inset 0px 0px 0px var(--success);
+  animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.success-checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: var(--success);
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke { 100% { stroke-dashoffset: 0; } }
+@keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+@keyframes fill { 100% { box-shadow: inset 0px 0px 0px 30px var(--success); } }
+
+.match-id-display {
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.match-id-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.match-id-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.share-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.share-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+
+/* Preset buttons */
+.preset-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.preset-btn.active {
+  background: rgba(0,234,255,0.1);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* System messages */
+.system-message {
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: #3498db;
+}
+
+.system-message i {
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+/* Visibility Options */
+.visibility-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.visibility-option {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+}
+
+.visibility-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.visibility-option:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.visibility-option.selected {
+  background: rgba(0,234,255,0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0,234,255,0.2);
+}
+
+.visibility-option.selected::before {
+  transform: scaleX(1);
+}
+
+.visibility-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.visibility-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.visibility-desc {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* Floating labels styling */
+.floating-label {
+  position: absolute;
+  top: 0;
+  left: 42px;
+  color: var(--muted);
+  pointer-events: none;
+  font-size: 11px;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 1;
+}
+
+.auth-input:focus ~ .floating-label,
+.auth-input:not(:placeholder-shown) ~ .floating-label {
+  opacity: 1;
+  top: -15px;
+}
+
+/* Enhanced mobile responsive fixes */
+@media (max-width: 768px) {
+  .match-type-options, .br-type-options, .team-options, .options-grid, .visibility-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .container { padding: 8px; }
+  .card { padding: 15px; }
+  
+  .prize-input-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .prize-rank, .prize-input, .prize-min { width: 100%; }
+  .prize-min { text-align: left; }
+  
+  .confirmation-actions, .modal-actions, .share-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .match-preview {
+    position: relative !important;
+    top: 0 !important;
+    margin-top: 15px;
+  }
+
+  .cred-row-flex {
+    flex-direction: column;
+  }
+  .cred-row-flex .btn {
+    width: 100%;
+  }
+}
+
+/* Prize Preview Grid */
+.prize-preview {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+  border: 1px solid rgba(0, 234, 255, 0.1);
+}
+
+.prize-preview-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prize-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.prize-preview-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.prize-preview-rank {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.prize-preview-amount {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Auto-Sync Indicator */
+.auto-sync-indicator {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--success);
+}
+
+.auto-sync-indicator i {
+  animation: spin 2s linear infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--card); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-dark); }
+
+/* ---------------------------------------------------------------------- */
+/* HIGH-FIDELITY MATCH CARD STYLING COPIED FROM INMATCHJOIN.HTML (COMPACT) */
+/* ---------------------------------------------------------------------- */
+.tournament-card {
+  background: rgba(15, 23, 42, 0.7) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius) !important;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 234, 255, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.tournament-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 234, 255, 0.35) !important;
+  box-shadow: 0 12px 35px rgba(0, 234, 255, 0.12) !important;
+}
+
+.banner-view {
+  width: 100%;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.banner-view.no-banner-image {
+  height: auto;
+  background: transparent;
+}
+
+.banner-view::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(5,8,18,0.95) 100%);
+  z-index: 1;
+}
+
+.banner-view.no-banner-image::after {
+  display: none;
+}
+
+.card-header-no-pic {
+  padding: 15px 15px 0 15px;
+}
+
+.premium-title-wrapper {
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, rgba(0, 234, 255, 0.08) 0%, rgba(15, 23, 42, 0.45) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 4px 12px 12px 4px;
+  padding: 8px 14px;
+  margin-bottom: 8px;
+  box-shadow: inset 10px 0 20px rgba(0, 234, 255, 0.01), 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.premium-title-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
+}
+
+.banner-main-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 700;
+  padding: 0 15px 8px;
+}
+
+.platform-badge-compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(0, 234, 255, 0.06);
+  border: 1px solid rgba(0, 234, 255, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+  white-space: nowrap; 
+}
+
+.game-platform-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  border-radius: 3px;
+  display: block;
+}
+
+.tournament-body-wrap {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.t-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.status-pill-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.status-pill-badge.upcoming { background: rgba(0, 234, 255, 0.08); color: var(--accent); border-color: rgba(0, 234, 255, 0.2); }
+.status-pill-badge.live { background: rgba(255, 0, 80, 0.08); color: #ff0050; border-color: rgba(255, 0, 80, 0.3); }
+.status-pill-badge.settled { background: rgba(46, 204, 113, 0.08); color: var(--success); border-color: rgba(46, 204, 113, 0.3); }
+.status-pill-badge.expired { background: rgba(231, 76, 60, 0.08); color: var(--error); border-color: rgba(231, 76, 60, 0.3); }
+
+.badge-financial-grid {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.prize-badge-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  background: rgba(46, 204, 113, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+}
+
+.entry-badge-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  background: rgba(243, 156, 18, 0.1);
+  color: var(--warning);
+  border: 1px solid rgba(243, 156, 18, 0.3);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+}
+
+.specs-metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.spec-details-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.specs-columns-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.spec-rule-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.spec-rule-lbl {
+  color: var(--muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.spec-rule-lbl i {
+  color: var(--accent);
+  font-size: 10px;
+  width: 12px;
+}
+
+.spec-rule-val {
+  font-weight: 700;
+  color: #fff;
+  font-size: 11.5px;
+  padding-left: 16px;
+}
+
+.single-full-spec-highlight {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 8px;
+  font-size: 11.5px;
+}
+
+.single-full-spec-lbl {
+  color: var(--muted);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.single-full-spec-lbl i {
+  color: var(--accent);
+}
+
+.single-full-spec-val {
+  font-weight: 700;
+  color: #fff;
+}
+
+.creator-attribution-tag {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px dashed rgba(255,255,255,0.05);
+  padding-top: 6px;
+}
+
+.roster-progress-container {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.roster-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.roster-progress-track {
+  width: 100%;
+  height: 5px; /* Thinner for compact view */
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.roster-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+  border-radius: 8px;
+  box-shadow: 0 0 6px var(--accent);
+  transition: width 0.5s;
+}
+
+.guidelines-desc-box {
+  background: rgba(255, 255, 255, 0.015);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px 10px 10px 4px;
+  padding: 10px 14px;
+  margin-top: 8px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #e8eef3;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  white-space: pre-wrap;
+}
+
+/* Delete / Modification Restriction Notification Styles */
+.delete-warning-text {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--warning);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+/* Competitor row card for players modal */
+.competitor-row-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(0, 234, 255, 0.08);
+  padding: 10px 14px;
+  border-radius: 12px;
+  min-width: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  margin-bottom: 10px;
+}
+.competitor-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--card-light);
+  border: 2px solid var(--accent);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(0, 234, 255, 0.2);
+}
+.competitor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex-grow: 1;
+}
+.competitor-player-line1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.competitor-player-username-tag {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.competitor-player-line2-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.04);
+  padding-top: 4px;
+}
+.competitor-player-ingame-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+}
+.competitor-player-uid-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+.competitor-player-joined-label {
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+}
+.owner-badge {
+  background: rgba(155, 89, 182, 0.15);
+  border: 1px solid var(--purple);
+  color: #d1a4ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.competitor-badge {
+  background: rgba(0, 234, 255, 0.1);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 60px;"></div>
+  </header>
+  
+  <!-- Level 50+ Warning Banner -->
+  <div class="level-warning-banner">
+    <i class="fas fa-shield-alt"></i>
+    <span>Only players level 50+ can join this match. Level verification required.</span>
+  </div>
+  
+  <div id="notificationBox"></div>
+  
+  <div id="loadingScreen">
+    <div class="loader"></div>
+    <p>Loading...</p>
+  </div>
+  
+  <!-- Restore Draft Banner -->
+  <div id="restoreDraftBanner" class="restore-draft-banner">
+    <span><i class="fas fa-save"></i> You have an unsaved draft. Restore it?</span>
+    <div>
+      <button onclick="restoreDraft()">Restore</button>
+      <button onclick="clearDraft()">Discard</button>
+    </div>
+  </div>
+  
+  <!-- Smart Tips Assistant -->
+  <div class="smart-tip" onclick="toggleTip()">
+    <i class="fas fa-lightbulb"></i>
+  </div>
+  
+  <div class="tip-box" id="tipBox">
+    <div class="tip-header">
+      <i class="fas fa-info-circle"></i>
+      <span>Live Assistant Help</span>
+    </div>
+    <div class="tip-content" id="tipContent">
+      Select a match type to get started with creating your custom esports match.
+    </div>
+  </div>
+
+  <!-- Battle Royale Type Explanations Modal -->
+  <div id="brInfoModal" class="time-picker-modal">
+    <div class="time-picker-content" style="max-width: 480px;">
+      <div class="time-picker-header" style="border-bottom: 1px solid rgba(0, 234, 255, 0.2); margin-bottom: 15px;">
+        <span style="color: var(--accent); font-family: var(--font-display); font-size: 18px; font-weight: 800;">
+          <i class="fas fa-chess-queen"></i> Battle Royale Match Types
+        </span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; font-size: 13.5px; line-height: 1.5; color: #b4c6ef;">
+        <div>
+          <strong style="color: #fff; display: block; margin-bottom: 2px;"><i class="fas fa-users" style="color: var(--accent);"></i> Normal (Free)</strong>
+          <span>A standard casual match. No entrance fee is collected, and no prize funds are distributed. Great for clan practice or friendly scrims.</span>
+        </div>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 10px;">
+          <strong style="color: #fff; display: block; margin-bottom: 2px;"><i class="fas fa-hand-holding-usd" style="color: var(--success);"></i> NonPaid-Profit</strong>
+          <span>Funded entirely by player registrations. The entry fee is converted into the prize pool (Top 1, 2, and 3 win 35%, 25%, and 15% respectively) while you, the creator, earn a guaranteed 25% commission from the total pool.</span>
+        </div>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 10px;">
+          <strong style="color: #fff; display: block; margin-bottom: 2px;"><i class="fas fa-crown" style="color: var(--warning);"></i> Creator-Profit (Sponsored)</strong>
+          <span>You deposit a guaranteed winning escrow prize upfront from your wallet. You then collect and keep 100% of all player registration fees when the match concludes.</span>
+        </div>
+      </div>
+      <button class="btn" onclick="closeModal('brInfoModal')">Got it</button>
+    </div>
+  </div>
+  
+  <!-- Start Time Selection Modal HTML -->
+  <div id="startTimeModal" class="time-picker-modal">
+    <div class="time-picker-content">
+      <div class="time-picker-header">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span><i class="fas fa-calendar-alt"></i> Select Start Time</span>
+            <i class="fas fa-times" style="cursor:pointer; font-size:18px; color:var(--muted);" onclick="event.stopPropagation(); closeModal('startTimeModal')"></i>
+        </div>
+      </div>
+      <div class="time-field">
+        <label>Date</label>
+        <input type="date" id="modalDateInput">
+      </div>
+      <div class="time-field">
+        <label>Time (Hour : Minute : AM/PM)</label>
+        <div class="time-select-row">
+          <select id="modalHourInput" class="time-select"></select>
+          <select id="modalMinuteInput" class="time-select"></select>
+          <select id="modalPeriodInput" class="time-select">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </div>
+      </div>
+      <div class="time-field">
+        <label>Quick Presets</label>
+        <div class="preset-buttons">
+          <button class="preset-btn" onclick="event.stopPropagation(); setQuickTime(30)">In 30m</button>
+          <button class="preset-btn" onclick="event.stopPropagation(); setQuickTime(60)">In 1h</button>
+          <button class="preset-btn" onclick="event.stopPropagation(); setQuickTime('tonight')">Tonight 8PM</button>
+          <button class="preset-btn" onclick="event.stopPropagation(); setQuickTime('tomorrow')">Tomorrow 10AM</button>
+        </div>
+      </div>
+      <div style="display: flex; gap: 15px; margin-top: 10px;">
+          <button class="btn" onclick="event.stopPropagation(); saveStartTimeFromModal()">Confirm Time</button>
+          <button class="btn btn-secondary" onclick="event.stopPropagation(); closeModal('startTimeModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Insufficient Balance Modal -->
+  <div id="insufficientBalanceModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="modal-title">Insufficient Balance</div>
+      </div>
+      <div class="modal-body">
+        <p>You don't have enough balance to create this match. The required amount is <span id="requiredFeeAmount">NPR 0.00</span>.</p>
+        <p>Please add money to your wallet and try again.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-warning" onclick="redirectToAddMoney()">
+          <i class="fas fa-plus-circle"></i> Add Money
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal('insufficientBalanceModal')">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirmation Modal -->
+  <div id="confirmationModal" class="confirmation-modal">
+    <div class="confirmation-content">
+      <div class="confirmation-header">
+        <i class="fas fa-check-circle"></i>
+        <div class="confirmation-title">Confirm Match Creation</div>
+      </div>
+      
+      <div class="confirmation-body">
+        <p>Please review your match details and wallet charges before creating:</p>
+        
+        <div class="confirmation-details" id="confirmationDetails">
+          <!-- Dynamic content will be inserted here -->
+        </div>
+        
+        <p>Once created, match details cannot be modified.</p>
+        <label style="display: flex; align-items: center; gap: 8px; margin-top: 10px; cursor: pointer;">
+          <input type="checkbox" id="confirmCheckbox"> I confirm the match rules and wallet deduction.
+        </label>
+      </div>
+      
+      <div class="confirmation-actions">
+        <button class="btn" id="confirmCreateBtn" disabled>
+          <i class="fas fa-check"></i> Confirm & Create
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal('confirmationModal')">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Success Animation with Confetti -->
+  <div id="successAnimation" class="success-animation">
+    <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+      <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+      <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+    </svg>
+    
+    <h2 style="color: var(--success); margin-bottom: 10px;">Match Created Successfully!</h2>
+    <p style="color: var(--muted); margin-bottom: 30px;">Your match is now live and ready for players to join</p>
+    
+    <div class="match-id-display">
+      <div class="match-id-label">Match Invite Link:</div>
+      <div class="match-id-value" id="createdMatchLink" style="font-size: 14px; word-break: break-all; margin-bottom: 15px; color: var(--muted);"></div>
+      <div class="match-id-value" id="createdMatchId">#BR2049</div>
+      <div class="share-buttons">
+        <button class="share-btn" onclick="copyMatchLink()">
+          <i class="fas fa-link"></i> Copy Link
+        </button>
+        <button class="share-btn" onclick="copyMatchId()">
+          <i class="fas fa-copy"></i> Copy ID
+        </button>
+        <button class="share-btn" onclick="shareMatch()">
+          <i class="fas fa-share-alt"></i> Share
+        </button>
+      </div>
+    </div>
+    
+    <div class="action-buttons" style="margin-top: 30px; display: flex; gap: 15px;">
+      <button class="btn" onclick="redirectToMyCreatedMatches()">
+        <i class="fas fa-eye"></i> View My Matches
+      </button>
+      <button class="btn btn-secondary" onclick="redirectToHome()">
+        <i class="fas fa-home"></i> Back to Home
+      </button>
+    </div>
+  </div>
+  
+  <!-- View Details / Players Modal -->
+  <div id="viewMatchModal" class="time-picker-modal">
+    <div class="time-picker-content" style="max-width: 550px; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="time-picker-header" style="flex-shrink: 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span id="viewModalTitle"><i class="fas fa-info-circle"></i> Details</span>
+          <i class="fas fa-times" style="cursor:pointer; font-size:18px; color:var(--muted);" onclick="closeModal('viewMatchModal')"></i>
+        </div>
+      </div>
+      <div id="viewModalContent" style="overflow-y: auto; margin-bottom: 20px; flex-grow: 1; padding-right: 5px;">
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="btn btn-secondary" style="flex:1;" id="shareUrlFromModalBtn" onclick="shareModalMatchUrl()"><i class="fas fa-share-alt"></i> Share Match URL</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal('viewMatchModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Main Form Section -->
+    <div class="main-form">
+      
+      <!-- Hosted Matches Section -->
+      <div class="hosted-matches-section" id="hostedMatchesArea">
+        <h3 class="section-header" style="justify-content: space-between;">
+          <span><i class="fas fa-crown"></i> Your Active Hosted Matches</span>
+          <button class="btn" style="width: auto; padding: 10px 20px; font-size: 14px;" onclick="showCreationView()">
+            <i class="fas fa-plus"></i> Create New
+          </button>
+        </h3>
+        <div id="hostedMatchesList"></div>
+      </div>
+
+      <!-- Creation View Wrapper -->
+      <div id="creationFormView" style="display: none;">
+        <button class="btn btn-secondary" style="width: auto; padding: 10px 20px; font-size: 14px; margin-bottom: 25px;" onclick="showManagementView()">
+          <i class="fas fa-arrow-left"></i> Back to Management
+        </button>
+
+      <!-- Error Summary Bar -->
+      <div id="errorSummary" class="error-summary">
+        <h4><i class="fas fa-exclamation-triangle"></i> Please fix the following errors:</h4>
+        <ul id="errorList"></ul>
+      </div>
+
+      <!-- Reminder Banner -->
+      <div id="reminderBanner" class="reminder-banner">
+        <i class="fas fa-clock"></i> <span id="reminderText">Don't forget to set Room ID & Password before the match start time!</span>
+      </div>
+
+      <!-- Preset Buttons Row -->
+      <div class="preset-row">
+        <button class="preset-btn" onclick="applyPreset('free_solo_br')">🎮 Free Solo BR</button>
+        <button class="preset-btn" onclick="applyPreset('paid_1v1_cs')">💰 Paid 1v1 CS</button>
+        <button class="preset-btn" onclick="applyPreset('creator_br_200')">👑 Creator BR (NPR 200 prize)</button>
+      </div>
+
+      <!-- Creation Limit Info -->
+      <div class="creation-limit-info" id="creationLimitInfo">
+        <i class="fas fa-info-circle"></i>
+        <div class="creation-limit-content">
+          <h4>Match Creation</h4>
+          <p>You can create up to <span id="dailyLimitCount">5</span> matches per day. You have <span id="remainingMatches">5</span> remaining today.</p>
+        </div>
+      </div>
+      
+      <!-- Wallet Information -->
+      <div class="wallet-info" id="walletInfo">
+        <div class="wallet-balance">
+          <span class="wallet-label">Your Balance:</span>
+          <span class="wallet-amount" id="walletBalance">NPR 0.00</span>
+        </div>
+        <div class="create-fee-breakdown" id="createFeeBreakdown">
+          No platform fees - 100% goes to winners and creators
+        </div>
+      </div>
+      
+      <!-- Basic Information Card -->
+      <div class="card">
+        <h3 class="section-header" id="createFormTop">
+          <i class="fas fa-info-circle"></i> Basic Information
+        </h3>
+        
+        <div class="input-group">
+          <input type="text" id="matchTitle" class="auth-input" placeholder=" " required oninput="validateTitle(); updateMatchPreview(); autoSaveDraft()">
+          <label class="floating-label">Match Title</label>
+          <i class="fas fa-heading"></i>
+          <span id="titleValidationIcon" class="validation-icon"></span>
+          <div class="input-error" id="matchTitleError"></div>
+        </div>
+
+        <!-- Platform Game Dropdown -->
+        <div class="input-group">
+          <select id="matchPlatform" class="auth-input" onchange="updateMatchPreview(); autoSaveDraft()" required>
+            <option value="">Select Platform Game</option>
+            <option value="Free Fire">Free Fire</option>
+            <option value="PUBG Mobile">PUBG Mobile</option>
+            <option value="Call of Duty">Call of Duty</option>
+          </select>
+          <label class="floating-label">Platform / Game Name</label>
+          <i class="fas fa-gamepad"></i>
+        </div>
+        
+        <!-- Visibility Options -->
+        <div class="input-group">
+          <h4 style="margin:0 0 15px; color:var(--accent); font-size:16px; display:flex; align-items:center; gap:8px;">
+            <i class="fas fa-eye"></i> Match Visibility
+          </h4>
+          
+          <div class="visibility-options">
+            <div class="visibility-option selected" data-visibility="public" onclick="selectVisibility('public')">
+              <div class="visibility-icon"><i class="fas fa-globe"></i></div>
+              <div class="visibility-name">Public</div>
+              <div class="visibility-desc">Visible in feed to everyone</div>
+            </div>
+            
+            <div class="visibility-option" data-visibility="friends" onclick="selectVisibility('friends')">
+              <div class="visibility-icon"><i class="fas fa-user-friends"></i></div>
+              <div class="visibility-name">Friends</div>
+              <div class="visibility-desc">Unlisted, friends can join via URL</div>
+            </div>
+            
+            <div class="visibility-option" data-visibility="private" onclick="selectVisibility('private')">
+              <div class="visibility-icon"><i class="fas fa-lock"></i></div>
+              <div class="visibility-name">Private</div>
+              <div class="visibility-desc">Not visible in feed, invite only</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Match Type Selection -->
+        <div class="match-type-options">
+          <div class="match-type-option" data-type="BR" onclick="selectMatchType('BR')">
+            <div class="match-type-icon"><i class="fas fa-crosshairs"></i></div>
+            <div class="match-type-name">Battle Royale</div>
+            <div class="match-type-desc">Large survival matches</div>
+          </div>
+          
+          <div class="match-type-option" data-type="CS" onclick="selectMatchType('CS')">
+            <div class="match-type-icon"><i class="fas fa-users"></i></div>
+            <div class="match-type-name">Clash Squad</div>
+            <div class="match-type-desc">Team vs team battles</div>
+          </div>
+          
+          <div class="match-type-option" data-type="LW" onclick="selectMatchType('LW')">
+            <div class="match-type-icon"><i class="fas fa-user"></i></div>
+            <div class="match-type-name">Lone Wolf</div>
+            <div class="match-type-desc">Individual competitions</div>
+          </div>
+        </div>
+        
+        <!-- Battle Royale Type Selection -->
+        <div class="conditional-options" id="brTypeSelection" style="display: none;">
+          <h4 style="margin:0 0 15px; color:var(--accent); font-size:16px; display:flex; align-items:center; gap:8px;">
+            <i class="fas fa-chess-queen"></i> Select Battle Royale Type
+            <span class="tooltip-icon" onclick="openBrInfoModal(event)" style="cursor: pointer;" title="Creator Profit: You provide prize upfront, keep all entry fees. Non-Paid Profit: Prize from player fees, you earn 25% commission.">ⓘ</span>
+          </h4>
+          
+          <div class="br-type-options">
+            <div class="br-type-option" data-br-type="normal" onclick="selectBRType('normal')">
+              <div class="br-type-icon"><i class="fas fa-users"></i></div>
+              <div class="br-type-name">Normal</div>
+              <div class="br-type-desc">Free match - No wallet activity</div>
+            </div>
+            
+            <div class="br-type-option" data-br-type="nonpaid" onclick="selectBRType('nonpaid')">
+              <div class="br-type-icon"><i class="fas fa-hand-holding-usd"></i></div>
+              <div class="br-type-name">NonPaid-Profit</div>
+              <div class="br-type-desc">Prize from player fees</div>
+            </div>
+            
+            <div class="br-type-option" data-br-type="creator" onclick="selectBRType('creator')">
+              <div class="br-type-icon"><i class="fas fa-crown"></i></div>
+              <div class="br-type-name">Creator-Profit</div>
+              <div class="br-type-desc">You provide the prize</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Battle Royale Options -->
+        <div class="conditional-options" id="brOptions">
+          <div class="input-group">
+            <select id="brMap" class="auth-input" onchange="updateMatchPreview(); autoSaveDraft()">
+              <option value="">Select Map</option>
+              <option value="Bermuda">Bermuda</option>
+              <option value="Purgatory">Purgatory</option>
+              <option value="Kalahari">Kalahari</option>
+              <option value="Alpine">Alpine</option>
+            </select>
+            <label class="floating-label">Map</label>
+            <i class="fas fa-map"></i>
+          </div>
+          
+          <div class="input-group">
+            <select id="brMode" class="auth-input" onchange="handleBRModeChange(); autoSaveDraft()">
+              <option value="">Select Mode</option>
+              <option value="Solo">Solo</option>
+              <option value="Duo">Duo</option>
+              <option value="Squad">Squad</option>
+            </select>
+            <label class="floating-label">Mode</label>
+            <i class="fas fa-users"></i>
+          </div>
+          
+          <div class="input-group">
+            <select id="brPlayers" class="auth-input" onchange="updateBRPlayersCount(); autoSaveDraft()">
+              <option value="20">20 Players</option>
+              <option value="32">32 Players</option>
+              <option value="48">48 Players</option>
+            </select>
+            <label class="floating-label">Number of Players</label>
+            <i class="fas fa-user-friends"></i>
+          </div>
+        </div>
+        
+        <!-- Clash Squad Options -->
+        <div class="conditional-options" id="csOptions">
+          <div class="input-group">
+            <select id="csTeamSize" class="auth-input" onchange="handleCSTeamSizeChange(); autoSaveDraft()">
+              <option value="">Select Team Size</option>
+              <option value="1v1">1v1</option>
+              <option value="2v2">2v2</option>
+              <option value="3v3">3v3</option>
+              <option value="4v4">4v4</option>
+              <option value="5v5">5v5</option>
+              <option value="6v6">6v6</option>
+            </select>
+            <label class="floating-label">Team Size <span class="tooltip-icon" title="Number of players per team">ⓘ</span></label>
+            <i class="fas fa-users"></i>
+          </div>
+          
+          <div class="input-group">
+            <input type="number" id="csPlayers" class="auth-input" placeholder=" " value="" min="2" max="12" readonly>
+            <label class="floating-label">Total Players (Auto Calculated)</label>
+            <i class="fas fa-user-friends"></i>
+          </div>
+        </div>
+        
+        <!-- Lone Wolf Options -->
+        <div class="conditional-options" id="lwOptions">
+          <div class="input-group">
+            <select id="lwRounds" class="auth-input" onchange="handleLWRoundsChange(); autoSaveDraft()">
+              <option value="">Select Number of Rounds</option>
+              <option value="3">3 Rounds</option>
+              <option value="5">5 Rounds</option>
+              <option value="7">7 Rounds</option>
+              <option value="9">9 Rounds</option>
+            </select>
+            <label class="floating-label">Rounds <span class="tooltip-icon" title="Match duration auto-adjusts based on rounds">ⓘ</span></label>
+            <i class="fas fa-redo"></i>
+          </div>
+
+          <div class="input-group">
+            <select id="lwTeamSize" class="auth-input" onchange="updateLWTotalPlayers(); autoSaveDraft()">
+              <option value="">Select Team Size</option>
+              <option value="1v1">1v1</option>
+              <option value="2v2">2v2</option>
+            </select>
+            <label class="floating-label">Team Size <span class="tooltip-icon" title="Number of players per team">ⓘ</span></label>
+            <i class="fas fa-users"></i>
+          </div>
+          
+          <div class="input-group">
+            <input type="number" id="lwPlayers" class="auth-input" placeholder=" " value="" min="2" max="4" readonly>
+            <label class="floating-label">Total Players (Auto Calculated)</label>
+            <i class="fas fa-user-friends"></i>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <textarea id="matchDescription" class="auth-input" placeholder=" " style="height:100px; resize:vertical;" oninput="updateMatchPreview(); autoSaveDraft()"></textarea>
+          <label class="floating-label">Match Description</label>
+          <i class="fas fa-edit"></i>
+        </div>
+        
+        <div class="input-group" style="cursor: pointer;" onclick="openStartTimeModal()" title="Click to select date and time">
+          <input type="text" id="matchStartTimeDisplay" class="auth-input" placeholder=" " readonly required style="cursor: pointer;">
+          <input type="hidden" id="matchStartTime">
+          <label class="floating-label">Start Time</label>
+          <i class="fas fa-calendar-alt"></i>
+          <div class="input-error" id="matchStartTimeError"></div>
+        </div>
+        
+        <!-- AUTO CALCULATED READ-ONLY MATCH DURATION INPUT -->
+        <div class="input-group">
+          <input type="number" id="matchDuration" class="auth-input" style="opacity: 0.85; background: rgba(0,0,0,0.25);" placeholder=" " value="20" readonly>
+          <label class="floating-label">Duration (minutes) [Auto Calculated]</label>
+          <i class="fas fa-clock"></i>
+        </div>
+      </div>
+      
+      <!-- Financial Settings Card -->
+      <div class="card">
+        <h3 class="section-header">
+          <i class="fas fa-coins"></i> Financial Settings
+        </h3>
+        
+        <!-- Business Rule Validation -->
+        <div class="business-rule-validation" id="businessRuleValidation" style="display: none;">
+          <i class="fas fa-check-circle"></i>
+          <span id="businessRuleText">Winning prize is at least 5× join fee (Business rule satisfied)</span>
+        </div>
+        
+        <!-- Creator Notice -->
+        <div class="creator-restriction-notice" id="brRestriction" style="display: none; background: rgba(0, 234, 255, 0.1); border-color: rgba(0, 234, 255, 0.3); color: var(--accent);">
+          <i class="fas fa-info-circle"></i>
+          <span>As the creator, you will automatically join and participate in this match as a player. Your entry fee will be deducted.</span>
+        </div>
+        
+        <!-- Battle Royale Financial Options -->
+        <div class="conditional-options" id="brFinancialOptions">
+          <!-- Prize Calculation Display for NonPaid-Profit -->
+          <div class="prize-calculation" id="nonpaidPrizeCalculation" style="display: none;">
+            <div class="prize-header">
+              <i class="fas fa-calculator"></i>
+              <span>NonPaid-Profit Distribution</span>
+            </div>
+            
+            <div class="prize-breakdown" id="nonpaidPrizeBreakdown">
+              <!-- Dynamic content will be inserted here -->
+            </div>
+            
+            <!-- Prize Preview -->
+            <div class="prize-preview" id="nonpaidPrizePreview">
+              <div class="prize-preview-header">
+                <i class="fas fa-chart-pie"></i>
+                Estimated Prize Distribution
+              </div>
+              <div class="prize-preview-grid">
+                <div class="prize-preview-item">
+                  <div class="prize-preview-rank">Top 1</div>
+                  <div class="prize-preview-amount" id="previewTop1">35%</div>
+                </div>
+                <div class="prize-preview-item">
+                  <div class="prize-preview-rank">Top 2</div>
+                  <div class="prize-preview-amount" id="previewTop2">25%</div>
+                </div>
+                <div class="prize-preview-item">
+                  <div class="prize-preview-rank">Top 3</div>
+                  <div class="prize-preview-amount" id="previewTop3">15%</div>
+                </div>
+                <div class="prize-preview-item">
+                  <div class="prize-preview-rank">Creator</div>
+                  <div class="prize-preview-amount" id="previewCreator">25%</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- System Message -->
+            <div class="system-message">
+              <i class="fas fa-info-circle"></i>
+              <div>All rewards distributed automatically from player entries — no creator charge.</div>
+            </div>
+            
+            <div class="prize-total">
+              <div class="total-label">No Create Fee Required</div>
+              <div class="total-amount" id="nonpaidTotalRequired">NPR 0.00</div>
+            </div>
+          </div>
+          
+          <!-- Prize Inputs for Creator-Profit -->
+          <div class="prize-calculation" id="creatorPrizeInputs" style="display: none;">
+            <div class="prize-header">
+              <i class="fas fa-edit"></i>
+              <span>Set Winning Escrow Amounts</span>
+            </div>
+            
+            <!-- Preset Buttons -->
+            <div class="preset-buttons" id="creatorPresetButtons">
+              <button class="preset-btn" onclick="setEntryFee(100)">Set NPR 100</button>
+              <button class="preset-btn" onclick="setEntryFee(200)">Set NPR 200</button>
+              <button class="preset-btn" onclick="setEntryFee(500)">Set NPR 500</button>
+              <button class="preset-btn" onclick="resetFields()">Reset Fields</button>
+            </div>
+            
+            <div class="prize-inputs">
+              <div class="prize-input-group">
+                <div class="prize-rank">
+                  <i class="fas fa-trophy" style="color: gold;"></i> Top 1
+                </div>
+                <input type="number" id="top1Prize" class="prize-input" placeholder="Enter amount" min="0" step="0.01" oninput="validateCreatorPrizes(); autoSaveDraft()">
+                <div class="prize-min">
+                  Min: NPR <span id="top1Min">0.00</span>
+                </div>
+              </div>
+              
+              <div class="prize-input-group">
+                <div class="prize-rank">
+                  <i class="fas fa-medal" style="color: silver;"></i> Top 2
+                </div>
+                <input type="number" id="top2Prize" class="prize-input" placeholder="Enter amount" min="0" step="0.01" oninput="validateCreatorPrizes(); autoSaveDraft()">
+                <div class="prize-min">
+                  Min: NPR <span id="top2Min">0.00</span>
+                </div>
+              </div>
+              
+              <div class="prize-input-group">
+                <div class="prize-rank">
+                  <i class="fas fa-award" style="color: #cd7f32;"></i> Top 3
+                </div>
+                <input type="number" id="top3Prize" class="prize-input" placeholder="Enter amount" min="0" step="0.01" oninput="validateCreatorPrizes(); autoSaveDraft()">
+                <div class="prize-min">
+                  Min: NPR <span id="top3Min">0.00</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- System Message -->
+            <div class="system-message">
+              <i class="fas fa-info-circle"></i>
+              <div>Winners will be paid from your wallet escrow. Entry fees collected after match completion.</div>
+            </div>
+            
+            <div class="prize-total">
+              <div class="total-label">Total Required from You (Prizes Only)</div>
+              <div class="total-amount" id="creatorTotalRequired">NPR 0.00</div>
+            </div>
+          </div>
+          
+          <!-- How It Works Section -->
+          <div class="how-it-works" id="howItWorks" style="display: none;">
+            <h4><i class="fas fa-info-circle"></i> How It Works</h4>
+            <ul id="howItWorksContent">
+              <!-- Dynamic content based on BR type -->
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Clash Squad Financial Options -->
+        <div class="conditional-options" id="csFinancialOptions">
+          <div class="input-group">
+            <select id="csMatchType" class="auth-input" onchange="toggleCSLWProfitMode(); autoSaveDraft()">
+              <option value="normal"> Normal (Free)</option>
+              <option value="profit"> Profit Mode</option>
+            </select>
+            <label class="floating-label">Match Type</label>
+            <i class="fas fa-coins"></i>
+          </div>
+          
+          <div class="input-group" id="csPrizeGroup" style="display: none;">
+            <input type="number" id="csPrize" class="auth-input" placeholder=" " min="0" step="0.01" required readonly>
+            <label class="floating-label">Winning Amount (NPR)</label>
+            <i class="fas fa-trophy"></i>
+            <div class="input-error" id="csPrizeError"></div>
+            <!-- Auto-sync indicator -->
+            <div class="auto-sync-indicator" id="csAutoSync" style="display: none;">
+              <i class="fas fa-sync-alt"></i>
+              <span>Entry fee automatically synced with winning amount</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lone Wolf Financial Options -->
+        <div class="conditional-options" id="lwFinancialOptions">
+          <div class="input-group">
+            <select id="lwMatchType" class="auth-input" onchange="toggleCSLWProfitMode(); autoSaveDraft()">
+              <option value="normal"> Normal (Free)</option>
+              <option value="profit"> Profit Mode</option>
+            </select>
+            <label class="floating-label">Match Type</label>
+            <i class="fas fa-coins"></i>
+          </div>
+          
+          <div class="input-group" id="lwPrizeGroup" style="display: none;">
+            <input type="number" id="lwPrize" class="auth-input" placeholder=" " min="0" step="0.01" required readonly>
+            <label class="floating-label">Winning Amount (NPR)</label>
+            <i class="fas fa-trophy"></i>
+            <div class="input-error" id="lwPrizeError"></div>
+            <!-- Auto-sync indicator -->
+            <div class="auto-sync-indicator" id="lwAutoSync" style="display: none;">
+              <i class="fas fa-sync-alt"></i>
+              <span>Entry fee automatically synced with winning amount</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Common Entry Fee Input -->
+        <div class="input-group" id="entryFeeGroup">
+          <input type="number" id="matchEntry" class="auth-input" placeholder=" " min="0" step="0.01" required oninput="updatePrizeCalculations(); updateMatchPreview(); autoSaveDraft()">
+          <label class="floating-label">Entry Fee (NPR)</label>
+          <i class="fas fa-ticket-alt"></i>
+          <div class="input-error" id="matchEntryError"></div>
+          <div class="balance-checker">
+            <button type="button" class="check-balance-btn" onclick="checkBalanceSimulator()"><i class="fas fa-wallet"></i> Check Balance</button>
+            <span id="balanceResult" class="balance-result"></span>
+          </div>
+        </div>
+        
+        <!-- Entry Fee Breakdown Note -->
+        <div id="entryFeeBreakdown" class="create-fee-breakdown" style="display: none; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05);">
+          <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+            <span>Total Winning Pool (75%):</span>
+            <span id="winningPoolAmount">NPR 0.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>Creator Profit (25%):</span>
+            <span id="creatorProfitAmount">NPR 0.00</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Additional Settings Card -->
+      <div class="card">
+        <h3 class="section-header">
+          <i class="fas fa-cog"></i> Additional Settings
+        </h3>
+        
+        <!-- Battle Royale Options -->
+        <div class="conditional-options" id="brAdditionalOptions">
+          <h4 style="margin:20px 0 10px; color:var(--accent); font-size:16px; display:flex; align-items:center; gap:8px;">
+            <i class="fas fa-cog"></i> Battle Royale Options
+          </h4>
+          
+          <div class="options-grid">
+            <div class="input-group">
+              <select id="brLimitedAmmo" class="auth-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label class="floating-label">Limited Ammo</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="brCharacterSkill" class="auth-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label class="floating-label">Character Skill</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="brHeadshotMode" class="auth-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label class="floating-label">Headshot Mode</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="brWeaponType" class="auth-input">
+                <option value="all">All Weapons</option>
+                <option value="shotgun">Shotgun Only</option>
+                <option value="smg">SMG Only</option>
+                <option value="pistol">Pistol Only</option>
+              </select>
+              <label class="floating-label">Weapon Type</label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Clash Squad Options -->
+        <div class="conditional-options" id="csAdditionalOptions">
+          <h4 style="margin:20px 0 10px; color:var(--accent); font-size:16px; display:flex; align-items:center; gap:8px;">
+            <i class="fas fa-cog"></i> Clash Squad Options
+          </h4>
+          
+          <div class="options-grid">
+            <div class="input-group">
+              <select id="csCharacterSkill" class="auth-input">
+                <option value="on">On</option>
+                <option value="off">Off</option>
+              </select>
+              <label class="floating-label">Character Skill</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="csHeadshotMode" class="auth-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label class="floating-label">Headshot Mode</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="csGunAttribute" class="auth-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label class="floating-label">Gun Attribute</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="csRounds" class="auth-input" onchange="recalculateMatchDuration(); updateMatchPreview(); autoSaveDraft()">
+                <option value="5">5 Rounds</option>
+                <option value="7">7 Rounds</option>
+                <option value="11">11 Rounds</option>
+                <option value="13">13 Rounds</option>
+              </select>
+              <label class="floating-label">Rounds <span class="tooltip-icon" title="Match duration auto-adjusts based on rounds">ⓘ</span></label>
+            </div>
+            
+            <div class="input-group">
+              <select id="csCoin" class="auth-input">
+                <option value="default">Default</option>
+                <option value="9950">9950</option>
+              </select>
+              <label class="floating-label">Coin</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="csWeaponType" class="auth-input">
+                <option value="shotgun">Only Shotgun</option>
+                <option value="all">All Gun</option>
+                <option value="smg">Only SMG</option>
+                <option value="pistol">Only Pistol</option>
+              </select>
+              <label class="floating-label">Weapon Type</label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lone Wolf Options -->
+        <div class="conditional-options" id="lwAdditionalOptions">
+          <h4 style="margin:20px 0 10px; color:var(--accent); font-size:16px; display:flex; align-items:center; gap:8px;">
+            <i class="fas fa-cog"></i> Lone Wolf Options
+          </h4>
+          
+          <div class="options-grid">
+            <div class="input-group">
+              <select id="lwCharacterSkill" class="auth-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label class="floating-label">Character Skill</label>
+            </div>
+            
+            <div class="input-group">
+              <select id="lwHeadshotMode" class="auth-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <label class="floating-label">Headshot Mode</label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Banner Upload -->
+        <div class="banner-upload" style="margin-top: 20px; text-align: center;">
+          <div class="banner-preview" id="bannerPreview">
+            <i class="fas fa-image" style="font-size: 42px; color: var(--muted);"></i>
+          </div>
+          <label for="matchBanner" class="banner-upload-label">
+            <i class="fas fa-upload"></i> Upload Match Banner (16:9 recommended)
+          </label>
+          <input type="file" id="matchBanner" class="banner-upload-input" accept="image/*">
+          <input type="hidden" id="matchBannerDataURL">
+        </div>
+      </div>
+      
+      <!-- Create Match Button -->
+      <button class="btn" id="createMatchBtn" onclick="showConfirmation()">
+        <i class="fas fa-plus"></i> Create Match
+      </button>
+      </div> <!-- End creationFormView -->
+
+    </div>
+    
+    <!-- Match Preview Panel -->
+    <div class="match-preview">
+      <div class="preview-header">
+        <i class="fas fa-eye"></i>
+        <span>Match Preview</span>
+      </div>
+      
+      <div class="preview-content" id="previewContent">
+        <div class="preview-empty">
+          <i class="fas fa-info-circle" style="font-size: 32px; margin-bottom: 10px;"></i>
+          <p>Select match options to see preview</p>
+        </div>
+      </div>
+      <div id="countdownPreview" class="countdown-preview" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Firebase Legacy Compat Client SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    // ==========================================================================
+    // ROCKY AXIS ESPORTS - CREATE & MANAGE MATCH PAGE (INSTANT AUTO-EXPIRE EDITION)
+    // ==========================================================================
+
+    let app, auth, db;
+    let currentUser = null;
+    let currentProfileData = null;
+    let appSettings = {
+      allowUserMatchCreation: true,
+      allowPaidMatchCreation: true,
+      dailyMatchLimit: 5
+    };
+
+    let selectedMatchType = '';
+    let selectedBRType = '';
+    let selectedVisibility = 'public';
+    let calculatedDurationGlobal = 20;
+    let countdownInterval = null;
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    let dynamicProfileCache = {};
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase initialization error:", err);
+        showNotification('Failed to configure database. Please refresh the page.', 'error');
+        return;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await loadUserProfile();
+          await loadHostedMatches();
+          showManagementView();
+          setupEventListeners();
+          setupDynamicAssistantHelp();
+          updateMatchPreview();
+          checkForDraft();
+          // Periodic re-render to update live/expired states
+          setInterval(() => { loadHostedMatches(); }, 30000);
+          // Start countdown update every second
+          setInterval(updateCountdownPreview, 1000);
+        } else {
+          window.location.href = "/LoginAuth";
+        }
+      });
+    });
+
+    // ==========================================================================
+    // LOAD USER PROFILE & WALLET DATA
+    // ==========================================================================
+    async function loadUserProfile() {
+      try {
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+          currentProfileData = userDoc.data();
+          
+          getPrivateCollection(currentUser.uid, 'wallets').doc('wallet').onSnapshot(snap => {
+            if (snap.exists) {
+              const balance = snap.data().balance || 0;
+              document.getElementById('walletBalance').textContent = `NPR ${balance.toFixed(2)}`;
+            }
+          });
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const limitSnap = await getPublicCollection('matches')
+            .where('creatorUid', '==', currentUser.uid)
+            .get();
+
+          let countToday = 0;
+          limitSnap.forEach(doc => {
+            const time = doc.data().createdAt?.seconds * 1000;
+            if (time && time >= today.getTime()) countToday++;
+          });
+
+          const remaining = Math.max(0, appSettings.dailyMatchLimit - countToday);
+          document.getElementById('remainingMatches').textContent = remaining;
+          document.getElementById('dailyLimitCount').textContent = appSettings.dailyMatchLimit;
+
+          if (remaining <= 0) {
+            document.getElementById('createMatchBtn').disabled = true;
+            showNotification("Daily match creation limit (5) reached. Try tomorrow.", "error");
+          }
+        }
+      } catch (e) {
+        console.error("Profile load error:", e);
+        showNotification('Failed to load user profile. Please refresh.', 'error');
+      }
+    }
+
+    // ==========================================================================
+    // AUTO-SAVE DRAFT (LOCALSTORAGE)
+    // ==========================================================================
+    function autoSaveDraft() {
+      const draft = {
+        title: document.getElementById('matchTitle').value,
+        platform: document.getElementById('matchPlatform').value,
+        description: document.getElementById('matchDescription').value,
+        entryFee: document.getElementById('matchEntry').value,
+        startTime: document.getElementById('matchStartTime').value,
+        startTimeDisplay: document.getElementById('matchStartTimeDisplay').value,
+        matchType: selectedMatchType,
+        brType: selectedBRType,
+        visibility: selectedVisibility,
+        brMap: document.getElementById('brMap')?.value,
+        brMode: document.getElementById('brMode')?.value,
+        brPlayers: document.getElementById('brPlayers')?.value,
+        csTeamSize: document.getElementById('csTeamSize')?.value,
+        csMatchType: document.getElementById('csMatchType')?.value,
+        lwRounds: document.getElementById('lwRounds')?.value,
+        lwTeamSize: document.getElementById('lwTeamSize')?.value,
+        top1Prize: document.getElementById('top1Prize')?.value,
+        top2Prize: document.getElementById('top2Prize')?.value,
+        top3Prize: document.getElementById('top3Prize')?.value,
+        banner: document.getElementById('matchBannerDataURL')?.value,
+        savedAt: Date.now()
+      };
+      localStorage.setItem('rockyaxis_match_draft', JSON.stringify(draft));
+    }
+
+    function checkForDraft() {
+      const saved = localStorage.getItem('rockyaxis_match_draft');
+      if (saved) {
+        const draft = JSON.parse(saved);
+        // Show restore banner if draft is less than 24 hours old
+        if (Date.now() - draft.savedAt < 24 * 60 * 60 * 1000) {
+          document.getElementById('restoreDraftBanner').classList.add('show');
+        } else {
+          localStorage.removeItem('rockyaxis_match_draft');
+        }
+      }
+    }
+
+    function restoreDraft() {
+      const saved = localStorage.getItem('rockyaxis_match_draft');
+      if (saved) {
+        const draft = JSON.parse(saved);
+        document.getElementById('matchTitle').value = draft.title || '';
+        document.getElementById('matchPlatform').value = draft.platform || '';
+        document.getElementById('matchDescription').value = draft.description || '';
+        document.getElementById('matchEntry').value = draft.entryFee || '0';
+        document.getElementById('matchStartTime').value = draft.startTime || '';
+        document.getElementById('matchStartTimeDisplay').value = draft.startTimeDisplay || '';
+        if (draft.startTime) updateCountdownPreview();
+        if (draft.matchType) selectMatchType(draft.matchType);
+        if (draft.brType) selectBRType(draft.brType);
+        if (draft.visibility) selectVisibility(draft.visibility);
+        if (draft.brMap && document.getElementById('brMap')) document.getElementById('brMap').value = draft.brMap;
+        if (draft.brMode && document.getElementById('brMode')) document.getElementById('brMode').value = draft.brMode;
+        if (draft.brPlayers && document.getElementById('brPlayers')) document.getElementById('brPlayers').value = draft.brPlayers;
+        if (draft.csTeamSize && document.getElementById('csTeamSize')) document.getElementById('csTeamSize').value = draft.csTeamSize;
+        if (draft.csMatchType && document.getElementById('csMatchType')) document.getElementById('csMatchType').value = draft.csMatchType;
+        if (draft.lwRounds && document.getElementById('lwRounds')) document.getElementById('lwRounds').value = draft.lwRounds;
+        if (draft.lwTeamSize && document.getElementById('lwTeamSize')) document.getElementById('lwTeamSize').value = draft.lwTeamSize;
+        if (draft.top1Prize && document.getElementById('top1Prize')) document.getElementById('top1Prize').value = draft.top1Prize;
+        if (draft.top2Prize && document.getElementById('top2Prize')) document.getElementById('top2Prize').value = draft.top2Prize;
+        if (draft.top3Prize && document.getElementById('top3Prize')) document.getElementById('top3Prize').value = draft.top3Prize;
+        if (draft.banner && document.getElementById('matchBannerDataURL')) {
+          document.getElementById('matchBannerDataURL').value = draft.banner;
+          document.getElementById('bannerPreview').innerHTML = `<img src="${draft.banner}" style="width:100%; height:100%; object-fit:cover;">`;
+        }
+        updatePrizeCalculations();
+        updateMatchPreview();
+        showNotification("Draft restored successfully!", "success");
+      }
+      document.getElementById('restoreDraftBanner').classList.remove('show');
+    }
+
+    function clearDraft() {
+      localStorage.removeItem('rockyaxis_match_draft');
+      document.getElementById('restoreDraftBanner').classList.remove('show');
+    }
+
+    // ==========================================================================
+    // REAL-TIME VALIDATION
+    // ==========================================================================
+    function validateTitle() {
+      const title = document.getElementById('matchTitle').value.trim();
+      const icon = document.getElementById('titleValidationIcon');
+      if (title.length >= 3 && title.length <= 100) {
+        icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+        icon.className = 'validation-icon valid';
+        return true;
+      } else {
+        icon.innerHTML = '<i class="fas fa-times-circle"></i>';
+        icon.className = 'validation-icon invalid';
+        return false;
+      }
+    }
+
+    function validatePrizeOrder() {
+      if (selectedMatchType === 'BR' && selectedBRType === 'creator') {
+        const entryFee = parseFloat(document.getElementById('matchEntry').value) || 0;
+        const players = parseInt(document.getElementById('brPlayers').value) || 20;
+        const potentialPool = entryFee * players;
+        
+        const minT1 = potentialPool * 0.35;
+        const minT2 = potentialPool * 0.25;
+        const minT3 = potentialPool * 0.15;
+
+        const t1 = parseFloat(document.getElementById('top1Prize').value) || 0;
+        const t2 = parseFloat(document.getElementById('top2Prize').value) || 0;
+        const t3 = parseFloat(document.getElementById('top3Prize').value) || 0;
+
+        let hasError = false;
+        let errMsg = '';
+
+        // Check if values are lower than minimums
+        if (t1 < minT1) {
+          document.getElementById('top1Prize').style.borderColor = 'var(--error)';
+          hasError = true;
+          errMsg = `Top 1 prize must be at least NPR ${minT1.toFixed(2)}`;
+        } else {
+          document.getElementById('top1Prize').style.borderColor = 'var(--success)';
+        }
+
+        if (t2 < minT2) {
+          document.getElementById('top2Prize').style.borderColor = 'var(--error)';
+          hasError = true;
+          if (!errMsg) errMsg = `Top 2 prize must be at least NPR ${minT2.toFixed(2)}`;
+        } else {
+          document.getElementById('top2Prize').style.borderColor = 'var(--success)';
+        }
+
+        if (t3 < minT3) {
+          document.getElementById('top3Prize').style.borderColor = 'var(--error)';
+          hasError = true;
+          if (!errMsg) errMsg = `Top 3 prize must be at least NPR ${minT3.toFixed(2)}`;
+        } else {
+          document.getElementById('top3Prize').style.borderColor = 'var(--success)';
+        }
+
+        // Check descending prize order if no minimum error exists
+        if (!hasError) {
+          if (t1 > t2 && t2 > t3) {
+            document.getElementById('top1Prize').style.borderColor = 'var(--success)';
+            document.getElementById('top2Prize').style.borderColor = 'var(--success)';
+            document.getElementById('top3Prize').style.borderColor = 'var(--success)';
+            return true;
+          } else {
+            document.getElementById('top1Prize').style.borderColor = 'var(--error)';
+            document.getElementById('top2Prize').style.borderColor = 'var(--error)';
+            document.getElementById('top3Prize').style.borderColor = 'var(--error)';
+            showErrorMsg('matchEntryError', 'Prizes must be in descending order: Top 1 > Top 2 > Top 3');
+            return false;
+          }
+        } else {
+          showErrorMsg('matchEntryError', errMsg);
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // ==========================================================================
+    // WALLET BALANCE SIMULATOR
+    // ==========================================================================
+    async function checkBalanceSimulator() {
+      const entry = parseFloat(document.getElementById('matchEntry').value) || 0;
+      let totalRequired = entry;
+      if (selectedMatchType === 'BR' && selectedBRType === 'creator') {
+        const t1 = parseFloat(document.getElementById('top1Prize').value) || 0;
+        const t2 = parseFloat(document.getElementById('top2Prize').value) || 0;
+        const t3 = parseFloat(document.getElementById('top3Prize').value) || 0;
+        totalRequired += (t1 + t2 + t3);
+      }
+      const walletText = document.getElementById('walletBalance').textContent;
+      const balance = parseFloat(walletText.replace('NPR ', '')) || 0;
+      const resultSpan = document.getElementById('balanceResult');
+      if (balance >= totalRequired) {
+        resultSpan.innerHTML = `<i class="fas fa-check-circle"></i> Sufficient: NPR ${balance.toFixed(2)} available (need NPR ${totalRequired.toFixed(2)})`;
+        resultSpan.className = 'balance-result sufficient';
+      } else {
+        resultSpan.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Insufficient: Need NPR ${totalRequired.toFixed(2)}, have NPR ${balance.toFixed(2)}`;
+        resultSpan.className = 'balance-result insufficient';
+      }
+    }
+
+    // ==========================================================================
+    // ONE-CLICK PRESETS
+    // ==========================================================================
+    function applyPreset(preset) {
+      if (preset === 'free_solo_br') {
+        selectMatchType('BR');
+        selectBRType('normal');
+        if (document.getElementById('brMode')) document.getElementById('brMode').value = 'Solo';
+        if (document.getElementById('brPlayers')) document.getElementById('brPlayers').value = '20';
+        document.getElementById('matchEntry').value = '0';
+        document.getElementById('matchEntry').disabled = true;
+        document.getElementById('matchTitle').value = 'Free Solo Battle Royale';
+      } else if (preset === 'paid_1v1_cs') {
+        selectMatchType('CS');
+        if (document.getElementById('csTeamSize')) document.getElementById('csTeamSize').value = '1v1';
+        if (document.getElementById('csMatchType')) document.getElementById('csMatchType').value = 'profit';
+        handleCSTeamSizeChange();
+        toggleCSLWProfitMode();
+        document.getElementById('matchEntry').value = '50';
+        document.getElementById('matchEntry').disabled = false;
+        document.getElementById('matchTitle').value = 'Paid 1v1 Clash Squad';
+        updatePrizeCalculations();
+      } else if (preset === 'creator_br_200') {
+        selectMatchType('BR');
+        selectBRType('creator');
+        if (document.getElementById('brMode')) document.getElementById('brMode').value = 'Squad';
+        if (document.getElementById('brPlayers')) document.getElementById('brPlayers').value = '20';
+        document.getElementById('matchEntry').value = '20';
+        document.getElementById('top1Prize').value = '100';
+        document.getElementById('top2Prize').value = '60';
+        document.getElementById('top3Prize').value = '40';
+        document.getElementById('matchTitle').value = 'Creator Profit BR (NPR 200 Prize)';
+        document.getElementById('matchEntry').disabled = false;
+        updatePrizeCalculations();
+      }
+      updateMatchPreview();
+      autoSaveDraft();
+      showNotification(`Preset "${preset.replace(/_/g, ' ')}" applied`, 'success');
+    }
+
+    // ==========================================================================
+    // START TIME SMART WARNINGS & COUNTDOWN
+    // ==========================================================================
+    function validateStartTime() {
+      const timeVal = document.getElementById('matchStartTime').value;
+      if (!timeVal) return false;
+      const scheduledTime = new Date(timeVal).getTime();
+      const now = Date.now();
+      const minBuffer = now + (10 * 60 * 1000);
+      const maxFuture = now + (90 * 24 * 60 * 60 * 1000);
+      if (scheduledTime < minBuffer) {
+        showErrorMsg('matchStartTimeError', 'Match must start at least 10 minutes in the future');
+        return false;
+      }
+      if (scheduledTime > maxFuture) {
+        showErrorMsg('matchStartTimeError', 'Match cannot be scheduled more than 90 days in advance');
+        return false;
+      }
+      if (scheduledTime > now + (7 * 24 * 60 * 60 * 1000)) {
+        const reminder = document.getElementById('reminderBanner');
+        reminder.classList.add('show');
+        document.getElementById('reminderText').innerHTML = '<i class="fas fa-calendar-week"></i> Consider a sooner date for better participation.';
+      } else {
+        const reminder = document.getElementById('reminderBanner');
+        reminder.classList.add('show');
+        document.getElementById('reminderText').innerHTML = '<i class="fas fa-key"></i> Don\'t forget to set Room ID & Password before this time!';
+      }
+      return true;
+    }
+
+    function updateCountdownPreview() {
+      const timeVal = document.getElementById('matchStartTime').value;
+      const container = document.getElementById('countdownPreview');
+      if (!timeVal) {
+        container.style.display = 'none';
+        return;
+      }
+      const scheduledTime = new Date(timeVal).getTime();
+      const now = Date.now();
+      if (scheduledTime <= now) {
+        container.style.display = 'none';
+        return;
+      }
+      const diffMs = scheduledTime - now;
+      const diffSec = Math.floor(diffMs / 1000);
+      const hours = Math.floor(diffSec / 3600);
+      const minutes = Math.floor((diffSec % 3600) / 60);
+      const seconds = diffSec % 60;
+      container.innerHTML = `<i class="fas fa-hourglass-half"></i> Starts in ${hours}h ${minutes}m ${seconds}s`;
+      container.style.display = 'block';
+    }
+
+    // ==========================================================================
+    // ERROR SUMMARY BAR
+    // ==========================================================================
+    function updateErrorSummary() {
+      const errors = [];
+      if (!document.getElementById('matchTitle').value.trim()) errors.push({ msg: 'Match title is required', field: 'matchTitle' });
+      if (!document.getElementById('matchPlatform').value) errors.push({ msg: 'Platform game is required', field: 'matchPlatform' });
+      if (!selectedMatchType) errors.push({ msg: 'Match type is required', field: 'match-type' });
+      if (!document.getElementById('matchStartTime').value) errors.push({ msg: 'Start time is required', field: 'matchStartTimeDisplay' });
+      if (selectedMatchType === 'BR') {
+        if (!selectedBRType) errors.push({ msg: 'Battle Royale type is required', field: 'brTypeSelection' });
+        if (!document.getElementById('brMap').value) errors.push({ msg: 'Map is required', field: 'brMap' });
+        if (!document.getElementById('brMode').value) errors.push({ msg: 'Mode is required', field: 'brMode' });
+        if (selectedBRType === 'creator') {
+          const t1 = parseFloat(document.getElementById('top1Prize').value) || 0;
+          const t2 = parseFloat(document.getElementById('top2Prize').value) || 0;
+          const t3 = parseFloat(document.getElementById('top3Prize').value) || 0;
+          if (t1 === 0 || t2 === 0 || t3 === 0) errors.push({ msg: 'All prize amounts must be > 0', field: 'top1Prize' });
+          if (t1 > 0 && t2 > 0 && t3 > 0 && !(t1 > t2 && t2 > t3)) errors.push({ msg: 'Prizes must be in descending order (Top 1 > Top 2 > Top 3)', field: 'top1Prize' });
+        }
+        if (selectedBRType === 'nonpaid' || selectedBRType === 'creator') {
+          const entry = parseFloat(document.getElementById('matchEntry').value) || 0;
+          if (entry <= 0) errors.push({ msg: 'Entry fee must be greater than 0 for this mode', field: 'matchEntry' });
+        }
+      }
+      if (selectedMatchType === 'CS') {
+        if (!document.getElementById('csTeamSize').value) errors.push({ msg: 'Team size is required', field: 'csTeamSize' });
+      }
+      if (selectedMatchType === 'LW') {
+        if (!document.getElementById('lwRounds').value) errors.push({ msg: 'Number of rounds is required', field: 'lwRounds' });
+        if (!document.getElementById('lwTeamSize').value) errors.push({ msg: 'Team size is required', field: 'lwTeamSize' });
+      }
+      
+      const summaryDiv = document.getElementById('errorSummary');
+      const errorList = document.getElementById('errorList');
+      if (errors.length > 0) {
+        errorList.innerHTML = errors.map(e => `<li data-field="${e.field}">⚠️ ${e.msg}</li>`).join('');
+        summaryDiv.classList.add('show');
+        // Add click-to-scroll
+        document.querySelectorAll('#errorList li').forEach(li => {
+          li.addEventListener('click', () => {
+            const fieldId = li.dataset.field;
+            const el = document.getElementById(fieldId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        });
+        return false;
+      } else {
+        summaryDiv.classList.remove('show');
+        return true;
+      }
+    }
+
+    function showCreationView() {
+      resetCreationForm();
+      document.getElementById('hostedMatchesArea').style.display = 'none';
+      document.getElementById('creationFormView').style.display = 'block';
+      document.querySelector('.match-preview').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetCreationForm() {
+      document.getElementById('matchTitle').value = '';
+      document.getElementById('matchPlatform').value = '';
+      document.getElementById('matchDescription').value = '';
+      document.getElementById('matchStartTime').value = '';
+      document.getElementById('matchStartTimeDisplay').value = '';
+      document.getElementById('matchEntry').value = '0';
+      document.getElementById('top1Prize').value = '';
+      document.getElementById('top2Prize').value = '';
+      document.getElementById('top3Prize').value = '';
+      document.getElementById('matchBanner').value = '';
+      document.getElementById('matchBannerDataURL').value = '';
+      document.getElementById('bannerPreview').innerHTML = '<i class="fas fa-image" style="font-size: 42px; color: var(--muted);"></i>';
+      
+      selectedMatchType = '';
+      selectedBRType = '';
+      document.querySelectorAll('.match-type-option').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.br-type-option').forEach(el => el.classList.remove('selected'));
+      document.getElementById('titleValidationIcon').innerHTML = '';
+      document.getElementById('balanceResult').innerHTML = '';
+      document.getElementById('errorSummary').classList.remove('show');
+      document.getElementById('reminderBanner').classList.remove('show');
+      document.getElementById('countdownPreview').style.display = 'none';
+    }
+
+    function showManagementView() {
+      document.getElementById('hostedMatchesArea').style.display = 'block';
+      document.getElementById('creationFormView').style.display = 'none';
+      document.querySelector('.match-preview').style.display = 'none';
+    }
+
+    // ==========================================================================
+    // DUPLICATE MATCH CHECK
+    // ==========================================================================
+    async function checkDuplicateMatch() {
+      const title = document.getElementById('matchTitle').value.trim();
+      const timeVal = document.getElementById('matchStartTime').value;
+      if (!title || !timeVal) return true;
+      const startTime = new Date(timeVal);
+      const existing = await getPublicCollection('matches')
+        .where('creatorUid', '==', currentUser.uid)
+        .where('title', '==', title)
+        .get();
+      for (const doc of existing.docs) {
+        const match = doc.data();
+        const matchStart = match.startTime?.toDate();
+        if (matchStart && Math.abs(matchStart.getTime() - startTime.getTime()) < 60000) {
+          showNotification('You already have a match with the same title and start time.', 'error');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // ==========================================================================
+    // DETERMINE MATCH STATE BASED ON TIME AND CREDENTIALS
+    // ==========================================================================
+    function getMatchState(match, now) {
+      if (match.status === 'expired') {
+        return 'expired';
+      }
+      if (match.payoutProcessed === true || match.status === 'completed') {
+        return 'completed';
+      }
+      const startTimeMs = match.startTime?.seconds ? match.startTime.seconds * 1000 : now;
+      const durationMin = parseInt(match.matchDuration || 30);
+      const endTimeMs = startTimeMs + (durationMin * 60 * 1000);
+      const hasCustomId = match.customMatchId && match.customMatchId.trim() !== '';
+
+      const players = match.players || [];
+      const otherCompetitors = players.some(p => p.uid !== match.creatorUid);
+
+      // Check if it is expired because match start time has been reached/passed and no other players joined
+      if (now >= startTimeMs && !otherCompetitors && match.status === 'upcoming') {
+        return 'expired';
+      }
+
+      if (now >= endTimeMs) return 'pending_settlement';
+      if (now >= startTimeMs) {
+        return hasCustomId ? 'live' : 'expired_no_creds';
+      }
+      return 'upcoming';
+    }
+
+    // ==========================================================================
+    // REAL-TIME AUTO EXPIRATION FOR UNJOINED MATCHES INSTANTLY AT MATCH TIME
+    // ==========================================================================
+    async function autoExpireMatchIfNeeded(docId, matchData) {
+      if (matchData.status !== 'upcoming') return;
+
+      const now = Date.now();
+      const startTimeMs = matchData.startTime?.seconds ? matchData.startTime.seconds * 1000 : now;
+
+      // Check if current time is equal to or past scheduled match time
+      if (now >= startTimeMs) {
+        const players = matchData.players || [];
+        const otherCompetitors = players.some(p => p.uid !== matchData.creatorUid);
+
+        // If match scheduled time is reached and absolutely no other competitors have joined
+        if (!otherCompetitors) {
+          try {
+            const matchRef = getPublicCollection('matches').doc(docId);
+            const walletRef = getPrivateCollection(matchData.creatorUid, 'wallets').doc('wallet');
+
+            await db.runTransaction(async (transaction) => {
+              const matchSnap = await transaction.get(matchRef);
+              if (!matchSnap.exists) return;
+              const freshData = matchSnap.data();
+              if (freshData.status !== 'upcoming') return; // already updated
+
+              let refundAmount = parseFloat(freshData.entryFee || 0);
+              if (freshData.type === 'BR' && freshData.brType === 'creator') {
+                const prizes = freshData.prizes || {};
+                refundAmount += (parseFloat(prizes.top1 || 0) + parseFloat(prizes.top2 || 0) + parseFloat(prizes.top3 || 0));
+              }
+
+              const walletSnap = await transaction.get(walletRef);
+              const currentBal = walletSnap.exists ? (walletSnap.data().balance || 0) : 0;
+
+              // Full refund to creator wallet
+              transaction.set(walletRef, {
+                balance: currentBal + refundAmount,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+
+              const transRef = getPrivateCollection(matchData.creatorUid, 'transactions').doc();
+              transaction.set(transRef, {
+                userId: matchData.creatorUid,
+                type: 'match_auto_expire_refund',
+                amount: refundAmount,
+                description: `Instant auto-expire refund for unjoined Match #${freshData.matchId}`,
+                matchId: freshData.matchId,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'completed'
+              });
+
+              // Instantly transition status to expired
+              transaction.update(matchRef, {
+                status: 'expired',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            });
+            console.log(`Instantly expired unjoined Match #${matchData.matchId} at match time.`);
+          } catch (err) {
+            console.error("Instant auto-expiration daemon fault: ", err);
+          }
+        }
+      }
+    }
+
+    // ==========================================================================
+    // RENDER HOSTED MATCHES WITH FULL LIFECYCLE HANDLING
+    // ==========================================================================
+    async function loadHostedMatches() {
+      const listContainer = document.getElementById('hostedMatchesList');
+      const now = Date.now();
+      
+      getPublicCollection('matches')
+        .where('creatorUid', '==', currentUser.uid)
+        .onSnapshot(async snap => {
+          if (snap.empty) {
+            listContainer.innerHTML = `
+              <div class="empty-state" style="text-align: center; padding: 40px; color: var(--muted);">
+                <i class="fas fa-folder-open" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i>
+                <p>You haven't created any matches yet.</p>
+                <button class="btn" style="width: auto; margin-top: 15px; padding: 10px 20px;" onclick="showCreationView()">Create Your First Match</button>
+              </div>
+            `;
+            return;
+          }
+          
+          const uidsToResolve = new Set();
+          snap.forEach(doc => {
+            const match = doc.data();
+            const players = match.players || [];
+            players.forEach(p => { if(p.uid) uidsToResolve.add(p.uid); });
+            if(match.creatorUid) uidsToResolve.add(match.creatorUid);
+          });
+          await resolveProfiles(Array.from(uidsToResolve));
+          
+          // EXECUTE DAEMON BACKGROUND RUNS INSTANTLY
+          const sortedMatches = [];
+          snap.forEach(doc => {
+            sortedMatches.push({ docId: doc.id, data: doc.data() });
+          });
+
+          for (const item of sortedMatches) {
+            await autoExpireMatchIfNeeded(item.docId, item.data);
+          }
+          
+          // IN-MEMORY SORT BY CREATEDAT DESCENDING (NEWEST FIRST)
+          sortedMatches.sort((a, b) => {
+            const aTime = a.data.createdAt?.seconds || 0;
+            const bTime = b.data.createdAt?.seconds || 0;
+            return bTime - aTime;
+          });
+          
+          listContainer.innerHTML = '';
+          sortedMatches.forEach(item => {
+            const match = item.data;
+            const matchDocId = item.docId;
+            
+            const playersList = match.players || [];
+            const isCsOrLw = match.type === 'CS' || match.type === 'LW';
+            const maxCapacity = match.maxPlayers || (isCsOrLw ? 2 : 50);
+            const totalJoinedCount = playersList.length;
+
+            const entryFee = parseFloat(match.entryFee || 0);
+            let rewardTextVal = parseFloat(match.prize || 0);
+            if (match.type === 'BR' && match.brType === 'nonpaid') {
+              rewardTextVal = entryFee * playersList.length;
+            } else if (isCsOrLw && match.matchType === 'profit') {
+              rewardTextVal = entryFee * 2;
+            } else if (match.type === 'BR' && match.brType === 'creator') {
+              rewardTextVal = (match.prizes?.top1 || 0) + (match.prizes?.top2 || 0) + (match.prizes?.top3 || 0);
+            }
+
+            const displayPrizeText = rewardTextVal > 0 ? `NPR ${rewardTextVal.toFixed(2)}` : 'NPR 0.00';
+            const displayEntryText = entryFee > 0 ? `NPR ${entryFee.toFixed(2)}` : 'Free';
+
+            let formatTitle = "Clash Squad";
+            if (match.type === 'BR') formatTitle = "Battle Royale";
+            else if (match.type === 'LW') formatTitle = "Lone Wolf";
+
+            const hasCustomBannerImage = match.banner && match.banner.trim() !== '';
+            const bannerStyleAttribute = hasCustomBannerImage ? `background-image: url('${match.banner}')` : '';
+
+            const state = getMatchState(match, now);
+            let statusBadgeClass = 'upcoming';
+            let statusText = 'Upcoming';
+            let disableDelete = true;
+            let disableSendCreds = true;
+            let showWinnerBtn = false;
+            let showDelete = false;
+            let showCompletedBtn = false;
+
+            // Strict checking if any other competitor besides creator has registered
+            const otherPlayersJoined = playersList.some(p => p.uid !== currentUser.uid);
+
+            switch(state) {
+              case 'completed':
+                statusBadgeClass = 'settled';
+                statusText = 'Completed';
+                disableDelete = true;
+                disableSendCreds = true;
+                showWinnerBtn = false;
+                showDelete = false;
+                showCompletedBtn = true;
+                break;
+              case 'expired':
+                statusBadgeClass = 'expired';
+                statusText = 'Expired (Refunded)';
+                disableDelete = true;
+                disableSendCreds = true;
+                showWinnerBtn = false;
+                showDelete = false;
+                showCompletedBtn = false;
+                break;
+              case 'upcoming':
+                statusBadgeClass = 'upcoming';
+                statusText = 'Upcoming';
+                disableDelete = otherPlayersJoined;
+                disableSendCreds = false;
+                showWinnerBtn = false;
+                showDelete = !disableDelete; // Only show delete if no other player has registered
+                break;
+              case 'live':
+                statusBadgeClass = 'live';
+                statusText = 'Live';
+                disableDelete = true;
+                disableSendCreds = true;
+                showWinnerBtn = false;
+                showDelete = false;
+                break;
+              case 'expired_no_creds':
+                statusBadgeClass = 'expired';
+                statusText = 'Expired (No Creds)';
+                disableDelete = otherPlayersJoined;
+                disableSendCreds = true;
+                showWinnerBtn = false;
+                showDelete = !disableDelete;
+                break;
+              case 'pending_settlement':
+                statusBadgeClass = 'expired';
+                statusText = 'Awaiting Winners';
+                disableDelete = true;
+                disableSendCreds = true;
+                showWinnerBtn = true;
+                showDelete = false;
+                break;
+            }
+
+            let headerMarkup = '';
+            if (hasCustomBannerImage) {
+              headerMarkup = `
+                <div class="banner-view" style="${bannerStyleAttribute}">
+                  <div class="banner-label-wrap" style="width: 100%; padding: 0 15px 5px;">
+                    <div class="premium-title-wrapper" style="margin-bottom: 4px;">
+                      <div class="premium-title-text" style="font-size: 18px;">${escapeHtml(match.title || 'Esports Match')}</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            } else {
+              headerMarkup = `
+                <div class="card-header-no-pic">
+                  <div class="premium-title-wrapper">
+                    <div class="premium-title-text" style="font-size: 18px;">${escapeHtml(match.title || 'Esports Match')}</div>
+                  </div>
+                </div>
+              `;
+            }
+
+            let progressDisplayStr = '';
+            let progressRatio = 0;
+            if (isCsOrLw) {
+              progressDisplayStr = `${totalJoinedCount} / 2 Players Joined`;
+              progressRatio = (totalJoinedCount / 2) * 100;
+            } else {
+              const modeSize = match.mode || match.teamSize || 'Solo';
+              if (modeSize === 'Duo') {
+                progressDisplayStr = `${Math.floor(totalJoinedCount / 2)} / ${Math.floor(maxCapacity / 2)} Teams Joined (${totalJoinedCount}/${maxCapacity})`;
+              } else if (modeSize === 'Squad') {
+                progressDisplayStr = `${Math.floor(totalJoinedCount / 4)} / ${Math.floor(maxCapacity / 4)} Teams Joined (${totalJoinedCount}/${maxCapacity})`;
+              } else {
+                progressDisplayStr = `${totalJoinedCount} / ${maxCapacity} Players Joined`;
+              }
+              progressRatio = (totalJoinedCount / maxCapacity) * 100;
+            }
+
+            const characterSkillVal = match.characterSkill || 'Yes';
+            const roundsVal = match.rounds || (match.type === 'LW' ? '5' : match.type === 'CS' ? '7' : 'N/A');
+            const gunAttributeVal = match.gunAttribute || 'No';
+            const coinVal = match.coin || (match.type === 'BR' ? 'N/A' : '9950');
+            const headshotModeVal = match.headshotMode || 'No';
+            const ammoLimitVal = match.limitedAmmo || 'Yes';
+            const scheduledDateStr = match.startTime?.seconds ? new Date(match.startTime.seconds * 1000).toLocaleString() : 'N/A';
+
+            const hostProfile = dynamicProfileCache[match.creatorUid];
+            const hostName = hostProfile ? (hostProfile.name || match.creatorName || 'Organizer') : (match.creatorName || 'Organizer');
+
+            const card = document.createElement('div');
+            card.className = 'tournament-card';
+            card.innerHTML = `
+              ${headerMarkup}
+              <div class="banner-main-sub" style="margin-top: 3px;">
+                <div class="platform-badge-compact">
+                  <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                  <span>${escapeHtml(match.platform || 'Free Fire')}</span>
+                </div>
+                <span>• ${formatTitle} Format</span>
+                <span class="status-pill-badge ${statusBadgeClass}" style="margin-left: auto;">${statusText}</span>
+              </div>
+
+              <div class="tournament-body-wrap" style="padding-top: 0; gap: 10px;">
+                <div class="t-row-header">
+                  <div class="badge-financial-grid">
+                    <span class="prize-badge-pill">Winning: ${displayPrizeText}</span>
+                    <span class="entry-badge-pill">Entry: ${displayEntryText}</span>
+                  </div>
+                  <span style="font-size: 11px; color: var(--muted); font-family: var(--font-mono);">#${match.matchId}</span>
+                </div>
+
+                <div class="specs-metric-row">
+                  <div class="spec-details-header"><i class="fas fa-microchip"></i> Game Configurations</div>
+                  <div class="specs-columns-grid">
+                    <div class="spec-rule-row"><span class="spec-rule-lbl"><i class="fas fa-shield-heart"></i> Character Skill</span><span class="spec-rule-val" style="color: var(--accent);">${characterSkillVal}</span></div>
+                    <div class="spec-rule-row"><span class="spec-rule-lbl"><i class="fas fa-cubes"></i> ${match.type === 'BR' ? 'BR Type' : 'Rounds'}</span><span class="spec-rule-val">${match.type === 'BR' ? (match.brType === 'creator' ? 'Creator Profit' : match.brType === 'nonpaid' ? 'Non Paid Profit' : 'Normal') : roundsVal}</span></div>
+                    <div class="spec-rule-row"><span class="spec-rule-lbl"><i class="fas fa-gun"></i> Gun Attributes</span><span class="spec-rule-val">${gunAttributeVal}</span></div>
+                    <div class="spec-rule-row"><span class="spec-rule-lbl"><i class="fas fa-coins"></i> ${match.type === 'BR' ? 'Match Duration' : 'Coins'}</span><span class="spec-rule-val">${match.type === 'BR' ? (match.matchDuration + ' Min') : coinVal}</span></div>
+                    <div class="spec-rule-row"><span class="spec-rule-lbl"><i class="fas fa-crosshairs"></i> Headshot Mode</span><span class="spec-rule-val">${headshotModeVal}</span></div>
+                    <div class="spec-rule-row"><span class="spec-rule-lbl"><i class="fas fa-fire-burner"></i> Ammo Limit</span><span class="spec-rule-val">${ammoLimitVal}</span></div>
+                  </div>
+                  <div class="single-full-spec-highlight"><span class="single-full-spec-lbl"><i class="fas fa-map-location-dot"></i> Map & Mode</span><span class="single-full-spec-val">${match.map || 'Bermuda'} (${match.mode || match.teamSize || 'Solo'})</span></div>
+                  <div class="single-full-spec-highlight"><span class="single-full-spec-lbl"><i class="fas fa-clock"></i> Starts</span><span class="single-full-spec-val" style="color: var(--accent); font-family: var(--font-mono);">${scheduledDateStr}</span></div>
+                </div>
+
+                <div class="roster-progress-container">
+                  <div class="roster-progress-header"><span>Roster Seats</span><span>${progressDisplayStr}</span></div>
+                  <div class="roster-progress-track"><div class="roster-progress-fill" style="width: ${progressRatio}%"></div></div>
+                </div>
+
+                <div class="creator-attribution-tag"><i class="fas fa-crown" style="color: gold; font-size:10px;"></i><span>Creator: <strong style="color:#fff;">${escapeHtml(hostName)}</strong></span></div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:5px;">
+                  <button class="btn btn-secondary" style="padding: 8px; font-size: 12px; border-radius:6px;" onclick="viewHostedDetails('${matchDocId}')"><i class="fas fa-info-circle"></i> Details</button>
+                  <button class="btn btn-secondary" style="padding: 8px; font-size: 12px; border-radius:6px;" onclick="viewHostedPlayers('${matchDocId}')"><i class="fas fa-users"></i> Players</button>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:8px; background: rgba(255,255,255,0.01); padding: 10px; border-radius: 10px;">
+                  <button class="btn btn-secondary" style="background: rgba(0,234,255,0.03); border: 1px solid rgba(0,234,255,0.15); color: var(--accent); font-size: 12px; padding: 8px;" onclick="copyShareMatchLink('${match.matchId}')"><i class="fas fa-share-nodes"></i> Share Match URL</button>
+                  <button class="btn btn-secondary" style="background: rgba(0,234,255,0.03); border: 1px solid rgba(0,234,255,0.15); color: var(--accent); font-size: 12px; padding: 8px;" onclick="copyDirectMatchUrl('${match.matchId}')"><i class="fas fa-copy"></i> Copy URL</button>
+                  
+                  ${showDelete ? `<button class="btn btn-danger" style="padding:8px; font-size:12px;" onclick="confirmDeleteMatch('${matchDocId}', '${match.matchId}')"><i class="fas fa-trash-alt"></i> Cancel Match</button>` : ''}
+                  ${!showDelete && state !== 'completed' && state !== 'expired' && state !== 'pending_settlement' ? '<div class="delete-warning-text" style="font-size:10px;"><i class="fas fa-exclamation-triangle"></i> Locked: Competitors have joined.</div>' : ''}
+                </div>
+
+                <!-- Credentials Room Box (Locked entirely for Expired / Completed Matches) -->
+                ${state !== 'completed' && state !== 'expired' ? `
+                <div class="host-cred-form" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                  <label style="font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
+                    <i class="fas fa-key"></i> Room Access Credentials
+                  </label>
+                  <div class="cred-row-flex">
+                    <div class="input-group">
+                      <input type="text" id="roomId-${matchDocId}" class="auth-input" placeholder="Room ID" value="${escapeHtml(match.customMatchId || '')}" ${disableSendCreds ? 'disabled' : ''}>
+                      <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" id="roomPass-${matchDocId}" class="auth-input" placeholder="Password" value="${escapeHtml(match.matchPassword || '')}" ${disableSendCreds ? 'disabled' : ''}>
+                      <i class="fas fa-lock"></i>
+                    </div>
+                    <button class="btn" onclick="sendCredentials('${matchDocId}')" ${disableSendCreds ? 'disabled' : ''}>
+                      <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                  </div>
+                </div>
+                ` : `
+                <div class="host-cred-form" style="border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 8px; font-size: 12px; color: var(--muted); font-style: italic; display: flex; align-items: center; gap: 6px;">
+                  <i class="fas fa-lock"></i> <span>Credentials management is locked. Match expired or completed.</span>
+                </div>
+                `}
+
+                <!-- Lifecycle Action Redirection Buttons -->
+                ${showCompletedBtn ? `
+                  <button class="btn" style="background: linear-gradient(135deg, var(--success) 0%, #1e824c 100%); font-size: 13px; padding: 10px; box-shadow: none;" onclick="redirectToSuccessPage('${match.matchId}')">
+                    <i class="fas fa-receipt"></i> View Match Results
+                  </button>
+                ` : ''}
+
+                ${showWinnerBtn ? `
+                  <button class="btn" style="background: linear-gradient(135deg, var(--warning) 0%, #d35400 100%); font-size: 13px; padding: 10px; box-shadow: none;" onclick="routeToWinnerSelection('${match.matchId}')">
+                    <i class="fas fa-trophy"></i> Declare Winners
+                  </button>
+                ` : ''}
+              </div>
+            `;
+            listContainer.appendChild(card);
+          });
+        });
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    function copyDirectMatchUrl(matchId) {
+      const url = `${window.location.origin}/inmatchjoin?matchId=${matchId}`;
+      navigator.clipboard.writeText(url);
+      showNotification("Match URL copied to clipboard!", "success");
+    }
+
+    async function resolveProfiles(uids) {
+      for(const uid of uids) {
+        if(!dynamicProfileCache[uid]) {
+          dynamicProfileCache[uid] = { loading: true };
+          try {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if(userDoc.exists) {
+              const uData = userDoc.data();
+              dynamicProfileCache[uid] = {
+                name: uData.gamename || uData.username || 'Competitor',
+                username: uData.username ? `@${uData.username.toLowerCase()}` : '@gamer',
+                gameUid: uData.gameUid || uData.gameuid || 'N/A',
+                avatar: uData.avatarDataURL || uData.profilePic || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`,
+                level: uData.level || 50
+              };
+            } else {
+              dynamicProfileCache[uid] = null;
+            }
+          } catch(e) { dynamicProfileCache[uid] = null; }
+        }
+      }
+    }
+
+    async function viewHostedDetails(docId) {
+      const snap = await getPublicCollection('matches').doc(docId).get();
+      if (!snap.exists) return;
+      const m = snap.data();
+      currentModalMatchIdForShare = m.matchId;
+      
+      document.getElementById('viewModalTitle').innerHTML = `<i class="fas fa-info-circle"></i> Match Specifications`;
+      const content = document.getElementById('viewModalContent');
+      
+      let extraSettingsHtml = '';
+      if (m.type === 'BR') {
+          extraSettingsHtml = `
+            <div class="confirmation-detail"><span>Limited Ammo</span><span>${m.limitedAmmo || 'Yes'}</span></div>
+            <div class="confirmation-detail"><span>Character Skill</span><span>${m.characterSkill || 'Yes'}</span></div>
+            <div class="confirmation-detail"><span>Headshot Mode</span><span>${m.headshotMode || 'No'}</span></div>
+            <div class="confirmation-detail"><span>Weapon Type</span><span>${m.weaponType || 'All'}</span></div>
+          `;
+      } else if (m.type === 'CS') {
+          extraSettingsHtml = `
+            <div class="confirmation-detail"><span>Rounds</span><span>${m.rounds || '7'}</span></div>
+            <div class="confirmation-detail"><span>Character Skill</span><span>${m.characterSkill || 'On'}</span></div>
+            <div class="confirmation-detail"><span>Headshot Mode</span><span>${m.headshotMode || 'No'}</span></div>
+            <div class="confirmation-detail"><span>Gun Attribute</span><span>${m.gunAttribute || 'No'}</span></div>
+            <div class="confirmation-detail"><span>Coins</span><span>${m.coin || 'Default'}</span></div>
+            <div class="confirmation-detail"><span>Weapon Type</span><span>${m.weaponType || 'All Gun'}</span></div>
+          `;
+      } else if (m.type === 'LW') {
+          extraSettingsHtml = `
+            <div class="confirmation-detail"><span>Rounds</span><span>${m.rounds || '5'}</span></div>
+            <div class="confirmation-detail"><span>Character Skill</span><span>${m.characterSkill || 'Yes'}</span></div>
+            <div class="confirmation-detail"><span>Headshot Mode</span><span>${m.headshotMode || 'No'}</span></div>
+          `;
+      }
+
+      content.innerHTML = `
+        <div class="confirmation-details" style="border: 1px solid rgba(0, 234, 255, 0.2); background: rgba(15, 23, 42, 0.85); margin: 0; padding: 20px;">
+          <div class="confirmation-detail"><span>Lobby ID</span><span style="font-family: var(--font-mono); color: var(--accent);">#${m.matchId}</span></div>
+          <div class="confirmation-detail"><span>Title</span><span>${escapeHtml(m.title)}</span></div>
+          <div class="confirmation-detail"><span>Platform</span><span>${m.platform}</span></div>
+          <div class="confirmation-detail"><span>Type</span><span>${m.type} ${m.brType ? `(${m.brType})` : ''}</span></div>
+          <div class="confirmation-detail"><span>Map</span><span>${m.map || '-'}</span></div>
+          <div class="confirmation-detail"><span>Mode</span><span>${m.mode || m.teamSize || '-'}</span></div>
+          <div class="confirmation-detail"><span>Entry Fee</span><span>NPR ${m.entryFee.toFixed(2)}</span></div>
+          <div class="confirmation-detail"><span>Start Time</span><span>${m.startTime.toDate().toLocaleString()}</span></div>
+          <div class="confirmation-detail"><span>Duration</span><span>${m.matchDuration} Mins</span></div>
+          <div class="confirmation-detail"><span>Visibility</span><span>${m.visibility}</span></div>
+          <div style="margin: 15px 0 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;"><strong>Advanced Configuration</strong></div>
+          ${extraSettingsHtml}
+          <div style="margin: 15px 0 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;"><strong>Match Guidelines</strong></div>
+          <div class="guidelines-desc-box" style="margin-top: 5px; padding: 12px; font-size: 12.5px;">${escapeHtml(m.description) || 'No detailed instructions configured for this custom esports match.'}</div>
+        </div>
+      `;
+      document.getElementById('viewMatchModal').classList.add('show');
+    }
+
+    let currentModalMatchIdForShare = null;
+    function shareModalMatchUrl() {
+      if(currentModalMatchIdForShare) {
+        const shareUrl = `${window.location.origin}/inmatchjoin?matchId=${currentModalMatchIdForShare}`;
+        navigator.clipboard.writeText(shareUrl);
+        showNotification("Match URL copied to clipboard!", "success");
+      } else {
+        showNotification("Unable to copy URL", "error");
+      }
+    }
+
+    async function viewHostedPlayers(docId) {
+      const snap = await getPublicCollection('matches').doc(docId).get();
+      if (!snap.exists) return;
+      const m = snap.data();
+      const players = m.players || [];
+      await resolveProfiles(players.map(p => p.uid).filter(Boolean));
+      
+      document.getElementById('viewModalTitle').innerHTML = `<i class="fas fa-users"></i> Registered Roster (${players.length})`;
+      const content = document.getElementById('viewModalContent');
+      
+      let html = '<div style="display:flex; flex-direction:column; gap:12px;">';
+      players.forEach(p => {
+        const isHost = p.role === 'creator' || p.uid === m.creatorUid;
+        const isMe = currentUser && p.uid === currentUser.uid;
+        const profile = dynamicProfileCache[p.uid] || {
+          name: p.gamename || p.username || 'Competitor',
+          username: p.username ? `@${p.username}` : '@gamer',
+          gameUid: p.gameUid || p.gameuid || 'N/A',
+          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(p.uid)}`,
+          level: p.level || 50
+        };
+        const joinedDate = p.joinTime?.toDate ? p.joinTime.toDate().toLocaleString() : 'N/A';
+        let roleBadge = isHost ? '<span class="owner-badge">Creator Host</span>' : '<span class="competitor-badge">Joined Player</span>';
+        const meBadge = isMe ? '<span class="competitor-badge">ME</span>' : '';
+        
+        html += `
+          <div class="competitor-row-card">
+            <img class="competitor-avatar" src="${profile.avatar}" alt="Avatar">
+            <div class="competitor-info">
+              <div class="competitor-player-line1"><span class="competitor-player-username-tag">${profile.username}</span> ${roleBadge} ${meBadge}</div>
+              <div class="competitor-player-line2-details">
+                <span class="competitor-player-ingame-label">In-Game Nickname: <strong>${escapeHtml(profile.name)}</strong></span>
+                <span class="competitor-player-uid-label">Verified Free Fire UID: <strong>${profile.gameUid}</strong></span>
+                <span class="competitor-player-joined-label">Joined: ${joinedDate}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      content.innerHTML = players.length ? html : '<p style="text-align:center; color:var(--muted);">No players have joined yet.</p>';
+      document.getElementById('viewMatchModal').classList.add('show');
+    }
+
+    async function sendCredentials(docId) {
+      const matchSnap = await getPublicCollection('matches').doc(docId).get();
+      if(!matchSnap.exists) return;
+      const match = matchSnap.data();
+      const now = Date.now();
+      const startTimeMs = match.startTime?.seconds ? match.startTime.seconds * 1000 : now;
+      if(now >= startTimeMs || match.status === 'expired') {
+        showNotification('Cannot modify credentials for active, expired, or completed matches.', 'error');
+        return;
+      }
+      const idVal = document.getElementById(`roomId-${docId}`).value.trim();
+      const passVal = document.getElementById(`roomPass-${docId}`).value.trim();
+
+      if (!idVal) {
+        showNotification('Room ID is required to notify players', 'error');
+        return;
+      }
+
+      try {
+        await getPublicCollection('matches').doc(docId).update({
+          customMatchId: idVal,
+          matchPassword: passVal,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showNotification('Credentials updated! Joined users can now see them in My Matches.', 'success');
+      } catch (err) {
+        console.error(err);
+        showNotification('Failed to update credentials', 'error');
+      }
+    }
+
+    function copyShareMatchLink(matchId) {
+      const shareUrl = `${window.location.origin}/inmatchjoin?matchId=${matchId}`;
+      navigator.clipboard.writeText(shareUrl);
+      showNotification('Match URL copied to clipboard!', 'success');
+    }
+
+    function confirmDeleteMatch(docId, matchId) {
+      const confirmAction = confirm(`Are you sure you want to cancel Match #${matchId}?\nThis will mark the match as Expired and process a full refund to your wallet.`);
+      if (confirmAction) {
+        executeDeleteMatchSequence(docId, matchId);
+      }
+    }
+
+    async function executeDeleteMatchSequence(docId, matchId) {
+      showLoading();
+      try {
+        const matchRef = getPublicCollection('matches').doc(docId);
+        const walletRef = getPrivateCollection(currentUser.uid, 'wallets').doc('wallet');
+
+        await db.runTransaction(async (transaction) => {
+          const matchSnap = await transaction.get(matchRef);
+          if (!matchSnap.exists) throw new Error('Match not found.');
+          const matchData = matchSnap.data();
+          const players = matchData.players || [];
+          const otherCompetitors = players.some(p => p.uid !== currentUser.uid);
+          if (otherCompetitors) throw new Error('Cannot delete: other players have joined.');
+
+          let refundAmount = parseFloat(matchData.entryFee || 0);
+          if (matchData.type === 'BR' && matchData.brType === 'creator') {
+            const prizes = matchData.prizes || {};
+            refundAmount += (parseFloat(prizes.top1||0) + parseFloat(prizes.top2||0) + parseFloat(prizes.top3||0));
+          }
+          const walletSnap = await transaction.get(walletRef);
+          const currentBal = walletSnap.exists ? (walletSnap.data().balance || 0) : 0;
+          
+          // Refund creator balance
+          transaction.set(walletRef, { 
+            balance: currentBal + refundAmount, 
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp() 
+          }, { merge: true });
+          
+          const transRef = getPrivateCollection(currentUser.uid, 'transactions').doc();
+          transaction.set(transRef, { 
+            userId: currentUser.uid, 
+            type: 'match_escrow_refund', 
+            amount: refundAmount, 
+            description: `Full refund for canceled Match #${matchId}`, 
+            matchId, 
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(), 
+            status: 'completed' 
+          });
+
+          // Mark match status as expired instead of deleting entirely
+          transaction.update(matchRef, {
+            status: 'expired',
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        });
+        hideLoading();
+        showNotification(`Match #${matchId} cancelled successfully. Funds have been refunded.`, 'success');
+        clearDraft();
+      } catch (err) {
+        hideLoading();
+        showNotification(err.message, 'error');
+      }
+    }
+
+    function setupEventListeners() {
+      document.getElementById('matchBanner').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          if (!file.type.startsWith('image/')) { showNotification('Please select an image file', 'error'); return; }
+          if (file.size > 5 * 1024 * 1024) { showNotification('Image must be less than 5MB', 'error'); return; }
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            document.getElementById('bannerPreview').innerHTML = `<img src="${evt.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+            document.getElementById('matchBannerDataURL').value = evt.target.result;
+            autoSaveDraft();
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      document.getElementById('confirmCheckbox').addEventListener('change', function(e) {
+        document.getElementById('confirmCreateBtn').disabled = !e.target.checked;
+      });
+    }
+
+    // ==========================================================================
+    // DYNAMIC ASSISTANT & HELP CONTEXTS FOR ALL INPUTS
+    // ==========================================================================
+    function setupDynamicAssistantHelp() {
+      const inputsHelp = {
+        'matchTitle': 'Give your custom tournament a unique, engaging title. For example: "Sunday Pro Squad Scrims". This will be displayed in main lobby feed.',
+        'matchPlatform': 'Select the game platform for this match (Free Fire, PUBG Mobile, or Call of Duty). Make sure matches are hosted strictly inside the chosen app server.',
+        'matchDescription': 'Describe your tournament guidelines, streaming details, or special clan rules. Players can read this description before choosing to register.',
+        'matchStartTimeDisplay': 'Schedule when players should join. Room credentials should be shared with registered users at least 10 minutes prior to this start time.',
+        'brMap': 'Choose the survival map environment for your Battle Royale match. Available options are Bermuda, Purgatory, Kalahari, or Alpine.',
+        'brMode': 'Choose the game size configurations: Solo (1 Player per Team), Duo (2 Players per Team), or Squad (4 Players per Team). Match structure adapts dynamically.',
+        'brPlayers': 'Lobby capacity limit (20, 32, or 48 players). A smaller lobby limit fills and starts matches faster, while larger lobbies offer higher competitive prize pools.',
+        'csTeamSize': 'Determine the squad configurations for the clash squad duel room. Available sizing supports standard 1v1 up to extreme 6v6 squad challenges.',
+        'lwRounds': 'Determine the victory points requirements for Lone Wolf. Settle matches quickly in 3 rounds or organize longer endurance duels up to 9 rounds.',
+        'lwTeamSize': 'Select team sizing configurations for Lone Wolf format: 1v1 duel or 2v2 tactical partnerships.',
+        'matchEntry': 'Select registration entry fee in NPR. This fee is automatically deducted from entering player wallets and distributed to the prize pool.',
+        'top1Prize': 'Set the 1st Place reward amount. For creator-profit matches, this must be at least 35% of total potential entry fee pool and greater than 2nd place.',
+        'top2Prize': 'Set the 2nd Place reward. In creator-profit matches, this must be greater than 3rd place reward.',
+        'top3Prize': 'Set the 3rd Place reward. Ensure the award is in descending order (1st > 2nd > 3rd) and adheres to minimum rule calculations.',
+        'csMatchType': 'Select Clash Squad match financing rules: Casual (Normal/Free) or Profit Mode (which automatically syncs entry fees with winning pool values).',
+        'lwMatchType': 'Select Lone Wolf match rules: Standard Free or Competitive Profit Mode with synchronized prize pool entry.'
+      };
+
+      for (const [id, text] of Object.entries(inputsHelp)) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('focus', () => {
+            updateLiveAssistant(text);
+          });
+          el.addEventListener('change', () => {
+            updateLiveAssistant(text);
+          });
+        }
+      }
+
+      // Special events for custom buttons/pills visibility and BR types
+      document.querySelectorAll('.visibility-option').forEach(el => {
+        el.addEventListener('click', () => {
+          const vis = el.getAttribute('data-visibility');
+          const helpText = vis === 'public' ? 'Public: Your match will be visible to everyone on the homepage tournament feed.' :
+                           vis === 'friends' ? 'Friends: Unlisted. Your match won\'t show up in the main feed, but friends can join with your direct URL.' :
+                                              'Private: Protected. Invisible to the community feed. Registered players can only join via direct invitation code.';
+          updateLiveAssistant(helpText);
+        });
+      });
+
+      document.querySelectorAll('.match-type-option').forEach(el => {
+        el.addEventListener('click', () => {
+          const type = el.getAttribute('data-type');
+          const helpText = type === 'BR' ? 'Battle Royale: Large survival tournaments across massive maps. Supports multiple team sizing and customizable custom game modes.' :
+                           type === 'CS' ? 'Clash Squad: High-stakes 4v4 styled squad combat in limited zone matches. Perfect for custom team battles.' :
+                                          'Lone Wolf: Individual test of skills in fast combat arenas. Best for hosting 1v1 or 2v2 customized matches.';
+          updateLiveAssistant(helpText);
+        });
+      });
+
+      document.querySelectorAll('.br-type-option').forEach(el => {
+        el.addEventListener('click', () => {
+          const brType = el.getAttribute('data-br-type');
+          const helpText = brType === 'normal' ? 'Normal: Fully casual Free Match. Ideal for clan training. No entry fee required and no prizes paid out.' :
+                           brType === 'nonpaid' ? 'NonPaid-Profit: Players fund the prize pool through entry fees. 75% goes to winners, and you receive 25% hosting commission.' :
+                                                 'Creator-Profit: You deposit the prize pool upfront. When the match completes, you collect and keep 100% of player entrance fees.';
+          updateLiveAssistant(helpText);
+        });
+      });
+    }
+
+    function updateLiveAssistant(text) {
+      document.getElementById('tipContent').innerHTML = text;
+      document.getElementById('tipBox').classList.add('show');
+    }
+
+    function openBrInfoModal(event) {
+      event.stopPropagation();
+      document.getElementById('brInfoModal').classList.add('show');
+    }
+
+    function recalculateMatchDuration() {
+      let calculatedDuration = 20;
+      if (selectedMatchType === 'BR') calculatedDuration = 20;
+      else if (selectedMatchType === 'CS') {
+        const size = document.getElementById('csTeamSize').value;
+        const rounds = parseInt(document.getElementById('csRounds').value) || 0;
+        let offset = 0;
+        switch(size) { case '1v1': offset=0; break; case '2v2': offset=1; break; case '3v3': offset=2; break; case '4v4': case '5v5': case '6v6': offset=3; break; default: offset=0; }
+        calculatedDuration = (rounds > 0) ? (rounds + offset) : (15 + offset);
+      } else if (selectedMatchType === 'LW') {
+        const rounds = parseInt(document.getElementById('lwRounds').value) || 0;
+        calculatedDuration = (rounds > 0) ? rounds : 5;
+      }
+      calculatedDurationGlobal = calculatedDuration;
+      document.getElementById('matchDuration').value = calculatedDuration;
+    }
+
+    function selectMatchType(type) {
+      selectedMatchType = type;
+      resetFinancialState();
+      document.querySelectorAll('.match-type-option').forEach(el => el.classList.remove('selected'));
+      document.querySelector(`.match-type-option[data-type="${type}"]`).classList.add('selected');
+      document.getElementById('brOptions').style.display = type === 'BR' ? 'block' : 'none';
+      document.getElementById('csOptions').style.display = type === 'CS' ? 'block' : 'none';
+      document.getElementById('lwOptions').style.display = type === 'LW' ? 'block' : 'none';
+      document.getElementById('brTypeSelection').style.display = type === 'BR' ? 'block' : 'none';
+      document.getElementById('brFinancialOptions').style.display = type === 'BR' ? 'block' : 'none';
+      document.getElementById('csFinancialOptions').style.display = type === 'CS' ? 'block' : 'none';
+      document.getElementById('lwFinancialOptions').style.display = type === 'LW' ? 'block' : 'none';
+      document.getElementById('brAdditionalOptions').style.display = type === 'BR' ? 'block' : 'none';
+      document.getElementById('csAdditionalOptions').style.display = type === 'CS' ? 'block' : 'none';
+      document.getElementById('lwAdditionalOptions').style.display = type === 'LW' ? 'block' : 'none';
+      document.getElementById('entryFeeBreakdown').style.display = 'none';
+      if (type !== 'BR') {
+        selectedBRType = '';
+        document.querySelectorAll('.br-type-option').forEach(opt => opt.classList.remove('selected'));
+        document.getElementById('nonpaidPrizeCalculation').style.display = 'none';
+        document.getElementById('creatorPrizeInputs').style.display = 'none';
+        document.getElementById('howItWorks').style.display = 'none';
+      }
+      recalculateMatchDuration();
+      if (type === 'CS' || type === 'LW') toggleCSLWProfitMode();
+      else autoSyncEntryFee();
+      updateMatchPreview();
+      autoSaveDraft();
+    }
+
+    function resetFinancialState() {
+      document.getElementById('matchEntry').value = '0';
+      document.getElementById('matchEntry').disabled = true;
+      document.getElementById('top1Prize').value = '';
+      document.getElementById('top2Prize').value = '';
+      document.getElementById('top3Prize').value = '';
+      document.getElementById('csPrize').value = '';
+      document.getElementById('lwPrize').value = '';
+      document.getElementById('entryFeeBreakdown').style.display = 'none';
+      document.getElementById('csAutoSync').style.display = 'none';
+      document.getElementById('lwAutoSync').style.display = 'none';
+    }
+
+    function selectVisibility(vis) {
+      selectedVisibility = vis;
+      document.querySelectorAll('.visibility-option').forEach(el => el.classList.remove('selected'));
+      document.querySelector(`.visibility-option[data-visibility="${vis}"]`).classList.add('selected');
+      updateMatchPreview();
+      autoSaveDraft();
+    }
+
+    function selectBRType(brType) {
+      selectedBRType = brType;
+      document.querySelectorAll('.br-type-option').forEach(el => el.classList.remove('selected'));
+      document.querySelector(`.br-type-option[data-br-type="${brType}"]`).classList.add('selected');
+      resetFinancialState();
+      document.getElementById('nonpaidPrizeCalculation').style.display = brType === 'nonpaid' ? 'block' : 'none';
+      document.getElementById('creatorPrizeInputs').style.display = brType === 'creator' ? 'block' : 'none';
+      document.getElementById('howItWorks').style.display = brType !== 'normal' ? 'block' : 'none';
+      document.getElementById('brRestriction').style.display = (brType === 'creator' || brType === 'nonpaid') ? 'block' : 'none';
+      if (brType === 'normal') {
+        document.getElementById('matchEntry').value = '0';
+        document.getElementById('matchEntry').disabled = true;
+      } else {
+        document.getElementById('matchEntry').value = '';
+        document.getElementById('matchEntry').disabled = false;
+      }
+      const howItWorksContent = document.getElementById('howItWorksContent');
+      if (brType === 'nonpaid') {
+        howItWorksContent.innerHTML = `<li>Prize pool is funded dynamically through player entry fees.</li><li>Top 3 contenders split 75% of the total collection pool.</li><li>You earn a guaranteed 25% commission as the creator.</li><li>You participate in the match and pay the entry fee yourself.</li>`;
+      } else if (brType === 'creator') {
+        howItWorksContent.innerHTML = `<li>You pay and sponsor the prize escrow pool upfront from your wallet.</li><li>Top 3 winners claim the exact prizes you set.</li><li>You collect and keep 100% of player entry fees.</li><li>Top 1 Prize must meet the minimum 35% pool calculation.</li><li>You register as player (entry fee + prize escrow deducted upfront).</li>`;
+      } else {
+        howItWorksContent.innerHTML = `<li>Casual friendly match with zero wallet transactions.</li><li>No registration entry fees collected.</li><li>No rewards or payout distributions.</li>`;
+      }
+      document.getElementById('top1Prize').value = '';
+      document.getElementById('top2Prize').value = '';
+      document.getElementById('top3Prize').value = '';
+      updatePrizeCalculations();
+      updateMatchPreview();
+      autoSaveDraft();
+    }
+
+    function handleCSTeamSizeChange() {
+      const size = document.getElementById('csTeamSize').value;
+      let count = 2;
+      if (size === '2v2') count = 4;
+      else if (size === '3v3') count = 6;
+      else if (size === '4v4') count = 8;
+      else if (size === '5v5') count = 10;
+      else if (size === '6v6') count = 12;
+      document.getElementById('csPlayers').value = count;
+      recalculateMatchDuration();
+      autoSyncEntryFee();
+      updateMatchPreview();
+      autoSaveDraft();
+    }
+
+    function handleLWRoundsChange() {
+      recalculateMatchDuration();
+      autoSyncEntryFee();
+      autoSaveDraft();
+    }
+
+    function updateLWTotalPlayers() {
+      const size = document.getElementById('lwTeamSize').value;
+      let count = 2;
+      if (size === '2v2') count = 4;
+      document.getElementById('lwPlayers').value = count;
+      recalculateMatchDuration();
+      autoSyncEntryFee();
+      autoSaveDraft();
+    }
+
+    function handleBRModeChange() {
+      recalculateMatchDuration();
+      updateMatchPreview();
+      autoSaveDraft();
+    }
+
+    function toggleCSLWProfitMode() {
+      const type = selectedMatchType;
+      const isProfit = type === 'CS' ? document.getElementById('csMatchType').value === 'profit' : document.getElementById('lwMatchType').value === 'profit';
+      document.getElementById('csPrizeGroup').style.display = (type === 'CS' && isProfit) ? 'block' : 'none';
+      document.getElementById('lwPrizeGroup').style.display = (type === 'LW' && isProfit) ? 'block' : 'none';
+      const entryFeeInput = document.getElementById('matchEntry');
+      if (isProfit) {
+        entryFeeInput.disabled = false;
+        document.getElementById('entryFeeGroup').style.display = 'block';
+      } else {
+        entryFeeInput.disabled = true;
+        entryFeeInput.value = '0';
+        document.getElementById('entryFeeGroup').style.display = 'none';
+      }
+      updatePrizeCalculations();
+      autoSaveDraft();
+    }
+
+    function autoSyncEntryFee() {
+      const type = selectedMatchType;
+      if (type === 'BR') document.getElementById('entryFeeGroup').style.display = selectedBRType !== 'normal' ? 'block' : 'none';
+      updatePrizeCalculations();
+      updateMatchPreview();
+    }
+
+    function updatePrizeCalculations() {
+      const entryFee = parseFloat(document.getElementById('matchEntry').value) || 0;
+      if (selectedMatchType === 'BR' && selectedBRType === 'nonpaid') {
+        const players = parseInt(document.getElementById('brPlayers').value) || 20;
+        const total = entryFee * players;
+        document.getElementById('nonpaidPrizeBreakdown').innerHTML = `
+          <div class="prize-item"><span>Top 1 (35%):</span><span>NPR ${(total*0.35).toFixed(2)}</span></div>
+          <div class="prize-item"><span>Top 2 (25%):</span><span>NPR ${(total*0.25).toFixed(2)}</span></div>
+          <div class="prize-item"><span>Top 3 (15%):</span><span>NPR ${(total*0.15).toFixed(2)}</span></div>
+          <div class="prize-item"><span>Creator (25%):</span><span>NPR ${(total*0.25).toFixed(2)}</span></div>
+        `;
+        document.getElementById('previewTop1').textContent = `NPR ${(total*0.35).toFixed(2)}`;
+        document.getElementById('previewTop2').textContent = `NPR ${(total*0.25).toFixed(2)}`;
+        document.getElementById('previewTop3').textContent = `NPR ${(total*0.15).toFixed(2)}`;
+        document.getElementById('previewCreator').textContent = `NPR ${(total*0.25).toFixed(2)}`;
+        document.getElementById('nonpaidTotalRequired').textContent = 'No Wallet Deduction Required';
+        document.getElementById('entryFeeBreakdown').style.display = entryFee > 0 ? 'block' : 'none';
+        if (entryFee > 0) {
+          document.getElementById('winningPoolAmount').textContent = `NPR ${(entryFee * 0.75).toFixed(2)}`;
+          document.getElementById('creatorProfitAmount').textContent = `NPR ${(entryFee * 0.25).toFixed(2)}`;
+        }
+      } else if (selectedMatchType === 'BR' && selectedBRType === 'creator') {
+        const players = parseInt(document.getElementById('brPlayers').value) || 20;
+        const potentialPool = entryFee * players;
+        const t1 = parseFloat(document.getElementById('top1Prize').value) || 0;
+        const t2 = parseFloat(document.getElementById('top2Prize').value) || 0;
+        const t3 = parseFloat(document.getElementById('top3Prize').value) || 0;
+        const totalRequired = t1 + t2 + t3;
+        document.getElementById('top1Min').textContent = entryFee > 0 ? (potentialPool*0.35).toFixed(2) : '0.00';
+        document.getElementById('top2Min').textContent = entryFee > 0 ? (potentialPool*0.25).toFixed(2) : '0.00';
+        document.getElementById('top3Min').textContent = entryFee > 0 ? (potentialPool*0.15).toFixed(2) : '0.00';
+        document.getElementById('creatorTotalRequired').textContent = `NPR ${totalRequired.toFixed(2)}`;
+        document.getElementById('entryFeeBreakdown').style.display = 'none';
+        validateBusinessRules();
+      } else if ((selectedMatchType === 'CS' || selectedMatchType === 'LW') && 
+                 (document.getElementById('csMatchType')?.value === 'profit' || document.getElementById('lwMatchType')?.value === 'profit')) {
+        const entryAmount = parseFloat(document.getElementById('matchEntry').value) || 0;
+        const totalWinningAmount = entryAmount * 2;
+        const prizeField = selectedMatchType === 'CS' ? 'csPrize' : 'lwPrize';
+        document.getElementById(prizeField).value = totalWinningAmount.toFixed(2);
+        if (entryAmount > 0) {
+          document.getElementById('winningPoolAmount').textContent = `NPR ${totalWinningAmount.toFixed(2)}`;
+          document.getElementById('creatorProfitAmount').textContent = `NPR ${entryAmount.toFixed(2)}`;
+          document.getElementById('entryFeeBreakdown').style.display = 'block';
+        } else {
+          document.getElementById('entryFeeBreakdown').style.display = 'none';
+        }
+      } else {
+        document.getElementById('entryFeeBreakdown').style.display = 'none';
+      }
+      updateMatchPreview();
+    }
+
+    function setEntryFee(amount) {
+      document.getElementById('matchEntry').value = amount;
+      updatePrizeCalculations();
+    }
+
+    function resetFields() {
+      document.getElementById('top1Prize').value = '';
+      document.getElementById('top2Prize').value = '';
+      document.getElementById('top3Prize').value = '';
+      updatePrizeCalculations();
+    }
+
+    function validateCreatorPrizes() {
+      updatePrizeCalculations();
+      validatePrizeOrder();
+    }
+
+    // Modal control helper
+    function openBrInfoModal(event) {
+      event.stopPropagation();
+      document.getElementById('brInfoModal').classList.add('show');
+    }
+
+    function updateBRPlayersCount() {
+      autoSyncEntryFee();
+      updatePrizeCalculations();
+      updateMatchPreview();
+      autoSaveDraft();
+    }
+
+    function initTimeSelects() {
+      const hSelect = document.getElementById('modalHourInput');
+      const mSelect = document.getElementById('modalMinuteInput');
+      if (hSelect.options.length) return;
+      for (let i=1;i<=12;i++) { let o=document.createElement('option'); o.value=i; o.textContent=i.toString().padStart(2,'0'); hSelect.appendChild(o); }
+      for (let i=0;i<60;i+=5) { let o=document.createElement('option'); o.value=i.toString().padStart(2,'0'); o.textContent=o.value; mSelect.appendChild(o); }
+    }
+
+    function updateModalTimeFromISO(isoTime) {
+      if(!isoTime) return;
+      let [h24,min]=isoTime.split(':');
+      let h=parseInt(h24);
+      let ampm=h>=12?'PM':'AM';
+      h=h%12||12;
+      document.getElementById('modalHourInput').value=h;
+      document.getElementById('modalMinuteInput').value=min;
+      document.getElementById('modalPeriodInput').value=ampm;
+    }
+
+    function getISOFromModalTime() {
+      let h=parseInt(document.getElementById('modalHourInput').value);
+      let min=document.getElementById('modalMinuteInput').value;
+      let ampm=document.getElementById('modalPeriodInput').value;
+      if(ampm==='PM' && h<12) h+=12;
+      if(ampm==='AM' && h===12) h=0;
+      return `${h.toString().padStart(2,'0')}:${min}`;
+    }
+
+    function setQuickTime(option) {
+      initTimeSelects();
+      const now=new Date();
+      let target=new Date(now);
+      if(typeof option==='number') target.setMinutes(now.getMinutes()+option);
+      else if(option==='tonight') { target.setHours(20,0,0,0); if(target<now) target.setDate(now.getDate()+1); }
+      else if(option==='tomorrow') { target.setDate(now.getDate()+1); target.setHours(10,0,0,0); }
+      const y=target.getFullYear(), m=String(target.getMonth()+1).padStart(2,'0'), d=String(target.getDate()).padStart(2,'0');
+      const hh=String(target.getHours()).padStart(2,'0'), mm=String(target.getMinutes()).padStart(2,'0');
+      document.getElementById('modalDateInput').value=`${y}-${m}-${d}`;
+      updateModalTimeFromISO(`${hh}:${mm}`);
+    }
+
+    function openStartTimeModal() {
+      initTimeSelects();
+      const now=new Date();
+      const todayStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      document.getElementById('modalDateInput').setAttribute('min',todayStr);
+      const current=document.getElementById('matchStartTime').value;
+      if(current){
+        let parts=current.split('T');
+        if(parts.length===2){ document.getElementById('modalDateInput').value=parts[0]; updateModalTimeFromISO(parts[1]); }
+      } else {
+        document.getElementById('modalDateInput').value=todayStr;
+        updateModalTimeFromISO(`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`);
+      }
+      document.getElementById('startTimeModal').classList.add('show');
+    }
+
+    function saveStartTimeFromModal() {
+      const date=document.getElementById('modalDateInput').value;
+      const time=getISOFromModalTime();
+      if(!date||!time){ showNotification('Please select date and time','error'); return; }
+      const fullDateTime=`${date}T${time}`;
+      document.getElementById('matchStartTime').value=fullDateTime;
+      const d=new Date(fullDateTime);
+      document.getElementById('matchStartTimeDisplay').value=d.toLocaleString('en-US',{month:'short',day:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+      closeModal('startTimeModal');
+      validateStartTime();
+      updateCountdownPreview();
+      updateMatchPreview();
+      autoSaveDraft();
+    }
+
+    function validateBusinessRules() {
+      const entryFee=parseFloat(document.getElementById('matchEntry').value)||0;
+      const ruleDiv=document.getElementById('businessRuleValidation');
+      const ruleText=document.getElementById('businessRuleText');
+      if(selectedMatchType==='BR' && selectedBRType==='creator'){
+        const players=parseInt(document.getElementById('brPlayers').value)||20;
+        const t1=parseFloat(document.getElementById('top1Prize').value)||0;
+        const targetMin=(entryFee*players)*0.35;
+        if(entryFee===0) ruleDiv.style.display='none';
+        else if(t1>=targetMin && t1>0){
+          ruleDiv.style.display='flex';
+          ruleText.innerHTML='✓ Business rule satisfied: Top 1 meets minimum 35% pool requirement';
+          ruleDiv.style.borderColor='rgba(46,204,113,0.3)';
+          ruleDiv.style.color='var(--success)';
+        } else if(t1>0){
+          ruleDiv.style.display='flex';
+          ruleText.innerHTML=`⚠ Warning: Top 1 should be at least NPR ${targetMin.toFixed(2)}`;
+          ruleDiv.style.borderColor='rgba(231,76,60,0.3)';
+          ruleDiv.style.color='var(--error)';
+        } else ruleDiv.style.display='none';
+      } else ruleDiv.style.display='none';
+    }
+
+    function updateMatchPreview() {
+      const preview=document.getElementById('previewContent');
+      if(!selectedMatchType){
+        preview.innerHTML='<div class="preview-empty"><i class="fas fa-info-circle"></i><p>Select match type to see preview</p></div>';
+        return;
+      }
+      const title=document.getElementById('matchTitle').value||'Untitled';
+      const platform=document.getElementById('matchPlatform').value||'Select Game';
+      const entry=parseFloat(document.getElementById('matchEntry').value)||0;
+      const timeVal=document.getElementById('matchStartTime').value;
+      const duration=calculatedDurationGlobal;
+      let html=`<div class="preview-item"><span class="preview-label">Title</span><span class="preview-value">${title.substring(0,25)}</span></div>
+                <div class="preview-item"><span class="preview-label">Platform</span><span class="preview-value" style="color:var(--accent);">${platform}</span></div>
+                <div class="preview-item"><span class="preview-label">Format</span><span class="preview-value">${selectedMatchType}${selectedBRType?` (${selectedBRType.toUpperCase()})`:''}</span></div>
+                <div class="preview-item"><span class="preview-label">Entry Fee</span><span class="preview-value">NPR ${entry.toFixed(2)}</span></div>
+                <div class="preview-item"><span class="preview-label">Visibility</span><span class="preview-value" style="color:var(--accent);">${selectedVisibility}</span></div>
+                <div class="preview-item"><span class="preview-label">Duration</span><span class="preview-value" style="color:var(--accent);">${duration} min</span></div>`;
+      if(timeVal){
+        const d=new Date(timeVal);
+        html+=`<div class="preview-item"><span class="preview-label">Starts</span><span class="preview-value">${d.toLocaleString()}</span></div>`;
+      }
+      let maxPlayers=2;
+      if(selectedMatchType==='BR') maxPlayers=parseInt(document.getElementById('brPlayers').value)||20;
+      else if(selectedMatchType==='CS') maxPlayers=parseInt(document.getElementById('csPlayers').value)||2;
+      else if(selectedMatchType==='LW') maxPlayers=parseInt(document.getElementById('lwPlayers').value)||2;
+      html+=`<div class="preview-item"><span class="preview-label">Max Players</span><span class="preview-value">${maxPlayers}</span></div>`;
+      if(selectedMatchType==='BR' && selectedBRType==='creator'){
+        const t1=parseFloat(document.getElementById('top1Prize').value)||0;
+        const t2=parseFloat(document.getElementById('top2Prize').value)||0;
+        const t3=parseFloat(document.getElementById('top3Prize').value)||0;
+        if(t1||t2||t3) html+=`<div class="preview-prizes"><div class="preview-prize-item"><span>🥇 1st</span><span>NPR ${t1.toFixed(2)}</span></div><div class="preview-prize-item"><span>🥈 2nd</span><span>NPR ${t2.toFixed(2)}</span></div><div class="preview-prize-item"><span>🥉 3rd</span><span>NPR ${t3.toFixed(2)}</span></div></div>`;
+      } else if((selectedMatchType==='CS'||selectedMatchType==='LW') && entry>0){
+        const prize=parseFloat(document.getElementById(selectedMatchType==='CS'?'csPrize':'lwPrize').value)||0;
+        if(prize>0) html+=`<div class="preview-prizes"><div class="preview-prize-item"><span>🏆 Winning Prize</span><span>NPR ${prize.toFixed(2)}</span></div></div>`;
+      }
+      preview.innerHTML=html;
+    }
+
+    function showConfirmation(){
+      if(!validateFormFields()) return;
+      const entry=parseFloat(document.getElementById('matchEntry').value)||0;
+      let totalCharge=entry;
+      let breakdown='';
+      if(selectedMatchType==='BR'){
+        if(selectedBRType==='creator'){
+          const t1=parseFloat(document.getElementById('top1Prize').value)||0;
+          const t2=parseFloat(document.getElementById('top2Prize').value)||0;
+          const t3=parseFloat(document.getElementById('top3Prize').value)||0;
+          totalCharge+=t1+t2+t3;
+          breakdown=`<div class="confirmation-detail"><span>Entry Fee</span><span>NPR ${entry.toFixed(2)}</span></div>
+                     <div class="confirmation-detail"><span>Escrow Prizes (1st+2nd+3rd)</span><span>NPR ${(t1+t2+t3).toFixed(2)}</span></div>`;
+        } else if(selectedBRType==='nonpaid') breakdown=`<div class="confirmation-detail"><span>Entry Fee</span><span>NPR ${entry.toFixed(2)}</span></div>`;
+        else breakdown=`<div class="confirmation-detail"><span>Match Cost</span><span>Free</span></div>`;
+      } else if(selectedMatchType==='CS'||selectedMatchType==='LW'){
+        const isProfit=(selectedMatchType==='CS'?document.getElementById('csMatchType').value==='profit':document.getElementById('lwMatchType').value==='profit');
+        if(isProfit) breakdown=`<div class="confirmation-detail"><span>Entry Fee</span><span>NPR ${entry.toFixed(2)}</span></div>`;
+        else breakdown=`<div class="confirmation-detail"><span>Match Cost</span><span>Free</span></div>`;
+      }
+      document.getElementById('confirmationDetails').innerHTML=`
+        <div class="confirmation-detail"><span>Title</span><span>${document.getElementById('matchTitle').value}</span></div>
+        <div class="confirmation-detail"><span>Format</span><span>${selectedMatchType}</span></div>
+        <div class="confirmation-detail"><span>Start Time</span><span>${new Date(document.getElementById('matchStartTime').value).toLocaleString()}</span></div>
+        ${breakdown}
+        <div class="confirmation-detail" style="border-top:1px solid rgba(255,255,255,0.1);margin-top:8px;padding-top:12px;"><span style="color:var(--accent);">Total Wallet Charge</span><span style="color:var(--accent);">NPR ${totalCharge.toFixed(2)}</span></div>
+      `;
+      document.getElementById('confirmCheckbox').checked=false;
+      document.getElementById('confirmCreateBtn').disabled=true;
+      document.getElementById('confirmationModal').classList.add('show');
+      document.getElementById('confirmCreateBtn').onclick=async()=>{
+        closeModal('confirmationModal');
+        await executeMatchCreationSequence();
+      };
+    }
+
+    async function validateFormFields() {
+      updateErrorSummary();
+      let valid=true;
+      if(!document.getElementById('matchTitle').value.trim()) valid=false;
+      if(!document.getElementById('matchPlatform').value) valid=false;
+      if(!selectedMatchType) valid=false;
+      if(!document.getElementById('matchStartTime').value || !validateStartTime()) valid=false;
+      if(selectedMatchType==='BR'){
+        if(!selectedBRType) valid=false;
+        if(!document.getElementById('brMap').value) valid=false;
+        if(!document.getElementById('brMode').value) valid=false;
+        if(selectedBRType==='creator'){
+          const entry = parseFloat(document.getElementById('matchEntry').value) || 0;
+          const players = parseInt(document.getElementById('brPlayers').value) || 20;
+          const potentialPool = entry * players;
+
+          const t1 = parseFloat(document.getElementById('top1Prize').value) || 0;
+          const t2 = parseFloat(document.getElementById('top2Prize').value) || 0;
+          const t3 = parseFloat(document.getElementById('top3Prize').value) || 0;
+
+          const minT1 = potentialPool * 0.35;
+          const minT2 = potentialPool * 0.25;
+          const minT3 = potentialPool * 0.15;
+
+          if (t1 < minT1) { showNotification(`Top 1 prize must be at least NPR ${minT1.toFixed(2)}`, 'error'); valid = false; }
+          if (t2 < minT2) { showNotification(`Top 2 prize must be at least NPR ${minT2.toFixed(2)}`, 'error'); valid = false; }
+          if (t3 < minT3) { showNotification(`Top 3 prize must be at least NPR ${minT3.toFixed(2)}`, 'error'); valid = false; }
+          
+          if (!(t1 > 0 && t2 > 0 && t3 > 0)) valid = false;
+          if (!(t1 > t2 && t2 > t3)) { showNotification('Prizes must be in descending order (Top 1 > Top 2 > Top 3)', 'error'); valid = false; }
+          
+          if (entry > 0 && t1 < (entry * 5)) { showNotification(`Top 1 must be at least 5× entry fee (NPR ${(entry * 5).toFixed(2)})`, 'error'); valid = false; }
+        }
+        if(selectedBRType==='nonpaid' || selectedBRType==='creator'){
+          const entry=parseFloat(document.getElementById('matchEntry').value)||0;
+          if(entry<=0){ showNotification('Entry fee must be >0 for this mode','error'); valid=false; }
+        }
+      }
+      if(selectedMatchType==='CS' && !document.getElementById('csTeamSize').value) valid=false;
+      if(selectedMatchType==='LW'){
+        if(!document.getElementById('lwRounds').value) valid=false;
+        if(!document.getElementById('lwTeamSize').value) valid=false;
+      }
+      const totalRequired=calculateTotalRequired();
+      const walletBalance=parseFloat(document.getElementById('walletBalance').textContent.replace('NPR ',''))||0;
+      if(walletBalance<totalRequired){
+        document.getElementById('requiredFeeAmount').textContent=`NPR ${totalRequired.toFixed(2)}`;
+        document.getElementById('insufficientBalanceModal').style.display='flex';
+        valid=false;
+      }
+      if(!(await checkDuplicateMatch())) valid=false;
+      const remaining=parseInt(document.getElementById('remainingMatches').textContent);
+      if(remaining<=0){ showNotification('Daily limit reached (5 matches)','error'); valid=false; }
+      return valid;
+    }
+
+    function calculateTotalRequired(){
+      let total=parseFloat(document.getElementById('matchEntry').value)||0;
+      if(selectedMatchType==='BR' && selectedBRType==='creator'){
+        total+= (parseFloat(document.getElementById('top1Prize').value)||0)+(parseFloat(document.getElementById('top2Prize').value)||0)+(parseFloat(document.getElementById('top3Prize').value)||0);
+      }
+      return total;
+    }
+
+    async function executeMatchCreationSequence(){
+      showLoading();
+      const matchId="M"+Math.random().toString(36).substring(2,9).toUpperCase();
+      try{
+        const title=document.getElementById('matchTitle').value.trim();
+        const desc=document.getElementById('matchDescription').value.trim();
+        const entryFee=parseFloat(document.getElementById('matchEntry').value)||0;
+        const timeVal=document.getElementById('matchStartTime').value;
+        const duration=calculatedDurationGlobal;
+        const startTime=new Date(timeVal);
+        const endTime=new Date(startTime.getTime()+duration*60*1000);
+        let maxCap=2;
+        if(selectedMatchType==='BR') maxCap=parseInt(document.getElementById('brPlayers').value)||20;
+        if(selectedMatchType==='CS') maxCap=parseInt(document.getElementById('csPlayers').value)||2;
+        if(selectedMatchType==='LW') maxCap=parseInt(document.getElementById('lwPlayers').value)||2;
+        const matchPayload={
+          matchId, title, description:desc, platform:document.getElementById('matchPlatform').value,
+          type:selectedMatchType, entryFee, startTime:firebase.firestore.Timestamp.fromDate(startTime),
+          endTime:firebase.firestore.Timestamp.fromDate(endTime), matchDuration:duration,
+          creatorUid:currentUser.uid, creatorName:currentProfileData?.gamename||currentUser.displayName||'Creator',
+          visibility:selectedVisibility, status:'upcoming', maxPlayers:maxCap, currentPlayers:1,
+          createdAt:firebase.firestore.Timestamp.now(), updatedAt:firebase.firestore.Timestamp.now(),
+          players:[{ uid:currentUser.uid, username:currentUser.displayName||'Creator', gamename:currentProfileData?.gamename||'Creator', gameUid:currentProfileData?.gameuid||'N/A', level:currentProfileData?.level||50, role:'creator', joinTime:firebase.firestore.Timestamp.now(), entryPaid:entryFee, profileIcon:currentProfileData?.profileIcon||'' }],
+          customMatchId:'', matchPassword:'', liveStreamUrl:'', liveJoinText:'', credentialsSent:false, outcomeDeclared:false, payoutProcessed:false
+        };
+        if(selectedMatchType==='BR'){
+          matchPayload.brType=selectedBRType;
+          matchPayload.map=document.getElementById('brMap').value||'Bermuda';
+          matchPayload.mode=document.getElementById('brMode').value||'Solo';
+          matchPayload.limitedAmmo=document.getElementById('brLimitedAmmo').value;
+          matchPayload.characterSkill=document.getElementById('brCharacterSkill').value;
+          matchPayload.headshotMode=document.getElementById('brHeadshotMode').value;
+          matchPayload.weaponType=document.getElementById('brWeaponType').value;
+          if(selectedBRType==='creator'){
+            matchPayload.prizes={ top1:parseFloat(document.getElementById('top1Prize').value)||0, top2:parseFloat(document.getElementById('top2Prize').value)||0, top3:parseFloat(document.getElementById('top3Prize').value)||0 };
+          }
+        } else if(selectedMatchType==='CS'){
+          matchPayload.teamSize=document.getElementById('csTeamSize').value||'1v1';
+          matchPayload.matchType=document.getElementById('csMatchType').value||'normal';
+          matchPayload.prize=0;
+          matchPayload.characterSkill=document.getElementById('csCharacterSkill').value;
+          matchPayload.headshotMode=document.getElementById('csHeadshotMode').value;
+          matchPayload.gunAttribute=document.getElementById('csGunAttribute').value;
+          matchPayload.rounds=document.getElementById('csRounds').value;
+          matchPayload.coin=document.getElementById('csCoin').value;
+          matchPayload.weaponType=document.getElementById('csWeaponType').value;
+        } else if(selectedMatchType==='LW'){
+          matchPayload.teamSize=document.getElementById('lwTeamSize').value||'1v1';
+          matchPayload.matchType=document.getElementById('lwMatchType').value||'normal';
+          matchPayload.prize=0;
+          matchPayload.rounds=document.getElementById('lwRounds').value;
+          matchPayload.characterSkill=document.getElementById('lwCharacterSkill').value;
+          matchPayload.headshotMode=document.getElementById('lwHeadshotMode').value;
+        }
+        let totalDeduction=entryFee;
+        if(selectedMatchType==='BR' && selectedBRType==='creator') totalDeduction+= (matchPayload.prizes.top1+matchPayload.prizes.top2+matchPayload.prizes.top3);
+        if(totalDeduction>0) await deductEscrowFromWallet(totalDeduction,matchId);
+        const bannerData=document.getElementById('matchBannerDataURL').value;
+        if(bannerData) matchPayload.banner=bannerData;
+        await getPublicCollection('matches').add(matchPayload);
+        hideLoading();
+        clearDraft();
+        triggerSuccessScreen(matchId);
+      } catch(err){ hideLoading(); showNotification(err.message,'error'); }
+    }
+
+    async function deductEscrowFromWallet(amount,mId){
+      const walletRef=getPrivateCollection(currentUser.uid,'wallets').doc('wallet');
+      await db.runTransaction(async(t)=>{
+        const ws=await t.get(walletRef);
+        const bal=ws.exists?(ws.data().balance||0):0;
+        if(bal<amount) throw new Error(`Insufficient balance (need NPR ${amount.toFixed(2)})`);
+        t.update(walletRef,{balance:bal-amount,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+        const tr=getPrivateCollection(currentUser.uid,'transactions').doc();
+        t.set(tr,{userId:currentUser.uid,type:'match_escrow_deduction',amount:-amount,description:`Locked for Match #${mId}`,matchId:mId,timestamp:firebase.firestore.FieldValue.serverTimestamp(),status:'completed'});
+      });
+    }
+
+    function triggerSuccessScreen(matchId){
+      document.getElementById('createdMatchId').innerHTML=`#${matchId}`;
+      const link=window.location.origin+'/inmatchjoin?matchId='+matchId;
+      document.getElementById('createdMatchLink').innerHTML=link;
+      document.getElementById('successAnimation').classList.add('show');
+      canvasConfetti({particleCount:150,spread:70,origin:{y:0.6}});
+      clearDraft();
+    }
+
+    function copyMatchLink(){ navigator.clipboard.writeText(document.getElementById('createdMatchLink').innerText); showNotification("Link copied!","success"); }
+    function copyMatchId(){ navigator.clipboard.writeText(document.getElementById('createdMatchId').innerText); showNotification("Match ID copied","success"); }
+    function shareMatch(){
+      const id=document.getElementById('createdMatchId').innerText;
+      const text=`Join my Rocky Axis match! Code: ${id}`;
+      if(navigator.share) navigator.share({title:'Rocky Axis Match',text,url:window.location.href}).catch(()=>navigator.clipboard.writeText(text));
+      else navigator.clipboard.writeText(text);
+      showNotification("Share text copied","success");
+    }
+    function closeModal(id){ 
+      const m = document.getElementById(id); 
+      if(id === 'insufficientBalanceModal') m.style.display = 'none'; 
+      else m.classList.remove('show'); 
+    }
+    function redirectToAddMoney(){ window.location.href="profile.html"; }
+    function redirectToMyCreatedMatches(){ window.location.href="/My_Matches"; }
+    function redirectToHome(){ window.location.href="/Home"; }
+    function goBack(){ window.location.href="/Home"; }
+    
+    // Lifecycle redirections
+    function redirectToSuccessPage(matchId) {
+      window.location.href = `/Match_Success?matchId=${matchId}`;
+    }
+    function routeToWinnerSelection(mId){ 
+      window.location.href = `/Match_Winner?matchId=${mId}`; 
+    }
+    
+    function showLoading(){ document.getElementById('loadingScreen').classList.add('show'); }
+    function hideLoading(){ document.getElementById('loadingScreen').classList.remove('show'); }
+    function showNotification(msg,type='info'){
+      const box=document.getElementById('notificationBox');
+      const icon=type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-triangle':'fa-info-circle';
+      box.innerHTML=`<i class="fas ${icon}"></i> ${msg}`;
+      box.className=`show ${type}`;
+      setTimeout(()=>box.classList.remove('show'),4000);
+    }
+    function showErrorMsg(id,msg){ const e=document.getElementById(id); if(e){ e.innerHTML=`<i class="fas fa-exclamation-circle"></i> ${msg}`; e.classList.add('show'); } }
+    function toggleTip(){ document.getElementById('tipBox').classList.toggle('show'); }
+  </script>
+</body>
+</html>

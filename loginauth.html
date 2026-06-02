@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - Login</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --card: rgba(16,22,41,0.95);
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --text: #e8eef3;
+      --muted: #9aa4b2;
+      --error: #e74c3c;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --radius: 14px;
+      --input-bg: rgba(255,255,255,0.04);
+      --input-border: rgba(255,255,255,0.12);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .bg-circle {
+      position: fixed; border-radius: 50%;
+      background: rgba(0,234,255,0.04); filter: blur(60px);
+      animation: float 20s infinite linear; z-index: -1;
+    }
+    .bg-circle:nth-child(1) { width:300px; height:300px; top:10%; left:10%; }
+    .bg-circle:nth-child(2) { width:200px; height:200px; top:70%; left:80%; animation-delay:-5s; }
+    .bg-circle:nth-child(3) { width:400px; height:400px; top:40%; left:50%; animation-delay:-10s; }
+    .bg-circle:nth-child(4) { width:250px; height:250px; top:80%; left:20%; animation-delay:-15s; }
+    @keyframes float { 0%{transform:translate(0,0) rotate(0deg);} 33%{transform:translate(30px,-40px) rotate(120deg);} 66%{transform:translate(-20px,20px) rotate(240deg);} 100%{transform:translate(0,0) rotate(360deg);} }
+
+    .logo { text-align: center; margin:0.5rem 0 1rem; }
+    .logo h1 { font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight:900; background: linear-gradient(135deg, var(--accent), #fff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow: 0 0 15px var(--accent-glow); }
+    .logo p { color: var(--muted); font-size:0.9rem; }
+
+    .auth-container {
+      width:100%; max-width:440px; background:var(--card); border-radius:var(--radius);
+      padding:1.8rem; box-shadow:0 20px 40px rgba(0,0,0,0.4);
+      border:1px solid rgba(0,234,255,0.15); backdrop-filter:blur(10px);
+      max-height:calc(100vh - 8rem); overflow-y:auto;
+    }
+
+    .tabs { display:flex; margin-bottom:1.8rem; border-bottom:1px solid rgba(255,255,255,0.08); }
+    .tab { flex:1; text-align:center; padding:0.7rem 0; background:none; border:none; color:var(--muted); font-weight:600; font-size:1rem; cursor:pointer; transition:color 0.2s; position:relative; }
+    .tab.active { color:var(--accent); }
+    .tab.active::after { content:''; position:absolute; bottom:-1px; left:0; width:100%; height:2px; background:var(--accent); border-radius:2px 2px 0 0; }
+    .tab:disabled { opacity:0.4; cursor:not-allowed; }
+
+    .form { display:none; animation:fadeIn 0.25s ease; }
+    .form.active { display:block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+
+    .field { margin-bottom:1.2rem; }
+    .field label { display:block; font-size:0.85rem; color:var(--muted); margin-bottom:0.3rem; font-weight:500; }
+    .input-wrapper { position:relative; }
+    .input-wrapper i { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.95rem; transition:color 0.2s; pointer-events:none; }
+    .input-wrapper input { width:100%; padding:0.85rem 1rem 0.85rem 2.6rem; background:var(--input-bg); border:1px solid var(--input-border); border-radius:10px; color:#fff; font-size:0.95rem; outline:none; transition:border 0.2s, box-shadow 0.2s; }
+    .input-wrapper input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,234,255,0.2); }
+    .input-wrapper input:focus + i { color:var(--accent); }
+    .input-wrapper .toggle-password { left:auto; right:14px; cursor:pointer; pointer-events:auto; }
+    
+    .username-prefix { position: absolute; left: 38px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--accent); pointer-events: none; z-index: 5; }
+    #regUsername { padding-left: 3.2rem; }
+
+    .phone-group { display:flex; gap:0.5rem; }
+    .phone-group select { width:120px; padding:0.85rem 0.5rem; background:var(--input-bg); border:1px solid var(--input-border); border-radius:10px; color:#fff; font-size:0.9rem; outline:none; }
+    .phone-group select:focus { border-color:var(--accent); }
+    .phone-group input { flex:1; padding:0.85rem; background:var(--input-bg); border:1px solid var(--input-border); border-radius:10px; color:#fff; font-size:0.95rem; outline:none; }
+    .phone-group input:focus { border-color:var(--accent); }
+
+    .error-msg { font-size:0.8rem; color:var(--error); margin-top:0.35rem; display:none; align-items:center; gap:0.3rem; }
+    .error-msg.show { display:flex; }
+
+    .username-status { position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:0.85rem; font-weight:600; }
+    .username-status.checking { color:var(--muted); }
+    .username-status.available { color:var(--success); }
+    .username-status.taken { color:var(--error); }
+
+    .password-strength { height:4px; border-radius:2px; margin-top:4px; background:rgba(255,255,255,0.1); overflow:hidden; }
+    .password-strength .bar { height:100%; width:0%; transition:0.3s; border-radius:2px; }
+    .strength-text { font-size:0.75rem; margin-top:2px; color:var(--muted); }
+
+    .btn { width:100%; padding:0.9rem; border:none; border-radius:10px; background:linear-gradient(135deg, var(--accent), var(--accent-dark)); color:#0a0e1a; font-weight:700; font-size:1rem; cursor:pointer; transition:0.2s; margin-top:0.5rem; display:flex; align-items:center; justify-content:center; gap:0.5rem; }
+    .btn:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,234,255,0.3); }
+    .btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+    .social-btns { display:flex; gap:0.8rem; margin-top:1.2rem; }
+    .social-btn { flex:1; padding:0.8rem; border:none; border-radius:10px; font-weight:600; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.4rem; color:white; transition:0.2s; }
+    .google-btn { background:#DB4437; } .google-btn:hover { background:#c23321; }
+    .facebook-btn { background:#1877F2; } .facebook-btn:hover { background:#166fe5; }
+
+    .divider { text-align:center; margin:1.2rem 0; color:var(--muted); display:flex; align-items:center; font-size:0.85rem; }
+    .divider::before, .divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.1); }
+    .divider span { padding:0 12px; }
+
+    .link { text-align:center; margin-top:1rem; color:var(--muted); }
+    .link a { color:var(--accent); text-decoration:none; cursor:pointer; }
+
+    .avatar-section { text-align:center; margin-bottom:1.2rem; }
+    .avatar-preview { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, var(--accent), var(--accent-dark)); display:flex; align-items:center; justify-content:center; margin:0 auto 0.8rem; font-size:2rem; font-weight:700; color:#0a0e1a; overflow:hidden; border:2px solid rgba(255,255,255,0.2); }
+    .avatar-preview img { width:100%; height:100%; object-fit:cover; }
+    .upload-btn { background:rgba(255,255,255,0.05); padding:0.5rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem; color:var(--muted); border:1px solid rgba(255,255,255,0.1); display:inline-block; transition:0.2s; }
+    .upload-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+
+    .notification { position:fixed; top:1rem; left:50%; transform:translateX(-50%); background:rgba(16,22,41,0.95); border-left:4px solid var(--accent); padding:0.7rem 1.4rem; border-radius:8px; color:#fff; font-weight:600; z-index:1000; display:none; font-size:0.9rem; white-space:nowrap; }
+    .notification.show { display:block; }
+
+    .loader-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,14,26,0.8); display:none; justify-content:center; align-items:center; z-index:10000; flex-direction:column; }
+    .loader-overlay.show { display:flex; }
+    .loader { border:4px solid rgba(255,255,255,0.1); border-top-color:var(--accent); border-radius:50%; width:40px; height:40px; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to{ transform:rotate(360deg); } }
+
+    @media (max-width:480px) { .auth-container { padding:1.2rem; max-height:calc(100vh - 6rem); } }
+  </style>
+</head>
+<body>
+  <div class="bg-circle"></div><div class="bg-circle"></div><div class="bg-circle"></div><div class="bg-circle"></div>
+  <div class="notification" id="notification"></div>
+  <div class="loader-overlay" id="globalLoader"><div class="loader"></div><p style="margin-top:12px; color:var(--accent);">Please wait...</p></div>
+
+  <div class="logo">
+    <h1><i class="fas fa-bolt"></i> MAKE TREND BATTLE</h1>
+    <p>Campaigns & Giveaways</p>
+  </div>
+
+  <div class="auth-container">
+    <div class="tabs" id="tabsContainer">
+      <button class="tab active" data-tab="login">Login</button>
+      <button class="tab" data-tab="register" id="registerTabBtn">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form active" id="loginForm">
+      <div class="field">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="your@email.com">
+        </div>
+        <div class="error-msg" id="loginEmailError"></div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+          <i class="fas fa-eye toggle-password" onclick="togglePass('loginPassword', this)"></i>
+        </div>
+        <div class="error-msg" id="loginPasswordError"></div>
+      </div>
+      <label style="display:flex; align-items:center; gap:0.5rem; margin:0.5rem 0 1rem; font-size:0.9rem; color:var(--muted); cursor:pointer;">
+        <input type="checkbox" id="rememberMe"> Remember me
+      </label>
+      <button class="btn" id="loginBtn" onclick="login()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <div class="divider"><span>or</span></div>
+      <div class="social-btns">
+        <button class="social-btn google-btn" onclick="socialLogin('google')"><i class="fab fa-google"></i> Google</button>
+        <button class="social-btn facebook-btn" onclick="socialLogin('facebook')"><i class="fab fa-facebook-f"></i> Facebook</button>
+      </div>
+      <div class="link">Don't have an account? <a onclick="switchTab('register')">Register</a></div>
+      <div class="link" style="margin-top:0.5rem;"><a onclick="switchTab('forgot')">Forgot password?</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="form" id="registerForm">
+      <div style="background: rgba(243,156,18,0.1); border:1px solid var(--warning); padding:0.8rem; border-radius:8px; margin-bottom:1.5rem; display: none;" id="registrationClosedNotice">
+        <i class="fas fa-lock" style="color:var(--warning); margin-right:0.5rem;"></i>
+        <span style="color:var(--warning);">New registrations are temporarily disabled by the administrator. Please contact support for assistance.</span>
+      </div>
+      <div class="avatar-section">
+        <div class="avatar-preview" id="avatarPreview">U</div>
+        <label class="upload-btn" for="avatarFile"><i class="fas fa-camera"></i> Upload Picture</label>
+        <input type="file" id="avatarFile" accept="image/*" style="display:none;" onchange="avatarChanged(this)">
+        <input type="hidden" id="avatarDataURL">
+      </div>
+
+      <div class="field">
+        <label>Username</label>
+        <div class="input-wrapper">
+          <i class="fas fa-user"></i>
+          <span class="username-prefix">@</span>
+          <input type="text" id="regUsername" placeholder="yourname" oninput="validateUsernameInput(this); checkUsernameAvailability()" autocomplete="off">
+          <span class="username-status" id="usernameStatus"></span>
+        </div>
+        <div class="error-msg" id="regUsernameError"></div>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="regEmail" placeholder="you@example.com" onblur="checkEmailAvailability()">
+        </div>
+        <div class="error-msg" id="regEmailError"></div>
+      </div>
+
+      <div class="field">
+        <label>Phone (optional)</label>
+        <div class="phone-group">
+          <select id="countryCode">
+            <option value="+977">🇳🇵 +977</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+81">🇯🇵 +81</option>
+            <option value="+86">🇨🇳 +86</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+7">🇷🇺 +7</option>
+            <option value="+55">🇧🇷 +55</option>
+            <option value="+92">🇵🇰 +92</option>
+            <option value="+880">🇧🇩 +880</option>
+            <option value="+63">🇵🇭 +63</option>
+          </select>
+          <input type="text" id="phoneNumber" placeholder="10-digit number" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+        </div>
+        <div class="error-msg" id="phoneError"></div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="regPassword" placeholder="Min. 6 characters" oninput="updateStrength(this.value)">
+          <i class="fas fa-eye toggle-password" onclick="togglePass('regPassword', this)"></i>
+        </div>
+        <div class="password-strength"><div class="bar" id="strengthBar"></div></div>
+        <div class="strength-text" id="strengthText"></div>
+        <div class="error-msg" id="regPasswordError"></div>
+      </div>
+
+      <div class="field">
+        <label>Confirm Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="regConfirmPassword" placeholder="Re-enter password">
+          <i class="fas fa-eye toggle-password" onclick="togglePass('regConfirmPassword', this)"></i>
+        </div>
+        <div class="error-msg" id="regConfirmPasswordError"></div>
+      </div>
+
+      <!-- Optional Referral Code Section -->
+      <div class="field">
+        <label>Referral Code (Optional)</label>
+        <div class="input-wrapper">
+          <i class="fas fa-gift"></i>
+          <input type="text" id="regReferralCode" placeholder="Enter referral code" autocomplete="off" style="text-transform: uppercase;">
+        </div>
+        <div class="error-msg" id="regReferralError"></div>
+      </div>
+
+      <button class="btn" id="regBtn" onclick="register()"><i class="fas fa-user-plus"></i> Create Account</button>
+      <div class="link">Already have an account? <a onclick="switchTab('login')">Sign in</a></div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="form" id="forgotForm">
+      <h2 style="text-align:center; margin-bottom:1.5rem; color:var(--text);">Reset Password</h2>
+      <div class="field">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="resetEmail" placeholder="Enter your email">
+        </div>
+      </div>
+      <button class="btn" onclick="resetPassword()"><i class="fas fa-paper-plane"></i> Send Reset Link</button>
+      <div class="link"><a onclick="switchTab('login')">Back to Login</a></div>
+    </div>
+
+    <!-- SOCIAL PROFILE COMPLETION -->
+    <div class="form" id="completeProfileForm">
+      <h2 style="text-align:center; margin-bottom:1.2rem;">Finish Your Profile</h2>
+      <div class="avatar-section">
+        <div class="avatar-preview" id="avatarPreview2">U</div>
+        <label class="upload-btn" for="avatarFile2"><i class="fas fa-camera"></i> Change Photo</label>
+        <input type="file" id="avatarFile2" accept="image/*" style="display:none;" onchange="avatarChanged2(this)">
+        <input type="hidden" id="avatarDataURL2">
+      </div>
+      <div class="field">
+        <label>Username</label>
+        <div class="input-wrapper">
+          <i class="fas fa-at"></i>
+          <input type="text" id="profileUsername" placeholder="@yourname" oninput="formatUsername(this); checkProfileUsernameAvailability()" autocomplete="off">
+          <span class="username-status" id="profileUsernameStatus"></span>
+        </div>
+        <div class="error-msg" id="profileUsernameError"></div>
+      </div>
+      <div class="field">
+        <label>Phone (optional)</label>
+        <div class="phone-group">
+          <select id="profileCountryCode">
+            <option value="+977">🇳🇵 +977</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+61">🇦🇺 +61</option>
+          </select>
+          <input type="text" id="profilePhone" placeholder="10-digit number" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+        </div>
+      </div>
+
+      <!-- Social Referral Entry Box -->
+      <div class="field">
+        <label>Referral Code (Optional)</label>
+        <div class="input-wrapper">
+          <i class="fas fa-gift"></i>
+          <input type="text" id="profileReferralCode" placeholder="Enter referral code" autocomplete="off" style="text-transform: uppercase;">
+        </div>
+        <div class="error-msg" id="profileReferralError"></div>
+      </div>
+
+      <button class="btn" onclick="saveSocialProfile()">Save & Continue</button>
+    </div>
+  </div>
+
+  <script>
+    // 🔥 Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ---------- GLOBAL STATE ----------
+    let registrationEnabled = true;  // will be updated after config fetch
+
+    // Determine the redirection target: check URL params, sessionStorage, or document referrer
+    const getTargetRedirect = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('redirect')) return params.get('redirect');
+
+      const sessionReturn = sessionStorage.getItem('returnTo');
+      if (sessionReturn) { sessionStorage.removeItem('returnTo'); return sessionReturn; }
+
+      const ref = document.referrer;
+      if (ref && ref.includes(window.location.host) && !ref.includes('login')) return ref;
+      return '/';
+    };
+    const redirectUrl = getTargetRedirect();
+
+    // ---------- UTILS ----------
+    const $ = (id) => document.getElementById(id);
+    const notify = (msg, type='info') => {
+      const n = $('notification');
+      n.innerHTML = msg; n.className = `notification show ${type}`;
+      clearTimeout(n._t); n._t = setTimeout(() => n.classList.remove('show'), 4000);
+    };
+    const showLoader = (s) => $('globalLoader').classList.toggle('show', s);
+    const clearErrors = () => document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+    const showError = (id, msg) => {
+      const el = $(id + 'Error');
+      if (el) { el.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`; el.classList.add('show'); }
+    };
+    const togglePass = (id, icon) => {
+      const inp = $(id);
+      if (inp.type === 'password') { inp.type='text'; icon.className='fas fa-eye-slash toggle-password'; }
+      else { inp.type='password'; icon.className='fas fa-eye toggle-password'; }
+    };
+
+    // Ban check helper – returns true if user is banned
+    async function isUserBanned(uid) {
+      try {
+        const doc = await db.collection('users').doc(uid).get();
+        return doc.exists && doc.data().banned === true;
+      } catch (e) {
+        console.error('Ban check error:', e);
+        return false;  // on error, allow (fail safe)
+      }
+    }
+
+    // ---------- REGISTRATION CONFIG & URL REFERRAL GRAB ----------
+    async function loadRegistrationConfig() {
+      try {
+        const configDoc = await db.collection('config').doc('registration').get();
+        if (configDoc.exists) {
+          registrationEnabled = configDoc.data().enabled !== false; // explicitly false
+        }
+      } catch (e) {
+        console.warn('Could not load registration config, assuming enabled.');
+        registrationEnabled = true;
+      }
+
+      // Grab dynamic referral parameter from URL queries on page load
+      const urlQuery = new URLSearchParams(window.location.search);
+      const urlReferral = urlQuery.get('ref') || urlQuery.get('referral');
+      if (urlReferral) {
+        const uppercaseRef = urlReferral.trim().toUpperCase();
+        if ($('regReferralCode')) $('regReferralCode').value = uppercaseRef;
+        if ($('profileReferralCode')) $('profileReferralCode').value = uppercaseRef;
+      }
+
+      // Update UI accordingly
+      const registerTab = $('registerTabBtn');
+      const regBtn = $('regBtn');
+      const closedNotice = $('registrationClosedNotice');
+
+      if (!registrationEnabled) {
+        registerTab.disabled = true;
+        registerTab.style.opacity = '0.5';
+        registerTab.style.cursor = 'not-allowed';
+        if (regBtn) regBtn.disabled = true;
+        if (closedNotice) closedNotice.style.display = 'block';
+        // If currently on register tab, force switch to login
+        if ($('registerForm').classList.contains('active')) {
+          switchTab('login');
+        }
+      }
+    }
+
+    // ---------- SWITCH TAB (with registration guard) ----------
+    const switchTab = (tab) => {
+      if (tab === 'register' && !registrationEnabled) {
+        notify('Registration is currently disabled by the administrator.', 'warning');
+        return;
+      }
+
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      ['loginForm','registerForm','forgotForm','completeProfileForm'].forEach(id => $(id).classList.remove('active'));
+      if (tab === 'login') $('loginForm').classList.add('active');
+      else if (tab === 'register') $('registerForm').classList.add('active');
+      else if (tab === 'forgot') $('forgotForm').classList.add('active');
+      else if (tab === 'complete') $('completeProfileForm').classList.add('active');
+    };
+    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+    const validateUsernameInput = (inp) => {
+      let val = inp.value.trim();
+      // Remove any @ typed by user and restrict characters
+      val = val.replace(/@/g, '').replace(/[^a-z0-9]/g, '').toLowerCase();
+      inp.value = val;
+    };
+
+    // Formats username inputs cleanly for completion layout page
+    const formatUsername = (inp) => {
+      let v = inp.value.trim().toLowerCase();
+      v = v.replace(/@/g, '').replace(/[^a-z0-9]/g, '');
+      inp.value = v;
+    };
+
+    // ---------- AVATAR UPLOAD (unchanged) ----------
+    function avatarChanged(input) {
+      if (!input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height, maxSize = 200;
+          if (w>h) { if (w>maxSize) { h *= maxSize/w; w=maxSize; } }
+          else { if (h>maxSize) { w *= maxSize/h; h=maxSize; } }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+          $('avatarDataURL').value = dataURL;
+          $('avatarPreview').innerHTML = `<img src="${dataURL}" alt="avatar">`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+    function avatarChanged2(input) {
+      if (!input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height, maxSize = 200;
+          if (w>h) { if (w>maxSize) { h *= maxSize/w; w=maxSize; } }
+          else { if (h>maxSize) { w *= maxSize/h; h=maxSize; } }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+          $('avatarDataURL2').value = dataURL;
+          $('avatarPreview2').innerHTML = `<img src="${dataURL}" alt="avatar">`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+
+    // ---------- USERNAME & EMAIL AVAILABILITY (unchanged) ----------
+    let usernameTimer, profileTimer;
+    const checkUsernameAvailability = async () => {
+      const username = $('regUsername').value.trim().toLowerCase();
+      const status = $('usernameStatus');
+      if (username.length < 2) { status.className='username-status'; status.textContent=''; return; }
+      status.className='username-status checking'; status.textContent='...';
+      clearTimeout(usernameTimer);
+      usernameTimer = setTimeout(async () => {
+        try {
+          const snap = await db.collection('users').where('username','==',username).get();
+          if (snap.empty) { status.className='username-status available'; status.textContent='✓ Available'; }
+          else { status.className='username-status taken'; status.textContent='✗ Taken'; }
+        } catch(e) { status.className='username-status'; status.textContent=''; }
+      }, 500);
+    };
+    const checkProfileUsernameAvailability = async () => {
+      const username = $('profileUsername').value.trim();
+      const status = $('profileUsernameStatus');
+      if (username.length < 2) { status.className='username-status'; status.textContent=''; return; }
+      status.className='username-status checking'; status.textContent='...';
+      clearTimeout(profileTimer);
+      profileTimer = setTimeout(async () => {
+        try {
+          const snap = await db.collection('users').where('username','==',username).get();
+          if (snap.empty) { status.className='username-status available'; status.textContent='✓ Available'; }
+          else { status.className='username-status taken'; status.textContent='✗ Taken'; }
+        } catch(e) { status.className='username-status'; status.textContent=''; }
+      }, 500);
+    };
+    const checkEmailAvailability = async () => {
+      const email = $('regEmail').value.trim();
+      if (!email) return;
+      try {
+        const snap = await db.collection('users').where('email','==',email).get();
+        if (!snap.empty) {
+          $('regEmailError').innerHTML = `<i class="fas fa-exclamation-circle"></i> This email is already registered. <a onclick="switchToLogin('${email}')" style="color:var(--accent); cursor:pointer;">Login instead</a> or <a onclick="switchToForgot('${email}')" style="color:var(--accent);">Reset password</a>`;
+          $('regEmailError').classList.add('show');
+        } else {
+          $('regEmailError').classList.remove('show');
+        }
+      } catch(e) {}
+    };
+    const switchToLogin = (email) => { switchTab('login'); $('loginEmail').value = email; };
+    const switchToForgot = (email) => { switchTab('forgot'); $('resetEmail').value = email; };
+
+    // ---------- PASSWORD STRENGTH (unchanged) ----------
+    const updateStrength = (pwd) => {
+      const bar = $('strengthBar'), text = $('strengthText');
+      let score=0;
+      if(pwd.length>=8) score++;
+      if(/[A-Z]/.test(pwd)&&/[a-z]/.test(pwd)) score++;
+      if(/[0-9]/.test(pwd)) score++;
+      if(/[^A-Za-z0-9]/.test(pwd)) score++;
+      const widths=[0,25,50,75,100], colors=['#e74c3c','#e74c3c','#f39c12','#2ecc71','#2ecc71'], labels=['','Weak','Fair','Good','Strong'];
+      bar.style.width=widths[score]+'%'; bar.style.background=colors[score];
+      text.textContent=pwd?labels[score]:'';
+    };
+
+    // ---------- UNIQUE NUMERIC USER ID GENERATION (unchanged) ----------
+    async function generateNumericUserId() {
+      const counterRef = db.collection('counters').doc('userIdCounter');
+      try {
+        const newId = await db.runTransaction(async (transaction) => {
+          const doc = await transaction.get(counterRef);
+          if (!doc.exists) {
+            transaction.set(counterRef, { value: 100000 });
+            return 100000;
+          }
+          const newValue = doc.data().value + 1;
+          transaction.update(counterRef, { value: newValue });
+          return newValue;
+        });
+        return newId;
+      } catch (error) {
+        console.error('Transaction failed, using fallback ID:', error);
+        return Date.now() + Math.floor(Math.random() * 1000);
+      }
+    }
+
+    // ---------- LOGIN (with ban check & redirect) ----------
+    const login = async () => {
+      clearErrors();
+      const email = $('loginEmail').value.trim(), password = $('loginPassword').value;
+      if(!email) { showError('loginEmail','Email required'); return; }
+      if(!password) { showError('loginPassword','Password required'); return; }
+      showLoader(true);
+      try {
+        await auth.setPersistence($('rememberMe').checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION);
+        const userCred = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCred.user;
+        // Check if banned
+        if (await isUserBanned(user.uid)) {
+          await auth.signOut();
+          notify('Your account has been suspended. Please contact support.', 'error');
+          showLoader(false);
+          return;
+        }
+        notify('Welcome back!', 'success');
+        // Redirect to the original page or index
+        setTimeout(() => { window.location.href = redirectUrl; }, 600);
+      } catch(e) {
+        showLoader(false);
+        if(e.code==='auth/user-not-found') showError('loginEmail','No account with this email');
+        else if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') showError('loginPassword','Incorrect password');
+        else if(e.code==='auth/invalid-email') showError('loginEmail','Invalid email');
+        else if(e.code==='auth/too-many-requests') notify('Too many attempts. Try later.', 'warning');
+        else showError('loginEmail','Login failed. Try again.');
+      }
+    };
+
+    // ---------- SECURE ATOMIC REGISTRATION AND DYNAMIC REFERRAL LOGIC ----------
+    const register = async () => {
+      if (!registrationEnabled) {
+        notify('Registration is currently disabled by the administrator.', 'error');
+        return;
+      }
+
+      clearErrors();
+      const username = $('regUsername').value.trim().toLowerCase();
+      const email = $('regEmail').value.trim();
+      const password = $('regPassword').value;
+      const confirm = $('regConfirmPassword').value;
+      const country = $('countryCode').value;
+      const phone = $('phoneNumber').value.trim();
+      const avatar = $('avatarDataURL').value || '';
+      const enteredReferral = $('regReferralCode').value.trim().toUpperCase();
+
+      let valid = true;
+      if(!username||username.length<2) { showError('regUsername','Enter a valid username (starts with @)'); valid=false; }
+      if(!email) { showError('regEmail','Email is required'); valid=false; }
+      if(!password) { showError('regPassword','Password is required'); valid=false; }
+      else if(password.length<6) { showError('regPassword','Minimum 6 characters'); valid=false; }
+      if(password!==confirm) { showError('regConfirmPassword','Passwords do not match'); valid=false; }
+      if(phone && phone.length!==10) { showError('phone','Phone must be exactly 10 digits'); valid=false; }
+      if(!valid) return;
+
+      showLoader(true);
+
+      let refererDocRef = null;
+      let refererUid = null;
+
+      // 1. Pre-validation check for optional referral code input
+      if (enteredReferral) {
+        try {
+          let queryCode = enteredReferral;
+          if (!queryCode.startsWith('@')) {
+            queryCode = '@' + queryCode;
+          }
+          let snap = await db.collection('users').where('referralCode', '==', queryCode).get();
+          if (snap.empty) {
+            // Try fallback matching without `@` prefix
+            snap = await db.collection('users').where('referralCode', '==', enteredReferral).get();
+          }
+
+          if (!snap.empty) {
+            refererDocRef = snap.docs[0].ref;
+            refererUid = snap.docs[0].id;
+          } else {
+            showError('regReferral', 'The entered referral code is invalid.');
+            showLoader(false);
+            return;
+          }
+        } catch(err) {
+          console.error("Referral query check fault: ", err);
+        }
+      }
+
+      // 2. Standard unique name & details locks
+      try {
+        const userSnap = await db.collection('users').where('username','==',username).get();
+        if(!userSnap.empty) { showError('regUsername','Username already taken'); showLoader(false); return; }
+        const emailSnap = await db.collection('users').where('email','==',email).get();
+        if(!emailSnap.empty) {
+          showError('regEmail', `This email is already registered. <a onclick="switchToLogin('${email}')" style="color:var(--accent);">Login instead</a>`);
+          showLoader(false);
+          return;
+        }
+        if(phone) {
+          const fullPhone = country + phone;
+          const phoneSnap = await db.collection('users').where('phone', '==', fullPhone).get();
+          if(!phoneSnap.empty) {
+            showError('phone', 'This phone number is already in use.');
+            showLoader(false);
+            return;
+          }
+        }
+      } catch(e) {
+        showLoader(false);
+        notify('Unable to verify username/email. Check Firestore rules.', 'error');
+        return;
+      }
+
+      // 3. Complete auth user registration and execute atomic transactional updates
+      try {
+        const userCred = await auth.createUserWithEmailAndPassword(email, password);
+        const uid = userCred.user.uid;
+        const numericUserId = await generateNumericUserId();
+        const generatedRefCode = '@' + uid.substring(0,6).toUpperCase();
+
+        // Run multi-document transaction for absolute balance and counts accuracy
+        await db.runTransaction(async (transaction) => {
+          let refererUpdateData = {};
+          
+          if (refererDocRef) {
+            const refererDocSnap = await transaction.get(refererDocRef);
+            if (refererDocSnap.exists) {
+              const currentRefererBalance = refererDocSnap.data().walletBalance || refererDocSnap.data().wallet || 0;
+              const currentRefererEarned = refererDocSnap.data().referralEarnings || refererDocSnap.data().referral || 0;
+              const currentReferredCount = refererDocSnap.data().referredCount || refererDocSnap.data().referredFriendsCount || 0;
+
+              // Synchronize multiple variants of property key mappings across different files
+              refererUpdateData = {
+                wallet: currentRefererBalance + 10,
+                walletBalance: currentRefererBalance + 10,
+                referral: currentRefererEarned + 10,
+                referralEarnings: currentRefererEarned + 10,
+                referredCount: currentReferredCount + 1,
+                referredFriendsCount: currentReferredCount + 1
+              };
+
+              transaction.update(refererDocRef, refererUpdateData);
+
+              // Log audit record for Referer
+              const refererTransRef = db.collection('users').doc(refererUid).collection('transactions').doc();
+              transaction.set(refererTransRef, {
+                type: 'referral_bonus',
+                amount: 10,
+                description: `Received referral invite bonus from user: @${username}`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'completed'
+              });
+            }
+          }
+
+          // Generate new user profile
+          const newUserDocRef = db.collection('users').doc(uid);
+          const startingBalance = refererDocRef ? 10 : 0;
+          const startingBonus = refererDocRef ? 10 : 0;
+
+          transaction.set(newUserDocRef, {
+            username, email,
+            phone: phone ? country + phone : '',
+            avatarDataURL: avatar,
+            role: 'user',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            stats: { played:0, won:0, completed:0, created:0 },
+            wallet: startingBalance,
+            walletBalance: startingBalance,
+            referral: 0,
+            referralEarnings: 0,
+            referredCount: 0,
+            referredFriendsCount: 0,
+            winning: 0,
+            bonus: startingBonus,
+            referralCode: generatedRefCode,
+            provider: 'email',
+            UserId: numericUserId,
+            banned: false,
+            referredBy: refererUid || ''
+          });
+
+          // Log welcome bonus transaction for New User
+          if (refererDocRef) {
+            const newUserTransRef = db.collection('users').doc(uid).collection('transactions').doc();
+            transaction.set(newUserTransRef, {
+              type: 'welcome_bonus',
+              amount: 10,
+              description: `Received signup welcome bonus using code: ${enteredReferral}`,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              status: 'completed'
+            });
+          }
+        });
+
+        notify('Account created! +10 NPR bonus added.', 'success');
+        setTimeout(() => { window.location.href = redirectUrl; }, 600);
+      } catch(e) {
+        showLoader(false);
+        if(e.code==='auth/email-already-in-use') showError('regEmail','Email already registered');
+        else if(e.code==='auth/invalid-email') showError('regEmail','Invalid email');
+        else if(e.code==='auth/weak-password') showError('regPassword','Password too weak');
+        else { console.error(e); notify('Registration failed. Try again.', 'error'); }
+      }
+    };
+
+    const resetPassword = async () => {
+      const email = $('resetEmail').value.trim();
+      if(!email) { notify('Enter your email.', 'warning'); return; }
+      try {
+        await auth.sendPasswordResetEmail(email);
+        notify('Reset link sent! Check your inbox.', 'success');
+      } catch(e) {
+        if(e.code==='auth/user-not-found') notify('No account found with that email.', 'error');
+        else notify('Failed to send reset email.', 'error');
+      }
+    };
+
+    const socialLogin = async (providerName) => {
+      if (!registrationEnabled) {
+        notify('New account creation is currently disabled. If you already have an account, please login with email/password.', 'warning');
+        return;
+      }
+      const provider = providerName==='google' ? new firebase.auth.GoogleAuthProvider() : new firebase.auth.FacebookAuthProvider();
+      try {
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        // Check ban
+        if (await isUserBanned(user.uid)) {
+          await auth.signOut();
+          notify('Your account has been suspended. Please contact support.', 'error');
+          return;
+        }
+        const docSnap = await db.collection('users').doc(user.uid).get();
+        if(!docSnap.exists) {
+          $('profileUsername').value = '';
+          $('profilePhone').value = '';
+          $('avatarPreview2').innerHTML = user.photoURL
+            ? `<img src="${user.photoURL}" alt="avatar">`
+            : (user.displayName ? user.displayName[0].toUpperCase() : 'U');
+          $('avatarDataURL2').value = user.photoURL || '';
+          switchTab('complete');
+          notify('Please complete your profile.', 'info');
+        } else {
+          notify('Login successful!', 'success');
+          setTimeout(() => { window.location.href = redirectUrl; }, 600);
+        }
+      } catch(e) {
+        if(e.code==='auth/popup-closed-by-user') notify('Login cancelled.', 'warning');
+        else if(e.code==='auth/unauthorized-domain') notify('Domain not authorized. Add it in Firebase Console.', 'error');
+        else notify('Social login failed.', 'error');
+      }
+    };
+
+    // ---------- DYNAMIC SOCIAL PROFILE COMPLETION WITH REFERRAL ----------
+    const saveSocialProfile = async () => {
+      const user = auth.currentUser;
+      if(!user) { notify('Not authenticated.', 'error'); return; }
+      
+      const username = $('profileUsername').value.trim();
+      const country = $('profileCountryCode').value;
+      const phone = $('profilePhone').value.trim();
+      const avatar = $('avatarDataURL2').value || '';
+      const enteredReferral = $('profileReferralCode').value.trim().toUpperCase();
+
+      if(!username||username.length<2) { notify('Username required.', 'error'); return; }
+      if(phone && phone.length!==10) { notify('Phone must be 10 digits.', 'error'); return; }
+
+      showLoader(true);
+
+      let refererDocRef = null;
+      let refererUid = null;
+
+      if (enteredReferral) {
+        try {
+          let queryCode = enteredReferral;
+          if (!queryCode.startsWith('@')) {
+            queryCode = '@' + queryCode;
+          }
+          let snap = await db.collection('users').where('referralCode', '==', queryCode).get();
+          if (snap.empty) {
+            snap = await db.collection('users').where('referralCode', '==', enteredReferral).get();
+          }
+
+          if (!snap.empty) {
+            refererDocRef = snap.docs[0].ref;
+            refererUid = snap.docs[0].id;
+          } else {
+            showError('profileReferral', 'Invalid referral code entered.');
+            showLoader(false);
+            return;
+          }
+        } catch(err) {
+          console.error("Social referral verify checking error: ", err);
+        }
+      }
+
+      try {
+        const snap = await db.collection('users').where('username','==',username).get();
+        if(!snap.empty) { notify('Username already taken.', 'error'); showLoader(false); return; }
+      } catch(err) { notify('Error checking username.', 'error'); showLoader(false); return; }
+
+      try {
+        const numericUserId = await generateNumericUserId();
+        const generatedRefCode = '@' + user.uid.substring(0,6).toUpperCase();
+
+        // Run transaction logic for social completion referrals
+        await db.runTransaction(async (transaction) => {
+          if (refererDocRef) {
+            const refererDocSnap = await transaction.get(refererDocRef);
+            if (refererDocSnap.exists) {
+              const currentRefererBalance = refererDocSnap.data().walletBalance || refererDocSnap.data().wallet || 0;
+              const currentRefererEarned = refererDocSnap.data().referralEarnings || refererDocSnap.data().referral || 0;
+              const currentReferredCount = refererDocSnap.data().referredCount || refererDocSnap.data().referredFriendsCount || 0;
+
+              transaction.update(refererDocRef, {
+                wallet: currentRefererBalance + 10,
+                walletBalance: currentRefererBalance + 10,
+                referral: currentRefererEarned + 10,
+                referralEarnings: currentRefererEarned + 10,
+                referredCount: currentReferredCount + 1,
+                referredFriendsCount: currentReferredCount + 1
+              });
+
+              // Write referer transaction
+              const refererTransRef = db.collection('users').doc(refererUid).collection('transactions').doc();
+              transaction.set(refererTransRef, {
+                type: 'referral_bonus',
+                amount: 10,
+                description: `Received referral invite bonus from social completed user: @${username}`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'completed'
+              });
+            }
+          }
+
+          const newUserDocRef = db.collection('users').doc(user.uid);
+          const startingBalance = refererDocRef ? 10 : 0;
+          const startingBonus = refererDocRef ? 10 : 0;
+
+          transaction.set(newUserDocRef, {
+            username, email: user.email,
+            phone: phone ? country + phone : '',
+            avatarDataURL: avatar,
+            role: 'user',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            stats: { played:0, won:0, completed:0, created:0 },
+            wallet: startingBalance,
+            walletBalance: startingBalance,
+            referral: 0,
+            referralEarnings: 0,
+            referredCount: 0,
+            referredFriendsCount: 0,
+            winning: 0,
+            bonus: startingBonus,
+            referralCode: generatedRefCode,
+            provider: user.providerData[0]?.providerId || 'social',
+            UserId: numericUserId,
+            banned: false,
+            referredBy: refererUid || ''
+          });
+
+          if (refererDocRef) {
+            const newUserTransRef = db.collection('users').doc(user.uid).collection('transactions').doc();
+            transaction.set(newUserTransRef, {
+              type: 'welcome_bonus',
+              amount: 10,
+              description: `Received signup welcome bonus using code: ${enteredReferral}`,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              status: 'completed'
+            });
+          }
+        });
+
+        notify('Profile saved! +10 NPR bonus added.', 'success');
+        setTimeout(() => { window.location.href = redirectUrl; }, 600);
+      } catch(e) {
+        showLoader(false);
+        notify('Failed to save profile.', 'error');
+      }
+    };
+
+    // ---------- AUTO REDIRECT IF ALREADY LOGGED IN (but check ban) ----------
+    auth.onAuthStateChanged(async user => {
+      if (user) {
+        // If banned, sign out and stop
+        if (await isUserBanned(user.uid)) {
+          await auth.signOut();
+          notify('Your account has been suspended. Please contact support.', 'error');
+          return;
+        }
+        const doc = await db.collection('users').doc(user.uid).get();
+        if (doc.exists && doc.data().username) {
+          window.location.href = redirectUrl;
+        }
+      }
+    });
+
+    // ---------- INITIALISE ----------
+    loadRegistrationConfig();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make Trend Battle - Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root {
+      --bg: #071022;
+      --card: #0b1220;
+      --card-light: #131b2e;
+      --muted: #9aa4b2;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --radius: 16px;
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 90px;
+    }
+
+    /* Fixed Premium Header */
+    .profile-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background: rgba(11, 18, 32, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(0, 234, 255, 0.1);
+    }
+
+    .logo-container {
+      font-weight: 900;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+    }
+
+    .logo-container span {
+      font-size: 26px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .user-avatar-mini {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--bg);
+      overflow: hidden;
+    }
+
+    .user-avatar-mini img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-meta-mini {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mini-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .mini-username {
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    /* Main Grid Layout */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: calc(var(--header-height) + 25px) 20px 30px;
+    }
+
+    /* Profile Card Header (Hero) */
+    .profile-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 234, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    }
+
+    .profile-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 234, 255, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .profile-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d);
+    }
+
+    .profile-header-info {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-bottom: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+    }
+
+    .profile-avatar-large {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 36px;
+      color: var(--bg);
+      overflow: hidden;
+      border: 3px solid var(--accent);
+      box-shadow: 0 0 20px rgba(0, 234, 255, 0.25);
+    }
+
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .online-indicator {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 16px;
+      height: 16px;
+      background: var(--success);
+      border: 3px solid var(--card);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .profile-details {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .profile-username {
+      color: var(--accent);
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .profile-email {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 234, 255, 0.1);
+      border: 1px solid rgba(0, 234, 255, 0.2);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* Performance Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border-color: rgba(0, 234, 255, 0.2);
+      background: rgba(0, 234, 255, 0.02);
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Financial Ledger Hub */
+    .financial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .fin-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.3s;
+    }
+
+    .fin-card:hover {
+      transform: perspective(1000px) rotateY(-2deg) translateY(-5px);
+      box-shadow: var(--shadow-3d);
+    }
+
+    .fin-card.wallet-card {
+      border-color: rgba(0, 234, 255, 0.15);
+      background: radial-gradient(circle at top left, rgba(0, 234, 255, 0.08), var(--card));
+    }
+
+    .fin-card.referral-card {
+      border-color: rgba(46, 204, 113, 0.15);
+      background: radial-gradient(circle at bottom right, rgba(46, 204, 113, 0.04), var(--card));
+    }
+
+    .fin-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wallet-card .fin-title i { color: var(--accent); }
+    .referral-card .fin-title i { color: var(--success); }
+
+    .fin-amount {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      margin: 10px 0 18px;
+    }
+
+    .wallet-card .fin-amount {
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
+    }
+
+    .referral-card .fin-amount {
+      color: var(--success);
+      text-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
+    }
+
+    .fin-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Interactive UI Buttons */
+    .btn {
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-block { width: 100%; }
+    .btn-flex { flex: 1; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg);
+      box-shadow: 0 4px 12px rgba(0, 234, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 234, 255, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: var(--bg);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: var(--bg);
+    }
+
+    .btn-warning:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+
+    /* Referral Widget Elements */
+    .referral-detail-wrapper {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .referral-code-pill {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .code-title {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .code-text-value {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .code-text-value:hover {
+      color: #fff;
+    }
+
+    .referral-quick-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .quick-stat-item {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 8px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .quick-stat-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .quick-stat-lbl {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* Navigational List Panel */
+    .menu-panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .panel-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 18px 24px 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+
+    .menu-item:hover {
+      background: rgba(0, 234, 255, 0.02);
+      padding-left: 28px;
+    }
+
+    .menu-item-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .menu-item-content i {
+      color: var(--accent);
+      font-size: 18px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .menu-item-arrow {
+      color: var(--muted);
+      font-size: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .menu-item:hover .menu-item-arrow {
+      transform: translateX(4px);
+      color: var(--accent);
+    }
+
+    /* Actions Panel Deck */
+    .actions-grid-deck {
+      display: flex;
+      gap: 12px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.01);
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    /* Fixed Bottom Tab Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+    
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-link i {
+      font-size: 18px;
+    }
+    
+    .nav-link.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+    }
+
+    /* Custom Confirm Dialog Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 16, 34, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-window {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    .modal-overlay.active .modal-window {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      font-size: 42px;
+      color: var(--error);
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .modal-text {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Custom Notification Toast */
+    .toast-popup {
+      position: fixed;
+      bottom: 95px;
+      right: 20px;
+      background: var(--card-light);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(120px);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border-left: 4px solid var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toast-popup.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .toast-popup.success { border-left-color: var(--success); }
+    .toast-popup.error { border-left-color: var(--error); }
+    .toast-popup.warning { border-left-color: var(--warning); }
+
+    /* Responsiveness Adaptations */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .financial-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .profile-card {
+        padding: 20px;
+      }
+      .profile-header-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+      .role-badge {
+        align-self: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .user-profile-badge .user-meta-mini {
+        display: none;
+      }
+      .actions-grid-deck {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Fixed Header -->
+  <header class="profile-header">
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    
+    <div class="user-profile-badge">
+      <div class="user-avatar-mini" id="headerAvatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-meta-mini">
+        <span class="mini-name" id="headerName">Loading...</span>
+        <span class="mini-username" id="headerUsername">@axis_player</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container Grid Section -->
+  <div class="container">
+
+    <!-- Gamer Profile Hub Hero Panel -->
+    <section class="profile-card">
+      <div class="profile-header-info">
+        <div class="avatar-wrapper">
+          <div class="profile-avatar-large" id="mainAvatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="online-indicator"></div>
+        </div>
+        <div class="profile-details">
+          <h1 class="profile-name" id="profileName">Loading User...</h1>
+          <div class="profile-username" id="profileUsername">@username</div>
+          <div class="profile-email" id="profileEmail">email@axisesports.com</div>
+          <span class="role-badge" id="profileRole">Player</span>
+        </div>
+      </div>
+
+      <!-- Live Career Tracker Matrix -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-value" id="statMatchesPlayed">0</div>
+          <div class="stat-label">Played</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statMatchesWon" style="color: var(--success);">0</div>
+          <div class="stat-label">Won</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statMatchesCreated">0</div>
+          <div class="stat-label">Created</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statWinRate" style="color: var(--accent);">0%</div>
+          <div class="stat-label">Win Rate</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Financial Operations Center -->
+    <div class="financial-grid">
+      <!-- Wallet Panel Component -->
+      <div class="fin-card wallet-card">
+        <div>
+          <div class="fin-title"><i class="fas fa-wallet"></i> Wallet Balance</div>
+          <div class="fin-amount" id="walletBalanceDisplay">NPR 0.00</div>
+        </div>
+        <div class="fin-actions">
+          <button class="btn btn-primary btn-flex" style="flex: 1;" data-action="mywallet">
+            <i class="fas fa-plus-circle"></i> Add Fund
+          </button>
+          <button class="btn btn-secondary btn-flex" style="flex: 1;" data-action="mywallet">
+            <i class="fas fa-arrow-up-right-from-square"></i> Payout
+          </button>
+        </div>
+      </div>
+
+      <!-- Affiliate Referral Component -->
+      <div class="fin-card referral-card">
+        <div>
+          <div class="fin-title"><i class="fas fa-gift"></i> Refer & Affiliates</div>
+          <div class="referral-detail-wrapper">
+            <div class="referral-code-pill">
+              <span class="code-title">My Code</span>
+              <div class="code-text-value" id="referralCodeDisplay" onclick="copyReferralCodeToClipboard()">
+                <span>------</span> <i class="fas fa-copy"></i>
+              </div>
+            </div>
+            
+            <div class="referral-quick-stats">
+              <div class="quick-stat-item">
+                <div class="quick-stat-val" id="refCountVal">0</div>
+                <div class="quick-stat-lbl">Friends Referred</div>
+              </div>
+              <div class="quick-stat-item">
+                <div class="quick-stat-val" id="refEarnedVal" style="color: var(--success);">NPR 0</div>
+                <div class="quick-stat-lbl">Commission</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel Group: Account Settings -->
+    <div class="menu-panel">
+      <div class="panel-header">Gamer Core Settings</div>
+      <div class="navigation-list">
+        <button class="menu-item" data-action="mywallet">
+          <div class="menu-item-content">
+            <i class="fas fa-wallet"></i>
+            <span>My Wallet Ledger</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="ReferEarn">
+          <div class="menu-item-content">
+            <i class="fas fa-share-nodes"></i>
+            <span>Refer & Earn Program</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="Support">
+          <div class="menu-item-content">
+            <i class="fas fa-headset"></i>
+            <span>Support Helpdesk</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="ProfileEdit">
+          <div class="menu-item-content">
+            <i class="fas fa-user-gear"></i>
+            <span>Edit Profile Data</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="CreateMatch">
+          <div class="menu-item-content">
+            <i class="fas fa-gamepad"></i>
+            <span>Create Match</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="CreatedMatches">
+          <div class="menu-item-content">
+            <i class="fas fa-trophy"></i>
+            <span>My Created Lobbies</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel Group: Legal Agreements -->
+    <div class="menu-panel">
+      <div class="panel-header">Legal Framework</div>
+      <div class="navigation-list">
+        <button class="menu-item" data-action="TermsCondition">
+          <div class="menu-item-content">
+            <i class="fas fa-file-contract"></i>
+            <span>Terms & Conditions</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="PrivacyPolicy">
+          <div class="menu-item-content">
+            <i class="fas fa-user-shield"></i>
+            <span>Privacy Policy Protocol</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="RefundPolicy">
+          <div class="menu-item-content">
+            <i class="fas fa-handshake-angle"></i>
+            <span>Refund Policy Protection</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+        
+        <button class="menu-item" data-action="FairPlayPolicy">
+          <div class="menu-item-content">
+            <i class="fas fa-scale-balanced"></i>
+            <span>Fair Play Compliance</span>
+          </div>
+          <i class="fas fa-chevron-right menu-item-arrow"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Secure Device Disconnection Panel -->
+    <div class="menu-panel">
+      <div class="panel-header">Security Access Control</div>
+      <div class="actions-grid-deck">
+        <button class="btn btn-danger btn-flex" style="flex: 1;" onclick="openConfirmDialog('single')">
+          <i class="fas fa-right-from-bracket"></i> End Session
+        </button>
+        <button class="btn btn-secondary btn-flex" style="flex: 1;" onclick="openConfirmDialog('all')">
+          <i class="fas fa-shield-halved"></i> Purge All Devices
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Micro Notifications Toast Element -->
+  <div class="toast-popup" id="toastSystem">
+    <i class="fas fa-circle-info" id="toastIcon"></i>
+    <span id="toastMsg">Ready</span>
+  </div>
+
+  <!-- Custom Native Confirmation Dialog overlay -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-window">
+      <div class="modal-icon" id="confirmModalIcon"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="modal-title" id="confirmModalTitle">Security Warning</div>
+      <div class="modal-text" id="confirmModalText">Are you sure you want to log out of your player profile?</div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeConfirmDialog()">Cancel</button>
+        <button class="btn btn-danger" style="flex: 1;" id="modalConfirmBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standalone Fixed App Bottom Tab bar -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-link">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/inmatchjoin" class="nav-link">
+      <i class="fas fa-gamepad"></i>
+      <span>Games</span>
+    </a>
+    <a href="/My_Matches" class="nav-link">
+      <i class="fas fa-trophy"></i>
+      <span>Joined Games</span>
+    </a>
+    <a href="/Profile" class="nav-link active">
+      <i class="fas fa-user-cog"></i>
+      <span>Control</span>
+    </a>
+  </nav>
+
+  <!-- Firebase Compat App Framework Initialization SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Firebase configurations
+    const firebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let auth, db;
+
+    // Secure App Firebase Module Instantiation
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      auth = firebase.auth();
+      db = firebase.firestore();
+    } catch (err) {
+      console.error("Authentication Service Initialization failure:", err);
+    }
+
+    // Dynamic Auth State Observers Routing Check
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!auth) {
+        showToastNotification("Core communication network offline.", "error");
+        return;
+      }
+
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // Process and establish direct cloud data binds
+          bindCloudUserProfile(user);
+          bindLocalMenuControls();
+        } else {
+          // Security Redirection fallback rule
+          window.location.href = '/LoginAuth';
+        }
+      });
+    });
+
+    /**
+     * Firebase Firestore profile documents loader
+     */
+    function bindCloudUserProfile(user) {
+      const profileDocRef = db.collection('users').doc(user.uid);
+      const appId = "maketrendbattle-rockyaxis";
+      const walletDocRef = db.collection('artifacts').doc(appId).collection('users').doc(user.uid).collection('wallets').doc('wallet');
+
+      // Real-time Wallet Ledger listener
+      walletDocRef.onSnapshot((walletSnap) => {
+        if (walletSnap.exists) {
+          const bal = walletSnap.data().balance || 0;
+          document.getElementById('walletBalanceDisplay').textContent = `NPR ${parseFloat(bal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+      }, (error) => {
+        console.error("Wallet sync failed:", error);
+      });
+
+      // Real-time Firestore structural data updates
+      profileDocRef.onSnapshot((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const cloudData = docSnapshot.data();
+          renderActiveUIPatterns(user, cloudData);
+        } else {
+          console.warn("User Profile schema could not be retrieved from database collection mapping.");
+          renderActiveUIPatterns(user, null);
+        }
+      }, (error) => {
+        console.error("Firestore database retrieve operations failed: ", error);
+        showToastNotification("Error synchronizing profile document data.", "error");
+      });
+    }
+
+    /**
+     * Real-time DOM elements sync engine
+     */
+    function renderActiveUIPatterns(firebaseAuthUser, dbUserData) {
+      // 1. Core Profile Details & Identification
+      const userMailAddress = firebaseAuthUser.email || "No email bound";
+      const userFallbackName = firebaseAuthUser.displayName || userMailAddress.split('@')[0];
+
+      const realDisplayName = (dbUserData && dbUserData.name) ? dbUserData.name : userFallbackName;
+      const realUserNameStr = (dbUserData && dbUserData.username) ? 
+                              (dbUserData.username.startsWith('@') ? dbUserData.username : `@${dbUserData.username}`) : 
+                              `@${userMailAddress.split('@')[0]}`;
+      const userRoleMapping = (dbUserData && dbUserData.role) ? dbUserData.role : "Player";
+
+      document.getElementById('headerName').textContent = realDisplayName;
+      document.getElementById('headerUsername').textContent = realUserNameStr;
+      document.getElementById('profileName').textContent = realDisplayName;
+      document.getElementById('profileUsername').textContent = realUserNameStr;
+      document.getElementById('profileEmail').textContent = userMailAddress;
+
+      const profileRoleNode = document.getElementById('profileRole');
+      profileRoleNode.textContent = userRoleMapping;
+      if (userRoleMapping.toLowerCase() === 'admin' || userRoleMapping.toLowerCase() === 'host') {
+        profileRoleNode.style.background = 'rgba(0, 234, 255, 0.15)';
+        profileRoleNode.style.borderColor = 'rgba(0, 234, 255, 0.3)';
+        profileRoleNode.style.color = 'var(--accent)';
+      }
+
+      // 2. High-Res Avatar synchronization logic
+      const activeAvatarPhotoUrl = (dbUserData && dbUserData.profilePic) ? dbUserData.profilePic : firebaseAuthUser.photoURL;
+      const avatarContainerNodes = ['headerAvatar', 'mainAvatar'];
+
+      avatarContainerNodes.forEach(containerId => {
+        const targetNode = document.getElementById(containerId);
+        if (activeAvatarPhotoUrl) {
+          targetNode.innerHTML = `<img src="${activeAvatarPhotoUrl}" alt="Profile Avatar">`;
+        } else {
+          const userStartingInitial = realDisplayName.charAt(0).toUpperCase();
+          targetNode.innerHTML = `<span>${userStartingInitial}</span>`;
+        }
+      });
+
+      // 3. Performance metric analytics formulas engine
+      const matchesPlayedCount = (dbUserData && dbUserData.matchesPlayed !== undefined) ? parseInt(dbUserData.matchesPlayed) : 0;
+      const matchesWonCount = (dbUserData && dbUserData.matchesWon !== undefined) ? parseInt(dbUserData.matchesWon) : 
+                              (dbUserData && dbUserData.winCount !== undefined) ? parseInt(dbUserData.winCount) : 0;
+      const matchesCreatedCount = (dbUserData && dbUserData.matchesCreated !== undefined) ? parseInt(dbUserData.matchesCreated) : 0;
+
+      let computedWinRatePercent = 0;
+      if (matchesPlayedCount > 0) {
+        computedWinRatePercent = Math.round((matchesWonCount / matchesPlayedCount) * 100);
+      }
+
+      document.getElementById('statMatchesPlayed').textContent = matchesPlayedCount;
+      document.getElementById('statMatchesWon').textContent = matchesWonCount;
+      document.getElementById('statMatchesCreated').textContent = matchesCreatedCount;
+      document.getElementById('statWinRate').textContent = `${computedWinRatePercent}%`;
+
+      // 5. Dynamic Referral Tracking and code outputs
+      const referralCodeMapping = (dbUserData && dbUserData.referralCode) ? dbUserData.referralCode : "NO_CODE";
+      const referredFriendsCount = (dbUserData && dbUserData.referredCount !== undefined) ? dbUserData.referredCount : 
+                                   (dbUserData && dbUserData.referredFriendsCount !== undefined) ? dbUserData.referredFriendsCount : 0;
+      const totalAffiliateCommissions = (dbUserData && dbUserData.referralEarnings !== undefined) ? dbUserData.referralEarnings : 0.00;
+
+      document.getElementById('referralCodeDisplay').innerHTML = `<span>${referralCodeMapping}</span> <i class="fas fa-copy"></i>`;
+      document.getElementById('refCountVal').textContent = referredFriendsCount;
+      document.getElementById('refEarnedVal').textContent = `NPR ${parseFloat(totalAffiliateCommissions).toLocaleString('en-US')}`;
+    }
+
+    /**
+     * Set up dynamic tap actions and links mapper
+     */
+    function bindLocalMenuControls() {
+      document.addEventListener("click", (event) => {
+        let parentNode = event.target;
+        while (parentNode && parentNode !== document.body) {
+          if (parentNode.hasAttribute('data-action')) {
+            const registeredAction = parentNode.getAttribute('data-action');
+            executePanelMappingAction(registeredAction);
+            return;
+          }
+          parentNode = parentNode.parentElement;
+        }
+      });
+    }
+
+    /**
+     * Map target actions directly to destination endpoints
+     */
+    function executePanelMappingAction(actionKey) {
+      const targetNavRoutesMap = {
+        'mywallet': '/mywallet',
+        'ReferEarn': '/ReferEarn',
+        'Support': '/Support',
+        'ProfileEdit': '/Profile_Edit',
+        'CreateMatch': '/MatchCreation',
+        'CreatedMatches': '/My_Matches',
+        'TermsCondition': '/TermsConditions',
+        'PrivacyPolicy': '/PrivacyPolicy',
+        'RefundPolicy': '/RefundPolicy',
+        'FairPlayPolicy': '/FairPlayPolicy'
+      };
+
+      const pathEndpoint = targetNavRoutesMap[actionKey];
+      if (pathEndpoint) {
+        window.location.href = pathEndpoint;
+      } else {
+        showToastNotification(`Mapped action code "${actionKey}" was not located.`, "warning");
+      }
+    }
+
+    /**
+     * Copies affiliate referral key to clipboard with fallback support in sandboxed iframe contexts
+     */
+    function copyReferralCodeToClipboard() {
+      const codePill = document.getElementById('referralCodeDisplay');
+      const innerRefValue = codePill.querySelector('span').textContent;
+
+      if (innerRefValue === "------" || innerRefValue === "NO_CODE") {
+        showToastNotification("Active referral code could not be resolved.", "error");
+        return;
+      }
+
+      const copyTempArea = document.createElement('textarea');
+      copyTempArea.value = innerRefValue;
+      document.body.appendChild(copyTempArea);
+      copyTempArea.select();
+
+      try {
+        document.execCommand('copy');
+        showToastNotification("Referral code copied successfully!", "success");
+      } catch (err) {
+        showToastNotification("Clipboard operation failed.", "error");
+      }
+
+      document.body.removeChild(copyTempArea);
+    }
+
+    /**
+     * Opens dynamic native confirmation overlay modal
+     */
+    function openConfirmDialog(type) {
+      const modal = document.getElementById('confirmModal');
+      const title = document.getElementById('confirmModalTitle');
+      const text = document.getElementById('confirmModalText');
+      const icon = document.getElementById('confirmModalIcon');
+      const actionBtn = document.getElementById('modalConfirmBtn');
+
+      if (type === 'all') {
+        title.textContent = "Purge Alternate Sessions";
+        text.textContent = "Are you sure you want to sign out from all concurrent active locations and devices? All other sessions will be deleted immediately.";
+        icon.className = "modal-icon fas fa-shield-halved";
+        icon.style.color = "var(--warning)";
+        actionBtn.onclick = processAllDevicesPurge;
+      } else {
+        title.textContent = "Confirm Sign Out";
+        text.textContent = "Are you sure you want to disconnect and log out of Make Trend Battle?";
+        icon.className = "modal-icon fas fa-right-from-bracket";
+        icon.style.color = "var(--error)";
+        actionBtn.onclick = processSingleSignOut;
+      }
+
+      modal.classList.add('active');
+    }
+
+    /**
+     * Closes confirmation overlay dialog modal
+     */
+    function closeConfirmDialog() {
+      document.getElementById('confirmModal').classList.remove('active');
+    }
+
+    /**
+     * Terminates single local profile authentication state
+     */
+    function processSingleSignOut() {
+      closeConfirmDialog();
+      showToastNotification("Disconnecting from secure network...", "warning");
+      
+      if (auth) {
+        auth.signOut().then(() => {
+          window.location.href = '/LoginAuth';
+        }).catch(err => {
+          console.error("Sign out process fault: ", err);
+          showToastNotification("Network error executing sign out sequence.", "error");
+        });
+      } else {
+        setTimeout(() => { window.location.href = '/LoginAuth'; }, 800);
+      }
+    }
+
+    /**
+     * Force purges and disconnects standard security profiles fallback routine action
+     */
+    function processAllDevicesPurge() {
+      closeConfirmDialog();
+      showToastNotification("Processing system identity purge...", "warning");
+      
+      setTimeout(() => {
+        if (auth) {
+          auth.signOut().then(() => {
+            window.location.href = '/LoginAuth';
+          });
+        } else {
+          window.location.href = '/LoginAuth';
+        }
+      }, 1200);
+    }
+
+    /**
+     * Fires a micro custom visual toast status message
+     */
+    function showToastNotification(message, statusClass = "success") {
+      const toast = document.getElementById('toastSystem');
+      const toastTxtSpan = document.getElementById('toastMsg');
+      const toastVectorIcon = document.getElementById('toastIcon');
+
+      toastTxtSpan.textContent = message;
+      toast.className = `toast-popup ${statusClass}`;
+
+      // Set vector icon dynamically matching classification type
+      if (statusClass === 'error') {
+        toastVectorIcon.className = "fas fa-circle-exclamation";
+      } else if (statusClass === 'warning') {
+        toastVectorIcon.className = "fas fa-triangle-exclamation";
+      } else {
+        toastVectorIcon.className = "fas fa-circle-check";
+      }
+
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>

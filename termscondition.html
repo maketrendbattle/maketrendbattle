@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Terms & Conditions - Make Trend Battle</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look matching other screens */
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 20px; /* space for bottom navigation bar */
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Table of Contents Sticky Box */
+    .toc-nav {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px dashed rgba(0, 234, 255, 0.15);
+    }
+
+    .toc-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .toc-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .toc-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .toc-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toc-link:hover {
+      color: var(--accent);
+    }
+
+    /* Bubble Cards */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+
+    .bubble-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-top: 28px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      font-size: 14.5px;
+      color: #e8eef3;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    ul, ol {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    li strong {
+      color: #fff;
+    }
+
+    .highlight-banner {
+      background: rgba(0, 234, 255, 0.04);
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .highlight-banner strong {
+      color: var(--accent);
+    }
+
+    .esports-standards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .esports-standards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .standard-box {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .standard-box:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(0, 234, 255, 0.15);
+    }
+
+    .standard-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .standard-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Sticky Scroll To Top */
+    .scroll-to-top {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      background: var(--accent);
+      color: var(--bg);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 234, 255, 0.25);
+      transition: all 0.3s;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 10002;
+    }
+
+    .scroll-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Fixed Bottom Navigation Row Style Fix */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; /* FORCE horizontal alignment */
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+
+    /* Custom Toast Notification Alert */
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #notificationBox.show { top: 85px; }
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+
+    .home-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-family: var(--font-primary);
+    }
+    
+    .home-btn:hover {
+      background: rgba(0, 234, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBackToReferrer()">
+      <i class="fas fa-arrow-left"></i> Exit
+    </button>
+    <button class="home-btn" onclick="window.location.href='/'">
+      <i class="fas fa-home"></i> Home
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="notificationBox"></div>
+
+  <div class="container">
+    
+    <!-- Table of Contents sticky layout -->
+    <div class="toc-nav">
+      <div class="toc-title"><i class="fas fa-list-ol"></i> Table of Contents</div>
+      <ul class="toc-list" id="tocList">
+        <!-- Generated programmatically by JavaScript -->
+      </ul>
+    </div>
+
+    <!-- Main Content Container Card -->
+    <div class="bubble-card">
+      <h1 class="page-title">Terms & Conditions</h1>
+      <p style="color: var(--muted); font-size: 13.5px; margin-bottom: 24px;"><strong>Last Updated:</strong> May 30, 2026</p>
+      
+      <p>
+        Welcome to ROCKY AXIS ESPORTS. By registering an account, purchasing custom room tournament entries, or organizing gaming tournaments, you agree to be bound by these Terms and Conditions. These terms establish a professional covenant to protect your fair play, competitive integrity, and secure transactions.
+      </p>
+
+      <div class="highlight-banner">
+        <p><strong><i class="fas fa-handshake"></i> Safe Play Covenant:</strong> Every custom tournament, wallet transaction, and prize pool distribution is fully protected by decentralized audit rules. We handle your funds with total security and transparency.</p>
+      </div>
+
+      <!-- Section 1 -->
+      <h2 id="competitive-identity" class="section-title"><i class="fas fa-user-check"></i> 1. Competitive Identity & Security</h2>
+      <p>Your profile is your secure gateway to the Battlegrounds. To maintain elite standard matchups, the following rules apply:</p>
+      <ul>
+        <li><strong>Credential Security:</strong> You are responsible for keeping your login credentials and associated personal info secure. Under no circumstances should you share account access.</li>
+        <li><strong>Accurate Profiles:</strong> You must supply your actual, accurate Free Fire UID and in-game nickname. Rocky Axis matching tools use these values to verify slot registers.</li>
+        <li><strong>Verification Requirements:</strong> Certain premium tournaments require an active profile level of 50+ to ensure experienced competitive lobbies and fair play.</li>
+      </ul>
+
+      <!-- Section 2 -->
+      <h2 id="wallet-ledger" class="section-title"><i class="fas fa-wallet"></i> 2. Wallets, Deposits & Escrow</h2>
+      <p>We ensure that all match prize funds are held in secure escrow so that champions are paid promptly:</p>
+      
+      <div class="esports-standards-grid">
+        <div class="standard-box">
+          <div class="standard-title"><i class="fas fa-shield-halved" style="color: var(--accent);"></i> Secure Escrow Holding</div>
+          <div class="standard-desc">
+            When you enter a lobby, your entry fee is safely held in escrow. Payouts are protected from direct organizer manipulation and disbursed automatically.
+          </div>
+        </div>
+        <div class="standard-box">
+          <div class="standard-title"><i class="fas fa-money-bill-transfer" style="color: var(--success);"></i> Quick Withdrawals</div>
+          <div class="standard-desc">
+            Earned match winnings can be withdrawn directly to your preferred payment gateway (eSewa, Khalti, or mobile transfer) within 24 to 48 business hours.
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <h2 id="match-rules" class="section-title"><i class="fas fa-gamepad"></i> 3. Match Sizing & Entry Limits</h2>
+      <p>We enforce strict lobby capacity rules to prevent unfair join advantages and guarantee clear matches:</p>
+      <ul>
+        <li><strong>CS & LW Duel Locking:</strong> Clash Squad and Lone Wolf duels allow exactly 2 players (1 Creator + 1 Opponent). Once both register, the lobby is marked full, locked, and hidden from the public feed.</li>
+        <li><strong>BR Team Sizing:</strong> Battle Royale matches support dynamic team slot calculations (Solo has 20 player slots, Duo has 10 team slots, and Squad has 5 team slots), keeping competition perfectly balanced.</li>
+        <li><strong>Launch Security Guard:</strong> If a creator cancels a match, or if any system anomaly prevents a tournament from starting, 100% of your ticket fee is refunded instantly to your wallet.</li>
+      </ul>
+
+      <!-- Section 4 -->
+      <h2 id="verification-payouts" class="section-title"><i class="fas fa-circle-check"></i> 4. Outcome Verification & Payout Gates</h2>
+      <p>Our platform uses advanced validation filters to verify winners automatically, bypassing traditional administrative delays:</p>
+      <ul>
+        <li><strong>Axis Forensics Verifier:</strong> Following a match, players report outcomes through their dashboard. The background verifier analyzes screenshots, competitor turnout, and votes to declare the winner.</li>
+        <li><strong>30-Minute Auto-Settle Daemon:</strong> To allow all players sufficient time to report outcomes, payouts are locked in a secure buffer for exactly 30 minutes after gameplay finishes. Once cleared, funds are transferred atomically.</li>
+        <li><strong>Selective Screenshot Proof:</strong> To make the process as easy as possible, screenshot uploads are *only* required if you vote for yourself (`OwnSelf`). Voting for other players is instant.</li>
+      </ul>
+
+      <!-- Section 5 -->
+      <h2 id="fair-play" class="section-title"><i class="fas fa-user-shield"></i> 5. Professional Fair Play</h2>
+      <p>We maintain a zero-tolerance policy against any cheating or unsportsmanlike behavior to protect your experience:</p>
+      <ul>
+        <li><strong>Strict Anti-Cheat:</strong> Any third-party software, macros, hacks, or customized game clients are strictly prohibited. Matches are audited automatically.</li>
+        <li><strong>No Collusion:</strong> Pre-arranging match outcomes or coordinating lobby placements is forbidden. Violations trigger automatic validation holds.</li>
+        <li><strong>Account Holds:</strong> Deliberate attempts to exploit or manipulate outcomes will result in temporary account restrictions pending an admin audit.</li>
+      </ul>
+
+      <!-- Section 6 -->
+      <h2 id="appeals-disputes" class="section-title"><i class="fas fa-scale-balanced"></i> 6. Disputes & Appeals Pathway</h2>
+      <p>We provide clear, fair resolution paths in case of any competitive disputes:</p>
+      <ul>
+        <li><strong>Fast-Track Dispute Logs:</strong> If you spot any anomalies, you can file a fast-track dispute report directly inside the ended lobby dashboard.</li>
+        <li><strong>Appeal Rights:</strong> If a validation hold is placed on your lobby, you can file an appeal through our support channel. Appeals are reviewed and settled by our admin team within 24 hours.</li>
+      </ul>
+
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      generateTableOfContents();
+      setupScrollToTopDetector();
+    });
+
+    // Automatically generates table of contents dynamically
+    function generateTableOfContents() {
+      const container = document.getElementById('tocList');
+      const headings = document.querySelectorAll('.section-title');
+
+      container.innerHTML = '';
+      headings.forEach(heading => {
+        const item = document.createElement('li');
+        item.style.marginBottom = '6px';
+        
+        const anchor = document.createElement('a');
+        anchor.href = `#${heading.id}`;
+        anchor.className = 'toc-link';
+        
+        // Grab title icon if present
+        const iconElement = heading.querySelector('i');
+        const iconHtml = iconElement ? iconElement.outerHTML : '';
+        const titleText = heading.textContent.trim();
+
+        anchor.innerHTML = `${iconHtml} ${titleText}`;
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const element = document.getElementById(heading.id);
+          if (element) {
+            window.scrollTo({
+              top: element.offsetTop - 85,
+              behavior: 'smooth'
+            });
+          }
+        });
+
+        item.appendChild(anchor);
+        container.appendChild(item);
+      });
+    }
+
+    // Handles floating button triggers
+    function setupScrollToTopDetector() {
+      const btn = document.getElementById('scrollToTop');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      });
+    }
+
+    function scrollToTopSmooth() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    function goBackToReferrer() {
+      const referrer = document.referrer;
+      if (referrer && referrer !== '') {
+        window.location.href = referrer;
+      } else {
+        window.history.back();
+      }
+    }
+
+    function showToastNotification(message, type = 'success') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>

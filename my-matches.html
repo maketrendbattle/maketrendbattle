@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - My Matches Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Premium Unified Cyberpunk Theme Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.35);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      --br-gradient: linear-gradient(135deg, #ff7b00, #ff5500);
+      --cs-gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      --lw-gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      font-family: var(--font-primary);
+      padding-top: calc(var(--header-height) + 20px);
+      padding-bottom: 95px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%), radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+    }
+
+    /* Fixed Premium App Header */
+    .matches-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 26px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .create-match-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .create-match-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px var(--accent);
+    }
+
+    /* Filter Tabs Segments */
+    .filter-tabs {
+      max-width: 1200px;
+      margin: 0 auto 24px auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 12px;
+    }
+
+    .filter-tab {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .filter-tab.active {
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .filter-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -13px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* Container Grid */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 40px 20px;
+    }
+
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    /* Professional Bubble Card Style */
+    .match-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px !important; 
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .match-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .match-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 234, 255, 0.35) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    /* Tactile Click override - Forces cards to handle redirection beautifully */
+    .match-card .btn {
+      pointer-events: none;
+    }
+
+    /* Card Banner & Title elements from inmatchjoin */
+    .banner-view {
+      width: 100%;
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+    }
+
+    .banner-view.no-banner-image {
+      height: auto;
+      background: transparent;
+    }
+
+    .banner-view::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(5,8,18,0.95) 100%);
+      z-index: 1;
+    }
+    
+    .banner-view.no-banner-image::after {
+      display: none;
+    }
+
+    .card-header-no-pic {
+      padding: 16px 20px 8px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .card-header-no-pic .banner-label-wrap {
+      padding: 0;
+    }
+
+    .banner-label-wrap {
+      position: relative;
+      z-index: 2;
+      padding: 12px 16px;
+    }
+
+    .premium-title-wrapper {
+      border-left: 4px solid var(--accent);
+      background: linear-gradient(90deg, rgba(0, 234, 255, 0.08) 0%, rgba(15, 23, 42, 0.45) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 4px 16px 16px 4px;
+      padding: 8px 14px;
+      margin-bottom: 8px;
+      box-shadow: inset 10px 0 20px rgba(0, 234, 255, 0.01), 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .premium-title-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
+    }
+
+    .banner-main-sub {
+      font-size: 11.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-body {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    /* Financial Badges & Headers */
+    .t-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .status-pill-badge.upcoming { background: rgba(52, 152, 219, 0.15); color: #3498db; border-color: rgba(52, 152, 219, 0.3); }
+    .status-pill-badge.live { background: rgba(231, 76, 60, 0.15); color: var(--error); border-color: rgba(231, 76, 60, 0.3); }
+    .status-pill-badge.settled { background: rgba(46, 204, 113, 0.15); color: var(--success); border-color: rgba(46, 204, 113, 0.3); }
+    .status-pill-badge.pending { background: rgba(243, 156, 18, 0.1); color: var(--warning); border-color: rgba(243, 156, 18, 0.3); }
+    .status-pill-badge.expired { background: rgba(231, 76, 60, 0.1); color: var(--error); border-color: rgba(231, 76, 60, 0.3); }
+
+    .badge-financial-grid {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .prize-badge-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      background: rgba(46, 204, 113, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      white-space: nowrap;
+      font-family: var(--font-display);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.15);
+    }
+
+    .entry-badge-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      background: rgba(243, 156, 18, 0.1);
+      color: var(--warning);
+      border: 1px solid rgba(243, 156, 18, 0.3);
+      white-space: nowrap;
+      font-family: var(--font-display);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.15);
+    }
+
+    /* Structured Specs Details grids */
+    .specs-metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1.5px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+
+    .spec-details-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Dynamic Dual Columns specs layout */
+    .specs-columns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .spec-rule-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 2px 0;
+    }
+    
+    .spec-rule-lbl {
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .spec-rule-lbl i {
+      color: var(--accent);
+      font-size: 11px;
+      width: 14px;
+      text-align: left;
+    }
+
+    .spec-rule-val {
+      font-weight: 700;
+      color: #fff;
+      font-size: 12.5px;
+      padding-left: 20px;
+    }
+
+    .single-full-spec-highlight {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 10px;
+      font-size: 12.5px;
+    }
+    
+    .single-full-spec-lbl {
+      color: var(--muted);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .single-full-spec-lbl i {
+      color: var(--accent);
+    }
+    
+    .single-full-spec-val {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .creator-attribution-tag {
+      font-size: 11.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px dashed rgba(255,255,255,0.05);
+      padding-top: 8px;
+    }
+
+    .roster-info-text {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Secure Credentials card box (Only shown if joined) */
+    .secure-credentials-card {
+      background: rgba(0, 234, 255, 0.02);
+      border: 1.5px solid rgba(0, 234, 255, 0.15);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 15px rgba(0, 234, 255, 0.1);
+    }
+
+    .secure-credentials-header {
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .secure-credentials-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .cred-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn-tactile {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn-tactile:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Structured Registered Participants lists matching request */
+    .competitors-container-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .competitor-row-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(0, 234, 255, 0.08);
+      padding: 14px 18px;
+      border-radius: 16px;
+      min-width: 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .competitor-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--card-light);
+      border: 2px solid var(--accent);
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
+    }
+
+    .competitor-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex-grow: 1;
+    }
+
+    .competitor-player-line1 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .competitor-player-username-tag {
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .competitor-player-line2-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.04);
+      padding-top: 6px;
+    }
+
+    .competitor-player-ingame-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .competitor-player-uid-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .competitor-player-joined-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* Badges */
+    .owner-badge {
+      background: rgba(155, 89, 182, 0.15);
+      border: 1px solid var(--purple);
+      color: #d1a4ff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .competitor-badge {
+      background: rgba(0, 234, 255, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Action Buttons Block */
+    .card-footer-actions {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 20px 20px 20px;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      font-size: 14.5px;
+      cursor: pointer;
+      font-family: var(--font-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: #050812;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 234, 255, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+      color: #fff;
+    }
+    .btn-success:hover {
+      box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
+      color: #fff;
+    }
+    .btn-warning:hover {
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.3);
+    }
+
+    /* Modal Styling - Super Professional Glass Bubble look */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 18, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10020;
+      padding: 20px;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card);
+      border: 1.5px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 35px var(--accent-glow);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.show .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid rgba(0, 234, 255, 0.2);
+      padding-bottom: 15px;
+      font-family: var(--font-display);
+      letter-spacing: 0.5px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 14.5px;
+      gap: 8px;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-row span:first-child {
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      flex-shrink: 0;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-row span:last-child {
+      color: #fff;
+      font-weight: 700;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    /* Custom Toast Banner Alert */
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13.5px;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+    }
+    #notificationBox.show { top: 90px; }
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+
+    .loader-container {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 0;
+      color: var(--accent);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 24px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px dashed rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+    }
+
+    /* Fixed Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; 
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+    
+    .bottom-nav .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+    
+    .bottom-nav .nav-item i {
+      font-size: 18px;
+    }
+    
+    .bottom-nav .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+    }
+
+    /* 🔒 CYBERPUNK SLIDER / PROGRESS BAR CUSTOM CSS */
+    .roster-progress-container {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .roster-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .roster-progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .roster-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+      border-radius: 10px;
+      box-shadow: 0 0 8px var(--accent);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 🛡️ GAME PLATFORM/TITLE COMPACT GLOWING CSS BADGES */
+    .platform-badge-compact {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px; 
+      background: rgba(0, 234, 255, 0.06);
+      border: 1px solid rgba(0, 234, 255, 0.15);
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      white-space: nowrap; 
+    }
+
+    /* Game Platform Image Icon Style */
+    .game-platform-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+    }
+
+    /* Expanding Roster Tray */
+    .players-tray-toggle-btn {
+      background: rgba(0, 234, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .players-tray-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .players-expandable-tray {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 12px;
+    }
+
+    /* ⚡ TOP-FIXED NEON ACTION LOADING BAR */
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding-top: calc(var(--header-height) + 15px);
+      }
+      .logo-container {
+        font-size: 18px;
+      }
+      .logo-container span {
+        font-size: 20px;
+      }
+      .back-btn span, .create-match-btn span {
+        display: none; 
+      }
+      .back-btn, .create-match-btn {
+        padding: 10px 12px;
+      }
+      .filter-tabs {
+        padding: 0 16px 8px;
+        margin-bottom: 16px;
+      }
+      .filter-tab {
+        font-size: 15px;
+        padding: 6px 12px;
+      }
+      .container {
+        padding: 0 12px 30px;
+      }
+      .matches-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .match-card {
+        border-radius: 20px !important;
+      }
+      .card-banner {
+        padding: 14px 20px;
+      }
+      .card-body {
+        padding: 18px 20px;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-actions {
+        gap: 8px;
+      }
+      .modal-content {
+        padding: 20px;
+        border-radius: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Navigation Header Layout -->
+  <header class="matches-header">
+    <button class="back-btn" onclick="goToHome()">
+      <i class="fas fa-arrow-left"></i> <span>Exit Dashboard</span>
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div class="header-actions">
+      <button class="create-match-btn" onclick="window.location.href='/MatchCreation'">
+        <i class="fas fa-plus"></i> <span>Create Match</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Detailed Specifications Modal Overlay -->
+  <div id="matchViewModal" class="modal-overlay" onclick="handleOutsideModalClick(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span id="matchModalTitle">Match Specifications</span>
+        <i class="fas fa-times" style="cursor:pointer;" onclick="closeModal()"></i>
+      </div>
+      <div id="matchModalBody" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
+      <button class="action-btn btn-secondary" onclick="closeModal()">Close Details</button>
+    </div>
+  </div>
+
+  <!-- Notification Banner -->
+  <div id="notificationBox"></div>
+
+  <!-- Filter Category Tab Blocks -->
+  <div class="filter-tabs">
+    <button class="filter-tab active" id="joinedMatchesTab" onclick="switchFilterTab('joined', this)">Rooms Joined</button>
+    <button class="filter-tab" id="hostedMatchesTab" onclick="switchFilterTab('hosted', this)">Rooms Hosted</button>
+    <button class="filter-tab" id="historyMatchesTab" onclick="switchFilterTab('history', this)">History</button>
+  </div>
+
+  <!-- Main Container Grid -->
+  <div class="container">
+    <div class="matches-grid" id="matchesContainer">
+      <div class="loader-container" id="initialLoader" style="display: none;">
+        <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+        <p style="margin-top: 12px; font-weight: 500;">Retrieving registered matches ledger...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Bottom App Navigation -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/inmatchjoin" class="nav-item active">
+      <i class="fas fa-gamepad"></i>
+      <span>Games</span>
+    </a>
+    <a href="/My_Matches" class="nav-item">
+      <i class="fas fa-trophy"></i>
+      <span>Joined Games</span>
+    </a>
+    <a href="/Profile" class="nav-item">
+      <i class="fas fa-user-cog"></i>
+      <span>Control</span>
+    </a>
+  </nav>
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let globalCachedMatches = [];
+    let currentActiveFilter = 'joined';
+    let lifecycleIntervalTimerId = null;
+    
+    // Set to keep track of expanded competitor trays persistently across re-renders
+    const openedTrays = new Set();
+    
+    // Dynamic Profile Resolution Cache to automatically load username, custom game UID, and avatar
+    const dynamicProfileCache = {};
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    // App Initialization Engine Handshake (Rule 3 protected)
+    window.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase startup failure:", err);
+        showToast("Database server connection failure.", "error");
+        return;
+      }
+
+      // Strict user login authentication check
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await downloadAndSynchronizeMatches();
+          document.getElementById('loadingOverlay').classList.add('hidden');
+        } else {
+          window.location.href = "/LoginAuth";
+        }
+      });
+
+      window.addEventListener('beforeunload', () => {
+        if (lifecycleIntervalTimerId) clearInterval(lifecycleIntervalTimerId);
+      });
+    });
+
+    // Helper to evaluate scaled dynamic capacities
+    function getCapacityLimits(match) {
+      const playersList = match.players || [];
+      const playersCount = playersList.length;
+      
+      const isCsOrLw = match.type === 'CS' || match.type === 'LW';
+      const defaultCap = isCsOrLw ? 2 : 20;
+      const totalMaxPlayers = parseInt(match.maxPlayers) || defaultCap;
+      
+      const modeSize = match.mode || match.teamSize || 'Solo';
+      
+      let divisor = 1;
+      if (modeSize === 'Duo') {
+        divisor = 2;
+      } else if (modeSize === 'Squad') {
+        divisor = 4;
+      }
+
+      // Every 1 member counts as 1 slot/team against the denominator
+      const maxSlotsLimit = Math.floor(totalMaxPlayers / divisor) || 1;
+      const currentSlotDisplay = playersCount; 
+
+      const isLobbyFull = currentSlotDisplay >= maxSlotsLimit;
+
+      return {
+        playersCount,
+        totalMaxPlayers,
+        divisor,
+        currentSlotDisplay,
+        maxSlotsLimit,
+        isLobbyFull,
+        modeSize
+      };
+    }
+
+    // Instantly auto-expires unjoined matches past scheduled start time in database
+    async function autoExpireMatchIfNeeded(docId, matchData) {
+      if (matchData.status !== 'upcoming') return;
+
+      const now = Date.now();
+      const startTimeMs = matchData.startTime?.seconds ? matchData.startTime.seconds * 1000 : now;
+
+      if (now >= startTimeMs) {
+        const players = matchData.players || [];
+        const otherCompetitors = players.some(p => p.uid !== matchData.creatorUid);
+
+        if (!otherCompetitors) {
+          try {
+            const matchRef = getPublicCollection('matches').doc(docId);
+            const walletRef = getPrivateCollection(matchData.creatorUid, 'wallets').doc('wallet');
+
+            await db.runTransaction(async (transaction) => {
+              const matchSnap = await transaction.get(matchRef);
+              if (!matchSnap.exists) return;
+              const freshData = matchSnap.data();
+              if (freshData.status !== 'upcoming') return;
+
+              let refundAmount = parseFloat(freshData.entryFee || 0);
+              if (freshData.type === 'BR' && freshData.brType === 'creator') {
+                const prizes = freshData.prizes || {};
+                refundAmount += (parseFloat(prizes.top1 || 0) + parseFloat(prizes.top2 || 0) + parseFloat(prizes.top3 || 0));
+              }
+
+              const walletSnap = await transaction.get(walletRef);
+              const currentBal = walletSnap.exists ? (walletSnap.data().balance || 0) : 0;
+
+              // Full refund back to creator wallet
+              transaction.set(walletRef, {
+                balance: currentBal + refundAmount,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+
+              const transRef = getPrivateCollection(matchData.creatorUid, 'transactions').doc();
+              transaction.set(transRef, {
+                userId: matchData.creatorUid,
+                type: 'match_auto_expire_refund',
+                amount: refundAmount,
+                description: `Instant auto-expire refund for unjoined Match #${freshData.matchId}`,
+                matchId: freshData.matchId,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'completed'
+              });
+
+              transaction.update(matchRef, {
+                status: 'expired',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            });
+            console.log(`Auto-expired unjoined Match #${matchData.matchId} at match time.`);
+          } catch (err) {
+            console.error("Instant auto-expiration daemon error: ", err);
+          }
+        }
+      }
+    }
+
+    // Sync entries down from Firestore cloud using Rule 2 compatible local filters
+    async function downloadAndSynchronizeMatches() {
+      try {
+        getPublicCollection('matches').onSnapshot(async (snap) => {
+          globalCachedMatches = [];
+          const uidsToResolve = new Set();
+
+          const tempMatches = [];
+          snap.forEach(doc => {
+            tempMatches.push({ id: doc.id, data: doc.data() });
+          });
+
+          // Run background auto-expiration check first
+          for (const item of tempMatches) {
+            await autoExpireMatchIfNeeded(item.id, item.data);
+          }
+
+          snap.forEach(doc => {
+            const data = doc.data();
+            const playersArray = data.players || [];
+            
+            const isCreator = data.creatorUid === currentUser.uid;
+            const isParticipant = playersArray.some(p => p.uid === currentUser.uid);
+
+            if (isCreator || isParticipant) {
+              globalCachedMatches.push({
+                id: doc.id,
+                ...data,
+                amIHost: isCreator
+              });
+              
+              // Map all unique UIDs that need dynamic profile parameters resolution
+              playersArray.forEach(p => {
+                if (p.uid) uidsToResolve.add(p.uid);
+              });
+              if (data.creatorUid) uidsToResolve.add(data.creatorUid);
+            }
+          });
+
+          // Sort matches descending by creation date
+          globalCachedMatches.sort((a, b) => {
+            const timeA = a.createdAt?.seconds || 0;
+            const timeB = b.createdAt?.seconds || 0;
+            return timeB - timeA;
+          });
+
+          // Resolve profiles asynchronously
+          resolveContendersProfiles(Array.from(uidsToResolve));
+
+          renderMatchesDisplayGrid();
+
+          // Start interval loop for ticking dynamic clocks
+          if (!lifecycleIntervalTimerId) {
+            lifecycleIntervalTimerId = setInterval(tickCountdownTimersOnly, 1000);
+          }
+        }, err => {
+          console.error("Failed fetching rosters ledger:", err);
+          showToast("Error pulling data metrics from cloud.", "error");
+        });
+      } catch (err) {
+        console.error("Failed fetching rosters ledger:", err);
+      }
+    }
+
+    // Dynamic Profile Resolution Engine - STORES gamename/username directly
+    async function resolveContendersProfiles(uidsList) {
+      let cacheUpdated = false;
+
+      for (const uid of uidsList) {
+        if (!dynamicProfileCache[uid]) {
+          dynamicProfileCache[uid] = { loading: true };
+          
+          try {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+              const userData = userDoc.data();
+              // STRICTLY USE GAMENAME/USERNAME, NEVER THE FULLNAME
+              dynamicProfileCache[uid] = {
+                name: userData.gamename || userData.username || 'Competitor',
+                username: userData.username ? `@${userData.username.toLowerCase()}` : '@gamer',
+                gameUid: userData.gameUid || userData.gameuid || 'N/A',
+                avatar: userData.avatarDataURL || userData.profilePic || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`
+              };
+            } else {
+              dynamicProfileCache[uid] = {
+                name: 'Competitor',
+                username: '@gamer',
+                gameUid: 'N/A',
+                avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`
+              };
+            }
+            cacheUpdated = true;
+          } catch (err) {
+            console.warn("Failed resolving profile for uid:", uid, err);
+            dynamicProfileCache[uid] = null; // retry later
+          }
+        }
+      }
+
+      if (cacheUpdated) {
+        renderMatchesDisplayGrid();
+      }
+    }
+
+    // High performance timer ticker (targets clock text ONLY to prevent collapsing player tray)
+    function tickCountdownTimersOnly() {
+      const currentTimeStampMs = Date.now();
+      
+      globalCachedMatches.forEach(match => {
+        const timerContainer = document.getElementById(`countdown-timer-container-${match.id}`);
+        if (!timerContainer) return;
+
+        const matchStartTimeMs = match.startTime?.seconds ? (match.startTime.seconds * 1000) : currentTimeStampMs;
+        const matchDurationMinutes = parseInt(match.duration || match.matchDuration || 30);
+        const matchDurationMs = matchDurationMinutes * 60 * 1000;
+        const matchConcludeTimeMs = matchStartTimeMs + matchDurationMs;
+
+        if (currentTimeStampMs < matchStartTimeMs) {
+          const secondsLeft = Math.max(0, Math.floor((matchStartTimeMs - currentTimeStampMs) / 1000));
+          const h = Math.floor(secondsLeft / 3600);
+          const mLeft = Math.floor((secondsLeft % 3600) / 60);
+          const sLeft = secondsLeft % 60;
+          const countdownString = `${h.toString().padStart(2, '0')}:${mLeft.toString().padStart(2, '0')}:${sLeft.toString().padStart(2, '0')}`;
+          timerContainer.innerHTML = `<i class="fas fa-clock" style="color: var(--warning);"></i> Starts In: <span style="color:var(--accent); font-family:var(--font-mono); font-weight:700;">${countdownString}</span>`;
+        } 
+        else if (currentTimeStampMs >= matchStartTimeMs && currentTimeStampMs < matchConcludeTimeMs) {
+          const runningSecondsLeft = Math.max(0, Math.floor((matchConcludeTimeMs - currentTimeStampMs) / 1000));
+          const minLeft = Math.floor(runningSecondsLeft / 60);
+          const secLeft = runningSecondsLeft % 60;
+          timerContainer.innerHTML = `<i class="fas fa-circle-notch fa-spin" style="color:var(--error)"></i> Arena Ends In: <span style="color:var(--error); font-family:var(--font-mono); font-weight:800;">${minLeft}:${secLeft.toString().padStart(2, '0')}</span>`;
+        }
+      });
+    }
+
+    function renderMatchesDisplayGrid() {
+      const displayContainer = document.getElementById('matchesContainer');
+      const currentTimeStampMs = Date.now();
+
+      // Filter local matches arrays based on exact Tab state (Rule 2 compliant)
+      const filteredList = globalCachedMatches.filter(m => {
+        const isMatchCompleted = m.status === 'completed' || m.payoutProcessed === true || m.status === 'expired';
+        
+        if (currentActiveFilter === 'history') {
+          // History tab MUST show settled, expired or completed matches
+          return isMatchCompleted;
+        } else {
+          // Joined and Hosted tabs MUST filter completed/expired matches completely out of view
+          if (isMatchCompleted) return false;
+          
+          if (currentActiveFilter === 'hosted') return m.amIHost === true;
+          if (currentActiveFilter === 'joined') return m.amIHost === false;
+        }
+        return true; 
+      });
+
+      if (filteredList.length === 0) {
+        displayContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-folder-open" style="font-size:32px; opacity:0.3; margin-bottom:12px;"></i>
+            <p style="font-size: 15px; font-weight: 600; color: #fff;">No Matches Discovered</p>
+            <p style="font-size: 13px; margin-top: 4px; color: var(--muted);">
+              ${currentActiveFilter === 'history' ? 'Your completed, expired or settled tournaments history log is empty.' : 'Matches in this section will show here.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      let innerHTMLAccumulator = '';
+
+      filteredList.forEach(match => {
+        const isBr = match.type === 'BR';
+        const isCs = match.type === 'CS';
+        const isLw = match.type === 'LW';
+        
+        let financialLabel = '';
+        if (isBr) financialLabel = match.brType || 'normal';
+        else financialLabel = match.matchType || 'normal';
+
+        let bannerClass = 'mode-br';
+        if (isCs) bannerClass = 'mode-cs';
+        if (isLw) bannerClass = 'mode-lw';
+
+        // Pure player list filters out the organizer row unless they specifically play
+        const playersArray = match.players || [];
+        const lobbyCompetitors = playersArray.filter(p => p.role !== 'creator');
+        const totalJoined = lobbyCompetitors.length;
+        
+        const isCsOrLwLocal = isCs || isLw;
+        const maxCapacity = isCsOrLwLocal ? 2 : (match.maxPlayers || 50);
+
+        // Calculate total rewards
+        const entryAmount = parseFloat(match.entryFee || 0);
+        let rewardTextVal = 0;
+        if (isBr) {
+           if (match.brType === 'creator') rewardTextVal = (match.prizes?.top1 || 0) + (match.prizes?.top2 || 0) + (match.prizes?.top3 || 0);
+           else if (match.brType === 'nonpaid') rewardTextVal = entryAmount * playersArray.length;
+        } else if (isCsOrLwLocal && match.matchType === 'profit') {
+           rewardTextVal = entryAmount * 2;
+        }
+        const calculatedRewardText = rewardTextVal > 0 ? `NPR ${rewardTextVal.toFixed(2)}` : 'NPR 0.00';
+        const displayEntryText = entryAmount > 0 ? `NPR ${entryAmount.toFixed(2)}` : 'Free';
+
+        // BR Rank Prize breakdown logic
+        let brPrizeHTML = '';
+        if (match.type === 'BR' && match.brType !== 'normal') {
+          let t1, t2, t3;
+          if (match.brType === 'nonpaid') {
+            const total = entryAmount * playersArray.length;
+            t1 = total * 0.35;
+            t2 = total * 0.25;
+            t3 = total * 0.15;
+          } else {
+            t1 = match.prizes?.top1 || 0;
+            t2 = match.prizes?.top2 || 0;
+            t3 = match.prizes?.top3 || 0;
+          }
+          brPrizeHTML = `
+            <div class="single-full-spec-highlight" style="margin-top: 5px; border-color: rgba(46, 204, 113, 0.2); background: rgba(46, 204, 113, 0.03);">
+              <span class="single-full-spec-lbl"><i class="fas fa-trophy" style="color:var(--success)"></i> Rank Prizes</span>
+              <span class="single-full-spec-val" style="font-size: 11px; color: var(--success);">
+                1st: ${t1.toFixed(0)} | 2nd: ${t2.toFixed(0)} | 3rd: ${t3.toFixed(0)}
+              </span>
+            </div>
+          `;
+        }
+
+        // Lifetime duration math clocks
+        const matchStartTimeMs = match.startTime?.seconds ? (match.startTime.seconds * 1000) : currentTimeStampMs;
+        const matchDurationMinutes = parseInt(match.duration || match.matchDuration || 30);
+        const matchDurationMs = matchDurationMinutes * 60 * 1000;
+        const matchConcludeTimeMs = matchStartTimeMs + matchDurationMs;
+
+        let matchLifecycleState = 'upcoming'; 
+        if (match.status === 'expired') {
+          matchLifecycleState = 'expired';
+        } else if (currentTimeStampMs >= matchStartTimeMs && currentTimeStampMs < matchConcludeTimeMs) {
+          matchLifecycleState = 'live';
+        } else if (currentTimeStampMs >= matchConcludeTimeMs) {
+          matchLifecycleState = 'concluded';
+        }
+
+        // Generate Header Markup mirroring inmatchjoin feed style with dynamic no-pic collapses
+        const hasCustomBannerImage = match.banner && match.banner.trim() !== '';
+        const bannerStyleAttribute = hasCustomBannerImage ? `background-image: url('${match.banner}')` : '';
+        let formatTitle = match.type === 'BR' ? "Battle Royale" : match.type === 'CS' ? "Clash Squad" : "Lone Wolf";
+
+        let headerMarkup = '';
+        if (hasCustomBannerImage) {
+          headerMarkup = `
+            <div class="banner-view" style="${bannerStyleAttribute}">
+              <div class="banner-label-wrap">
+                <div class="premium-title-wrapper">
+                  <div class="premium-title-text">${match.title || 'Esports Match'}</div>
+                </div>
+                <div class="banner-main-sub">
+                  <div class="platform-badge-compact">
+                    <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                    <span>${match.platform || 'Free Fire'}</span>
+                  </div> 
+                  <span style="white-space: nowrap; display:inline-flex; align-items:center; font-weight:700;">• ${formatTitle} Format</span>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          headerMarkup = `
+            <div class="card-header-no-pic">
+              <div class="premium-title-wrapper">
+                <div class="premium-title-text">${match.title || 'Esports Match'}</div>
+              </div>
+              <div class="banner-main-sub" style="margin-top:0;">
+                <div class="platform-badge-compact">
+                  <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                  <span>${match.platform || 'Free Fire'}</span>
+                </div> 
+                <span style="white-space: nowrap; display:inline-flex; align-items:center; font-weight:700;">• ${formatTitle} Format</span>
+              </div>
+            </div>
+          `;
+        }
+
+        // Credentials Access logic
+        let credentialsHTML = '';
+        if (matchLifecycleState === 'upcoming') {
+          if (match.customMatchId && match.customMatchId.trim() !== '') {
+            credentialsHTML = `
+              <div class="secure-credentials-card">
+                <div class="secure-credentials-header">
+                  <i class="fas fa-key"></i> <span>Secure Match Room Credentials</span>
+                </div>
+                <div class="secure-credentials-box">
+                  <div class="cred-row">
+                    <span>Room ID: <span style="color: #fff; font-weight: bold;">${match.customMatchId}</span></span>
+                    <button class="copy-btn-tactile" onclick="copyValue('${match.customMatchId}')">Copy ID</button>
+                  </div>
+                  <div class="cred-row" style="margin-top: 6px;">
+                    <span>Password: <span style="color: #fff; font-weight: bold;">${match.matchPassword || 'No Password'}</span></span>
+                    ${match.matchPassword ? `<button class="copy-btn-tactile" onclick="copyValue('${match.matchPassword}')">Copy Pass</button>` : ''}
+                  </div>
+                </div>
+              </div>
+            `;
+          } else {
+            credentialsHTML = `
+              <div class="single-full-spec-highlight" style="background: rgba(243, 156, 18, 0.05); border-color: rgba(243, 156, 18, 0.2); color: var(--warning); justify-content: center; gap: 10px; margin-bottom: 8px;">
+                <i class="fas fa-hourglass-half fa-spin"></i> <span>Awaiting Room ID & Password from Organizer...</span>
+              </div>
+            `;
+          }
+        } else if (matchLifecycleState === 'live') {
+          credentialsHTML = `
+            <div class="single-full-spec-highlight" style="background: rgba(231, 76, 60, 0.05); border-color: rgba(231, 76, 60, 0.2); color: var(--error); justify-content: center; gap: 10px; margin-bottom: 8px;">
+              <i class="fas fa-lock"></i> <span>Match Is Live - Access Sealed</span>
+            </div>
+          `;
+        } else if (matchLifecycleState === 'expired') {
+          credentialsHTML = `
+            <div class="single-full-spec-highlight" style="background: rgba(231, 76, 60, 0.05); border-color: rgba(231, 76, 60, 0.2); color: var(--error); justify-content: center; gap: 10px; margin-bottom: 8px;">
+              <i class="fas fa-ban"></i> <span>Match Expired & Refunded - Room Sealed</span>
+            </div>
+          `;
+        } else {
+          credentialsHTML = `
+            <div class="single-full-spec-highlight" style="background: rgba(46, 204, 113, 0.05); border-color: rgba(46, 204, 113, 0.2); color: var(--success); justify-content: center; gap: 10px; margin-bottom: 8px;">
+              <i class="fas fa-check-circle"></i> <span>Arena Concluded</span>
+            </div>
+          `;
+        }
+
+        // Action routing buttons 
+        let timeWidgetBannerHtml = '';
+        let dynamicActionButtonHtml = '';
+        let statusBadgeClass = 'upcoming';
+        let statusBadgeText = 'Upcoming';
+
+        if (matchLifecycleState === 'upcoming') {
+          statusBadgeClass = 'upcoming';
+          statusBadgeText = 'Upcoming';
+          
+          const secondsLeft = Math.max(0, Math.floor((matchStartTimeMs - currentTimeStampMs) / 1000));
+          const h = Math.floor(secondsLeft / 3600);
+          const mLeft = Math.floor((secondsLeft % 3600) / 60);
+          const sLeft = secondsLeft % 60;
+          const countdownString = `${h.toString().padStart(2, '0')}:${mLeft.toString().padStart(2, '0')}:${sLeft.toString().padStart(2, '0')}`;
+
+          timeWidgetBannerHtml = `
+            <div class="countdown-clock-banner" id="countdown-timer-container-${match.id}">
+              <i class="fas fa-clock" style="color: var(--warning);"></i> Starts In: <span style="color:var(--accent); font-family:var(--font-mono); font-weight:700;">${countdownString}</span>
+            </div>
+          `;
+
+          const inMatchJoinUrl = `${window.location.origin}/inmatchjoin?matchId=${match.matchId}`;
+
+          dynamicActionButtonHtml = `
+            <div style="display: flex; gap: 10px; width: 100%;">
+              <button class="action-btn btn-secondary" style="flex: 1;" onclick="viewMatchDetails('${match.id}')">
+                <i class="fas fa-info-circle"></i> Details
+              </button>
+              <button class="action-btn btn-primary" style="flex: 1;" onclick="copyValue('${inMatchJoinUrl}', 'Share URL copied successfully!')">
+                <i class="fas fa-share-nodes"></i> Share Lobby
+              </button>
+            </div>
+          `;
+        } 
+        else if (matchLifecycleState === 'live') {
+          statusBadgeClass = 'live';
+          statusBadgeText = 'Live';
+          
+          const runningSecondsLeft = Math.max(0, Math.floor((matchConcludeTimeMs - currentTimeStampMs) / 1000));
+          const minLeft = Math.floor(runningSecondsLeft / 60);
+          const secLeft = runningSecondsLeft % 60;
+
+          timeWidgetBannerHtml = `
+            <div class="countdown-clock-banner" id="countdown-timer-container-${match.id}" style="background: rgba(231,76,60,0.05); border-color: rgba(231,76,60,0.25);">
+              <i class="fas fa-circle-notch fa-spin" style="color:var(--error)"></i> Arena Ends In: <span style="color:var(--error); font-family:var(--font-mono); font-weight:800;">${minLeft}:${secLeft.toString().padStart(2, '0')}</span>
+            </div>
+          `;
+
+          dynamicActionButtonHtml = `
+            <button class="action-btn btn-secondary" disabled style="opacity: 0.5; cursor: not-allowed;">
+              <i class="fas fa-lock"></i> Match In Progress
+            </button>
+          `;
+        } 
+        else if (matchLifecycleState === 'expired') {
+          statusBadgeClass = 'expired';
+          statusBadgeText = 'Expired';
+
+          timeWidgetBannerHtml = `
+            <div class="countdown-clock-banner" style="background: rgba(231,76,60,0.05); border-color: rgba(231,76,60,0.25); color: var(--error);">
+              <i class="fas fa-exclamation-triangle"></i> No Competitors Joined - Refunded
+            </div>
+          `;
+
+          dynamicActionButtonHtml = `
+            <button class="action-btn btn-secondary" disabled style="opacity: 0.5; cursor: not-allowed;">
+              <i class="fas fa-ban"></i> Lobby Expired
+            </button>
+          `;
+        }
+        else if (matchLifecycleState === 'concluded') {
+          if (match.status === 'completed' || match.outcomeDeclared === true) {
+            statusBadgeClass = 'settled';
+            statusBadgeText = 'Settled';
+            
+            dynamicActionButtonHtml = `
+              <button class="action-btn btn-success" onclick="routeToSettlementPage('${match.matchId}')">
+                <i class="fas fa-clipboard-check"></i> View Payout Summary
+              </button>
+            `;
+          } else {
+            statusBadgeClass = 'pending';
+            statusBadgeText = 'Pending Settlement';
+
+            dynamicActionButtonHtml = `
+              <button class="action-btn btn-warning" onclick="routeToWinnerSelection('${match.matchId}')">
+                <i class="fas fa-gavel"></i> Declare Match Winners
+              </button>
+            `;
+          }
+
+          timeWidgetBannerHtml = `
+            <div class="countdown-clock-banner" style="background: rgba(46,204,113,0.05); border-color: rgba(46,204,113,0.25); color: var(--success);">
+              <i class="fas fa-check-circle"></i> Arena Match Concluded
+            </div>
+          `;
+        }
+
+        const cap = getCapacityLimits(match);
+
+        // Compiles dynamic registered competitors profiles using dynamicProfileCache (Gamer / In-game details only)
+        let playersTrayRowsHTML = '';
+        if (match.players && match.players.length > 0) {
+          match.players.forEach(p => {
+            const isMatchOwner = p.role === 'creator' || p.uid === match.creatorUid;
+            const isMe = p.uid === currentUser.uid;
+            
+            // Query local memory lookup values
+            const resolvedInfo = dynamicProfileCache[p.uid];
+            const name = resolvedInfo && resolvedInfo.name ? resolvedInfo.name : (p.gamename || p.username || 'Competitor');
+            const username = resolvedInfo && resolvedInfo.username ? resolvedInfo.username : (p.username ? `@${p.username}` : '@gamer');
+            const gameUid = resolvedInfo && resolvedInfo.gameUid ? resolvedInfo.gameUid : (p.gameUid || p.gameuid || 'N/A');
+            const avatarImg = resolvedInfo && resolvedInfo.avatar ? resolvedInfo.avatar : `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(p.uid)}`;
+
+            const joinedDate = p.joinTime?.seconds ? new Date(p.joinTime.seconds * 1000).toLocaleString() : 'N/A';
+
+            // Distinct Role badges
+            let roleBadge = '';
+            if (isMatchOwner) {
+              roleBadge = `<span class="owner-badge">Creator Host</span>`;
+            } else if (isCsOrLwLocal) {
+              roleBadge = `<span class="competitor-badge" style="background: rgba(231, 76, 60, 0.15); border-color: var(--error); color: var(--error);">Opponent</span>`;
+            } else {
+              roleBadge = `<span class="competitor-badge" style="background: rgba(46, 204, 113, 0.15); border-color: var(--success); color: var(--success);">Joined Player</span>`;
+            }
+            const meBadge = isMe ? `<span class="competitor-badge">ME</span>` : '';
+
+            // Dynamic Sizing Labels inside members card (Solo displays Team: 1/Max, Duo: 2/Max, Squad: 4/Max)
+            const teamUnitString = `Team: ${cap.divisor}/${cap.totalMaxPlayers}`;
+
+            playersTrayRowsHTML += `
+              <div class="competitor-row-card">
+                <img class="competitor-avatar" src="${avatarImg}" alt="Avatar">
+                <div class="competitor-info">
+                  <!-- First Line: Avatar / @Username / Role Badges -->
+                  <div class="competitor-player-line1" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span class="competitor-player-username-tag" style="font-family: var(--font-mono); font-size: 13.5px; color: var(--accent); font-weight: 700;">${username}</span>
+                    ${roleBadge}
+                    ${meBadge}
+                  </div>
+                  <!-- Below Line: In-Game Nickname, Game UID, and Joined Date & Time -->
+                  <div class="competitor-player-line2-details" style="display: flex; flex-direction: column; gap: 3px; border-top: 1px dashed rgba(255, 255, 255, 0.05); padding-top: 4px;">
+                    <span class="competitor-player-ingame-label" style="font-size: 13px; color: #fff; font-weight: 700;">
+                      In-Game Nickname: <strong>${name}</strong>
+                    </span>
+                    <span class="competitor-player-uid-label" style="font-size: 11.5px; color: var(--muted); font-family: var(--font-mono);">
+                      Verified Free Fire UID: <strong style="color: var(--accent);">${gameUid}</strong>
+                    </span>
+                    <span style="font-size: 11.5px; color: var(--success); font-weight: 600;">${teamUnitString}</span>
+                    <span class="competitor-player-joined-label" style="font-size: 11px; color: var(--muted); font-style: italic;">
+                      Joined: ${joinedDate}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          playersTrayRowsHTML = `<p style="font-size: 11px; color: var(--muted); text-align: center; padding: 10px 0;">No registered users in this match.</p>`;
+        }
+
+        // Slot occupancy displays formatted as Numerator / Denominator
+        let slotProgressText = '';
+        if (cap.divisor === 1) {
+          slotProgressText = `${cap.playersCount} / ${cap.totalMaxPlayers}`;
+        } else {
+          slotProgressText = `${cap.currentSlotDisplay} / ${cap.maxSlotsLimit}`;
+        }
+
+        // Retrieve Creator name dynamically
+        const hostProfile = dynamicProfileCache[match.creatorUid];
+        const hostName = hostProfile && hostProfile.name ? hostProfile.name : (match.creatorName || 'Organizer');
+
+        const isTrayOpen = openedTrays.has(match.id);
+        const trayDisplayStyleAttribute = isTrayOpen ? 'style="display: flex;"' : 'style="display: none;"';
+
+        const characterSkillVal = match.characterSkill || 'Yes';
+        const roundsVal = match.rounds || (match.type === 'LW' ? '5' : match.type === 'CS' ? '7' : 'N/A');
+        const coinVal = match.coin || (match.type === 'BR' ? 'N/A' : '9950');
+        const gunAttributeVal = match.gunAttribute || 'No';
+        const headshotModeVal = match.headshotMode || 'No';
+        const throwableVal = match.limitedAmmo || 'Yes';
+        const scheduledDateStr = match.startTime?.seconds ? new Date(match.startTime.seconds * 1000).toLocaleString() : 'N/A';
+
+        innerHTMLAccumulator += `
+          <div class="match-card">
+            ${headerMarkup}
+            
+            <div class="card-body">
+              <div class="t-row-header">
+                <span class="status-pill-badge ${statusBadgeClass}">${statusBadgeText}</span>
+                <div class="badge-financial-grid">
+                  <span class="prize-badge-pill">Winning Amount: ${calculatedRewardText}</span>
+                  <span class="entry-badge-pill">Entry Fee: ${displayEntryText}</span>
+                </div>
+              </div>
+              
+              <div class="specs-metric-row">
+                <div class="spec-details-header"><i class="fas fa-microchip"></i> Game Room Configurations</div>
+                
+                <div class="specs-columns-grid">
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-shield-heart"></i> Character Skill</span>
+                    <span class="spec-rule-val" style="color: var(--accent);">${characterSkillVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-cubes"></i> ${match.type === 'BR' ? 'BR Type' : 'Rounds'}</span>
+                    <span class="spec-rule-val">${match.type === 'BR' ? (match.brType || 'Normal') : (match.rounds || '7')}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-gun"></i> Gun Attributes</span>
+                    <span class="spec-rule-val">${gunAttributeVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-coins"></i> ${match.type === 'BR' ? 'Match Duration' : 'Coins'}</span>
+                    <span class="spec-rule-val">${match.type === 'BR' ? (match.duration || match.matchDuration || '30 Min') : coinVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-crosshairs"></i> Headshot Mode</span>
+                    <span class="spec-rule-val">${headshotModeVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-fire-burner"></i> Ammo Limit</span>
+                    <span class="spec-rule-val">${throwableVal}</span>
+                  </div>
+                </div>
+
+                ${brPrizeHTML}
+
+                <div class="single-full-spec-highlight">
+                  <span class="single-full-spec-lbl"><i class="fas fa-tags"></i> Match Type Mode</span>
+                  <span class="single-full-spec-val" style="color: var(--warning);">${entryAmount > 0 ? 'Paid Lobby' : 'Free Lobby'}</span>
+                </div>
+
+                <div class="single-full-spec-highlight">
+                  <span class="single-full-spec-lbl"><i class="fas fa-map-location-dot"></i> Selected Map & Size</span>
+                  <span class="single-full-spec-val">${match.map || match.mapName || 'Bermuda'} (${match.mode || match.teamSize || 'Solo'})</span>
+                </div>
+                <div class="single-full-spec-highlight">
+                  <span class="single-full-spec-lbl"><i class="fas fa-clock"></i> Scheduled Match Time</span>
+                  <span class="single-full-spec-val">${scheduledDateStr}</span>
+                </div>
+              </div>
+
+              ${credentialsHTML}
+
+              <div class="roster-progress-container">
+                <div class="roster-progress-header">
+                  <span>Roster Seats filled</span>
+                  <span style="color: var(--accent); font-weight: bold; font-family: var(--font-mono); font-size:13.5px;">${slotProgressText}</span>
+                </div>
+                <div class="roster-progress-track">
+                  <div class="roster-progress-fill" style="width: ${(playersArray.length / maxCapacity) * 100}%"></div>
+                </div>
+              </div>
+
+              <div class="creator-attribution-tag">
+                <i class="fas fa-crown" style="color: gold; font-size:11px;"></i>
+                <span>Creator: <strong style="color:#fff;">${hostName}</strong></span>
+              </div>
+
+              <button class="players-tray-toggle-btn" onclick="togglePlayersTray('${match.id}')">
+                <i class="fas fa-users"></i> View Match Competitors (${match.players ? match.players.length : 0})
+              </button>
+
+              <div class="players-expandable-tray" id="players-tray-${match.id}" ${trayDisplayStyleAttribute}>
+                ${playersTrayRowsHTML}
+              </div>
+
+              <div class="card-footer-actions" style="padding: 0; gap: 8px;">
+                ${timeWidgetBannerHtml}
+                ${dynamicActionButtonHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      displayContainer.innerHTML = innerHTMLAccumulator;
+    }
+
+    /**
+     * Showcases all advanced settings applied during the match setup inside a big beautiful cyberpunk bubble
+     */
+    function viewMatchDetails(matchDocId) {
+      const m = globalCachedMatches.find(x => x.id === matchDocId);
+      if (!m) return;
+      
+      document.getElementById('matchViewModal').classList.add('show');
+      document.getElementById('matchModalTitle').innerHTML = `<i class="fas fa-info-circle" style="color: var(--accent);"></i> Complete Specifications`;
+      const body = document.getElementById('matchModalBody');
+      
+      const entryAmount = parseFloat(m.entryFee || 0);
+      body.innerHTML = `
+        <div class="specs-metric-row" style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(0, 234, 255, 0.15);">
+          <div class="spec-details-header"><i class="fas fa-microchip"></i> Configuration Overview</div>
+          <div class="specs-columns-grid">
+            <div class="spec-rule-row">
+              <span class="spec-rule-lbl"><i class="fas fa-shield-heart"></i> Character Skill</span>
+              <span class="spec-rule-val" style="color: var(--accent);">${m.characterSkill || 'Yes'}</span>
+            </div>
+            <div class="spec-rule-row">
+              <span class="spec-rule-lbl"><i class="fas fa-cubes"></i> ${m.type === 'BR' ? 'BR Type' : 'Rounds'}</span>
+              <span class="spec-rule-val">${m.type === 'BR' ? (m.brType || 'Normal') : (m.rounds || '7')}</span>
+            </div>
+            <div class="spec-rule-row">
+              <span class="spec-rule-lbl"><i class="fas fa-gun"></i> Gun Attributes</span>
+              <span class="spec-rule-val">${m.gunAttribute || 'No'}</span>
+            </div>
+            <div class="spec-rule-row">
+              <span class="spec-rule-lbl"><i class="fas fa-coins"></i> ${m.type === 'BR' ? 'Duration' : 'Coins'}</span>
+              <span class="spec-rule-val">${m.type === 'BR' ? (m.matchDuration || '30 Min') : (m.coin || '9950')}</span>
+            </div>
+            <div class="spec-rule-row">
+              <span class="spec-rule-lbl"><i class="fas fa-crosshairs"></i> Headshot Mode</span>
+              <span class="spec-rule-val">${m.headshotMode || 'No'}</span>
+            </div>
+            <div class="spec-rule-row">
+              <span class="spec-rule-lbl"><i class="fas fa-fire-burner"></i> Ammo Limit</span>
+              <span class="spec-rule-val">${m.limitedAmmo || 'Yes'}</span>
+            </div>
+          </div>
+          <div class="single-full-spec-highlight" style="margin-top: 10px;"><span class="single-full-spec-lbl">Lobby ID</span><span class="single-full-spec-val" style="color:var(--accent); font-family:var(--font-mono);">#${m.matchId}</span></div>
+          <div class="single-full-spec-highlight"><span class="single-full-spec-lbl">Game Platform</span><span class="single-full-spec-val">${m.platform || 'Free Fire'}</span></div>
+          <div class="single-full-spec-highlight"><span class="single-full-spec-lbl">Match Mode</span><span class="single-full-spec-val">${m.mode || m.teamSize || 'Solo'}</span></div>
+          <div class="single-full-spec-highlight"><span class="single-full-spec-lbl">Entry Fee</span><span class="single-full-spec-val" style="color:var(--warning);">${entryAmount > 0 ? 'NPR ' + entryAmount.toFixed(2) : 'Free'}</span></div>
+          <div class="single-full-spec-highlight"><span class="single-full-spec-lbl">Match Timing</span><span class="single-full-spec-val">${new Date(m.startTime.seconds * 1000).toLocaleString()}</span></div>
+        </div>
+      `;
+    }
+
+    function togglePlayersTray(matchId) {
+      const tray = document.getElementById(`players-tray-${matchId}`);
+      if (openedTrays.has(matchId)) {
+        openedTrays.delete(matchId);
+        if (tray) tray.style.display = 'none';
+      } else {
+        openedTrays.add(matchId);
+        if (tray) tray.style.display = 'flex';
+      }
+    }
+
+    // Modal helpers
+    function closeModal() {
+      document.getElementById('matchViewModal').classList.remove('show');
+    }
+
+    function handleOutsideModalClick(e) {
+      if (e.target === document.getElementById('matchViewModal')) {
+        closeModal();
+      }
+    }
+
+    // Tab switcher
+    function switchFilterTab(tabName, element) {
+      document.querySelectorAll('.filter-tab').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+      currentActiveFilter = tabName;
+      renderMatchesDisplayGrid();
+    }
+
+    function copyValue(text, successMsg = "Copied to clipboard successfully!") {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(successMsg, "success");
+      }).catch(() => {
+        showToast("Clipboard permission blocked.", "error");
+      });
+    }
+
+    function routeToWinnerSelection(mId) {
+      window.location.href = `/Match_Winner?matchId=${mId}`;
+    }
+
+    // Dynamic routing
+    function routeToSettlementPage(mId) {
+      window.location.href = `/Match_Success?matchId=${mId}`;
+    }
+
+    function goToHome() {
+      window.location.href = "/";
+    }
+
+    function showToast(message, type = 'success') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 4000);
+    }
+  </script>
+</body>
+</html>

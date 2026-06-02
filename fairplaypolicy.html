@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fair Play Policy - Make Trend Battle</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look matching other screens */
+      --header-height: 70px;
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 20px; /* space for bottom navigation bar */
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 26px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Bubble Cards */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .section-header {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      font-size: 14.5px;
+      color: #e8eef3;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    li strong {
+      color: #fff;
+    }
+
+    .highlight-banner {
+      background: rgba(0, 234, 255, 0.04);
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .highlight-banner p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .rules-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .rule-category-box {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rule-box-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rule-box-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .contact-info {
+      background: rgba(46, 204, 113, 0.04);
+      border-left: 4px solid var(--success);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-top: 24px;
+    }
+
+    .contact-info p {
+      margin-bottom: 8px;
+    }
+    .contact-info p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Fixed Bottom Navigation Row Style Fix */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; /* FORCE horizontal alignment */
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+
+    .home-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-family: var(--font-primary);
+    }
+    
+    .home-btn:hover {
+      background: rgba(0, 234, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBackToReferrer()">
+      <i class="fas fa-arrow-left"></i> Exit
+    </button>
+    <button class="home-btn" onclick="window.location.href='/'">
+      <i class="fas fa-home"></i> Home
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <div class="container">
+    
+    <!-- Hero Header -->
+    <div class="bubble-card" style="text-align: center; padding: 35px 24px;">
+      <h1 class="page-title">Fair Play Policy</h1>
+      <p style="color: var(--muted); font-size: 15px; max-width: 600px; margin: 0 auto;">
+        At Make Trend Battle, we believe competitive gaming is at its best when matches are clean, transparent, and built on mutual respect. This Fair Play Policy details how we protect your tournaments, maintain balanced mechanics, and guarantee payout safety.
+      </p>
+    </div>
+
+    <!-- Active Assurance Banner -->
+    <div class="highlight-banner">
+      <p><i class="fas fa-user-shield"></i> Automatic Esports Security: Our platform uses fully integrated background validators to audit lobbys automatically, securing professional payouts for clean winners.</p>
+    </div>
+
+    <!-- Core Rules Grid -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-gavel"></i> Tournament Standards</h2>
+      <div class="rules-grid">
+        
+        <div class="rule-category-box">
+          <div class="rule-box-title"><i class="fas fa-shield-alt" style="color: var(--accent);"></i> Clean Play Guarantee</div>
+          <div class="rule-box-desc">
+            The use of external software, cheats, hacks, or customized game clients is strictly prohibited. Make Trend Battle maintains a pure gameplay environment.
+          </div>
+        </div>
+
+        <div class="rule-category-box">
+          <div class="rule-box-title"><i class="fas fa-user-check" style="color: var(--success);"></i> Genuine Registrations</div>
+          <div class="rule-box-desc">
+            Players must participate with their verified account credentials. Account-sharing or exploiting level requirements violates competitive integrity.
+          </div>
+        </div>
+
+        <div class="rule-category-box">
+          <div class="rule-box-title"><i class="fas fa-circle-nodes" style="color: var(--warning);"></i> Uncontested Consensus</div>
+          <div class="rule-box-desc">
+            All players must submit authentic outcomes. Collaborative match-fixing or coordinating lobby placements results in automatic validation holds.
+          </div>
+        </div>
+
+        <div class="rule-category-box">
+          <div class="rule-box-title"><i class="fas fa-handshake" style="color: var(--purple);"></i> Respectful Environment</div>
+          <div class="rule-box-desc">
+            Hate speech, toxic behavior, or team-killing inside custom matches is prohibited. We foster competitive camaraderie across our gaming hub.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Trend Forensic Verifier Explanations -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-binoculars"></i> The Trend Forensic Verifier</h2>
+      <p>
+        To eliminate human bias and ensure that every single NPR reward reaches the rightful competitor, we deploy our proprietary **Trend Forensic Verifier**:
+      </p>
+      <ul>
+        <li><strong>Dual-Validation Audit:</strong> The system compares match outcomes, screenshot proofs, and lobby telemetry submitted by participants to find the real winner.</li>
+        <li><strong>Conflict Stalemate Resolver:</strong> If competing players submit conflicting outcomes, our 100-tier diagnostic engine breaks ties using registration order and verified screenshot checks.</li>
+        <li><strong>Automatic Failure Recovery:</strong> If a match concludes but absolutely no outcomes are reported, the platform automatically cancels the match, refunding 100% of the ticket fees back to player wallets.</li>
+      </ul>
+    </div>
+
+    <!-- Integrity Process Appeals -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-circle-check"></i> Account Standards & Appeals</h2>
+      <p>
+        If the system identifies high anomalies or deliberate coordination to spoof match results, standard platform verifications are triggered:
+      </p>
+      <ul>
+        <li><strong>Validation Holds:</strong> Temporary holds are applied to the specific match payout until manually cleared by our admin panel.</li>
+        <li><strong>Equal Dispute Resolution:</strong> Players can file fast-track dispute reports directly inside their ended lobbies by attaching screenshot evidence.</li>
+        <li><strong>Appeals Pathway:</strong> If you believe a validation hold was applied in error, you may file an appeal through our support channel for an instant manual check. Decisions are finalized within 24 hours.</li>
+      </ul>
+
+      <div class="contact-info">
+        <p><strong><i class="fas fa-headset"></i> Make Trend Battle Support:</strong></p>
+        <p style="font-size: 13px; color: var(--muted);">Email: <span style="color: #fff; font-weight: 700;">fairplay@rockyaxis.com</span></p>
+        <p style="font-size: 13px; color: var(--muted);">WhatsApp / Direct line: <span style="color: var(--accent); font-weight: 700;">+977 9815800906</span></p>
+        <p style="font-size: 13px; color: var(--muted);">Average Resolution Time: <span style="color: var(--success); font-weight: 700;">12-24 Hours</span></p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function goBackToReferrer() {
+      const referrer = document.referrer;
+      if (referrer && referrer !== '') {
+        window.location.href = referrer;
+      } else {
+        window.history.back();
+      }
+    }
+  </script>
+</body>
+</html>

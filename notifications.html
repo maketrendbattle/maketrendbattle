@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - Notifications Dashboard</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Premium Unified Cyberpunk Theme Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look */
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 95px; /* Space for fixed bottom navigation */
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* Fixed App Header Layout */
+    .notification-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--card-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--accent);
+      border: 1px solid rgba(0, 234, 255, 0.2);
+      overflow: hidden;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .user-username {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Core Layout Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .page-title i {
+      font-size: 24px;
+      color: var(--accent);
+      background: rgba(0, 234, 255, 0.08);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .page-title h1 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .page-title p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    /* Real-Time Stats Grid (Bubble Styled) */
+    .notification-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .notification-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 234, 255, 0.15);
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(0, 234, 255, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* Action Control Row */
+    .notification-actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn-styled {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 700;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn-styled:hover {
+      background: rgba(0, 234, 255, 0.08);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Filters List Scroll Bar */
+    .notification-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .notification-filters::-webkit-scrollbar {
+      height: 4px;
+    }
+    .notification-filters::-webkit-scrollbar-thumb {
+      background: var(--card-light);
+      border-radius: 2px;
+    }
+
+    .notification-filter {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .notification-filter:hover {
+      color: #fff;
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .notification-filter.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Bubble List Rows Card */
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 20px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-left: 4px solid transparent;
+      border-right: 1px solid rgba(0, 234, 255, 0.15);
+      border-top: 1px solid rgba(0, 234, 255, 0.15);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .notification-item:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .notification-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12);
+    }
+
+    .notification-item.unread {
+      background: rgba(0, 234, 255, 0.04);
+      border-left-color: var(--accent) !important;
+    }
+
+    .notification-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+
+    .notification-icon.info { background: rgba(0, 234, 255, 0.1); color: var(--accent); border: 1px solid rgba(0, 234, 255, 0.2); }
+    .notification-icon.success { background: rgba(46, 204, 113, 0.1); color: var(--success); border: 1px solid rgba(46, 204, 113, 0.2); }
+    .notification-icon.warning { background: rgba(243, 156, 18, 0.1); color: var(--warning); border: 1px solid rgba(243, 156, 18, 0.2); }
+    .notification-icon.error { background: rgba(231, 76, 60, 0.1); color: var(--error); border: 1px solid rgba(231, 76, 60, 0.2); }
+
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notification-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 15.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .notification-message {
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .notification-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .notification-time {
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .notification-actions-small {
+      display: flex;
+      gap: 12px;
+    }
+
+    .notification-actions-small button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .notification-actions-small button:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    /* Redirection CTA Button */
+    .route-action-cta-btn {
+      background: rgba(0, 234, 255, 0.06);
+      border: 1px solid rgba(0, 234, 255, 0.2);
+      color: var(--accent);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .route-action-cta-btn:hover {
+      background: rgba(0, 234, 255, 0.15);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Fixed Bottom Navigation (HORIZONTAL ROW STYLE FIX) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; /* FORCE horizontal alignment */
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: 12px;
+      right: 22%;
+      background: var(--error);
+      color: #fff;
+      font-size: 8px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    /* Custom Toast styles */
+    .notification-toast {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      background: var(--card);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 15px;
+      width: 320px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 10000;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transform: translateX(350px);
+      transition: transform 0.3s ease;
+      border-top: 1px solid rgba(255,255,255,0.03);
+      border-right: 1px solid rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .notification-toast.show {
+      transform: translateX(0);
+    }
+
+    /* ⚡ TOP-FIXED NEON ACTION LOADING BAR */
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="notification-header">
+    <button class="back-btn" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    
+    <div class="user-profile">
+      <div class="user-avatar" id="avatarLetter">U</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">Competitor</div>
+        <div class="user-username" id="userUsername">@player</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Page Title -->
+    <div class="page-title">
+      <i class="fas fa-bell"></i>
+      <div>
+        <h1>System Alerts</h1>
+        <p>Stay updated on tournament custom lobbies, room credentials, wallet activities, and referral bonuses</p>
+      </div>
+    </div>
+
+    <!-- Notification Stats -->
+    <div class="notification-stats">
+      <div class="stat-card">
+        <div class="stat-value" id="totalNotifications">0</div>
+        <div class="stat-label">Total Alerts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="unreadCount" style="color: var(--warning);">0</div>
+        <div class="stat-label">Unread</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="matchNotifications" style="color: var(--accent);">0</div>
+        <div class="stat-label">Rooms / Maps</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="paymentNotifications" style="color: var(--success);">0</div>
+        <div class="stat-label">Wallets</div>
+      </div>
+    </div>
+
+    <!-- Notification Actions -->
+    <div class="notification-actions">
+      <button class="action-btn-styled" id="markAllReadBtn" onclick="markAllAsRead()">
+        <i class="fas fa-check-double"></i> Mark All Read
+      </button>
+      <button class="action-btn-styled" id="clearAllBtn" onclick="clearAllNotifications()">
+        <i class="fas fa-trash"></i> Clear All
+      </button>
+      <button class="action-btn-styled" id="refreshBtn" onclick="refreshNotifications()">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+
+    <!-- Notification Filters -->
+    <div class="notification-filters">
+      <div class="notification-filter active" data-filter="all" onclick="switchFilterTab('all', this)">
+        <i class="fas fa-layer-group"></i> All
+      </div>
+      <div class="notification-filter" data-filter="unread" onclick="switchFilterTab('unread', this)">
+        <i class="fas fa-envelope"></i> Unread
+      </div>
+      <div class="notification-filter" data-filter="match" onclick="switchFilterTab('match', this)">
+        <i class="fas fa-trophy"></i> Match Roster
+      </div>
+      <div class="notification-filter" data-filter="payment" onclick="switchFilterTab('payment', this)">
+        <i class="fas fa-money-bill-wave"></i> Wallet & Payout
+      </div>
+      <div class="notification-filter" data-filter="system" onclick="switchFilterTab('system', this)">
+        <i class="fas fa-cog"></i> System Rules
+      </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div id="notificationsList">
+      <div class="empty-state">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p>Syncing notification registry records...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/inmatchjoin" class="nav-item">
+      <i class="fas fa-gamepad"></i>
+      <span>Games</span>
+    </a>
+    <a href="/My_Matches" class="nav-item active">
+      <i class="fas fa-trophy"></i>
+      <span>Joined Games</span>
+      <div class="nav-badge" id="navAlertBadge" style="display: none;">0</div>
+    </a>
+    <a href="/Profile" class="nav-item">
+      <i class="fas fa-user-cog"></i>
+      <span>Control</span>
+    </a>
+  </nav>
+
+  <!-- Firebase Legacy Compat Core SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let currentProfileData = null;
+    let globalCachedNotifications = [];
+    let currentActiveFilter = 'all';
+    
+    // Recovery States Caches to calculate differential in-memory updates
+    let lastRegisteredMatchesCache = {};
+    const processedAutomaticNotificationsKeys = new Set(JSON.parse(localStorage.getItem('axis_notif_processed_keys') || '[]'));
+
+    // Cache tracker to store last-loaded account parameters for profile update alerts
+    let lastKnownProfileStateStr = null;
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase startup issues:", err);
+        showNotificationToast("Lobby database connection failed.", "error");
+        return;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await subscribeToProfileAndBalance();
+          await initRealTimeDatabaseChangeObserver();
+          document.getElementById('loadingOverlay').classList.add('hidden');
+        } else {
+          window.location.href = "loginauth.html";
+        }
+      });
+    });
+
+    // Subscribes to real-time changes inside user private profile & wallet (Rule 1 & Rule 3 compliant)
+    async function subscribeToProfileAndBalance() {
+      try {
+        // Real-Time Profile doc updates detector (Profile alert daemon)
+        db.collection('users').doc(currentUser.uid).onSnapshot(async (snapshot) => {
+          if (!snapshot.exists) return;
+
+          currentProfileData = snapshot.data();
+          const name = currentProfileData.fullname || currentProfileData.gamename || currentProfileData.username || 'Competitor';
+          
+          document.getElementById('userName').textContent = name;
+          document.getElementById('userUsername').textContent = `@${(currentProfileData.username || 'gamer').toLowerCase()}`;
+          document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
+
+          if (currentProfileData.profilePic || currentProfileData.avatarDataURL) {
+            document.getElementById('avatarLetter').innerHTML = `<img src="${currentProfileData.profilePic || currentProfileData.avatarDataURL}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" alt="Avatar">`;
+          }
+
+          // Evaluate account profile changes (level, nickname, platform, etc.)
+          evaluateAccountChanges(currentProfileData);
+        }, err => {
+          console.error("Profile listen failure:", err);
+        });
+
+        // Live alert listener subscription - strictly uses private path (Rule 1)
+        getPrivateCollection(currentUser.uid, 'notifications')
+          .onSnapshot((snapshot) => {
+            globalCachedNotifications = [];
+            snapshot.forEach(doc => {
+              globalCachedNotifications.push({ id: doc.id, ...doc.data() });
+            });
+
+            // Sort by most recent alert
+            globalCachedNotifications.sort((a, b) => {
+              const timeA = a.timestamp?.seconds || 0;
+              const timeB = b.timestamp?.seconds || 0;
+              return timeB - timeA;
+            });
+
+            renderNotificationsFeed();
+            updateStatsWidgets();
+          }, (err) => {
+            console.error("Live alerts fetch failed:", err);
+            showNotificationToast("Failed to sync notifications stream.", "error");
+          });
+
+      } catch (err) {
+        console.error("Profile settings check failed:", err);
+      }
+    }
+
+    // Evaluates dynamic changes inside the logged in user's profile and triggers alerts
+    function evaluateAccountChanges(newProfile) {
+      if (!newProfile) return;
+
+      const profileStringified = JSON.stringify({
+        level: newProfile.level || 0,
+        gamename: newProfile.gamename || '',
+        gameuid: newProfile.gameuid || newProfile.gameUid || '',
+        gamePlatform: newProfile.gamePlatform || ''
+      });
+
+      // Avoid triggering notifications on first snapshot load
+      if (lastKnownProfileStateStr === null) {
+        lastKnownProfileStateStr = profileStringified;
+        return;
+      }
+
+      if (lastKnownProfileStateStr !== profileStringified) {
+        const oldState = JSON.parse(lastKnownProfileStateStr);
+        lastKnownProfileStateStr = profileStringified;
+
+        // Change parameters comparison
+        let changedAttributes = [];
+        if (oldState.level !== (newProfile.level || 0)) changedAttributes.push(`Game Level (${oldState.level} ➔ ${newProfile.level || 0})`);
+        if (oldState.gamename !== (newProfile.gamename || '')) changedAttributes.push(`Nickname (${oldState.gamename || 'N/A'} ➔ ${newProfile.gamename || 'N/A'})`);
+        if (oldState.gameuid !== (newProfile.gameuid || newProfile.gameUid || '')) changedAttributes.push(`Game UID (${oldState.gameuid || 'N/A'} ➔ ${newProfile.gameuid || newProfile.gameUid || 'N/A'})`);
+        if (oldState.gamePlatform !== (newProfile.gamePlatform || '')) changedAttributes.push(`Platform (${oldState.gamePlatform || 'N/A'} ➔ ${newProfile.gamePlatform || 'N/A'})`);
+
+        if (changedAttributes.length > 0) {
+          const timestampKey = `profile_update_${Date.now()}`;
+          triggerAutomaticNotification({
+            title: "⚙️ GAMER PROFILE CONFIGURATION UPDATED",
+            message: `Your account credentials have been updated successfully! Parameter changes: ${changedAttributes.join(', ')}.`,
+            type: "system",
+            matchId: '',
+            key: timestampKey
+          });
+        }
+      }
+    }
+
+    // =========================================================================
+    // REAL-TIME MATCH OBSERVER & AUTO-RECOVERY NOTIFICATION DAEMON ENGINE
+    // =========================================================================
+    async function initRealTimeDatabaseChangeObserver() {
+      try {
+        // Listen to all public matches (no complex query indexes, conforming to Rule 2)
+        getPublicCollection('matches').onSnapshot((snap) => {
+          const currentMatchesList = [];
+          snap.forEach(doc => {
+            currentMatchesList.push({ id: doc.id, ...doc.data() });
+          });
+
+          // Process and track only matches where this user is active (as Creator or Participant)
+          const registeredMatches = currentMatchesList.filter(match => {
+            const playersList = Array.isArray(match.players) ? match.players : [];
+            const isCreator = match.creatorUid === currentUser.uid;
+            const isParticipant = playersList.some(p => p && p.uid === currentUser.uid);
+            return isCreator || isParticipant;
+          });
+
+          registeredMatches.forEach(match => {
+            const lastState = lastRegisteredMatchesCache[match.matchId];
+
+            if (lastState) {
+              evaluateMatchStateChanges(lastState, match);
+            } else {
+              // Trigger a first-time join notification if newly tracked match is found
+              const isJoinedNow = Array.isArray(match.players) && match.players.some(p => p && p.uid === currentUser.uid && p.role !== 'creator');
+              const joinInitKey = `init_join_${match.matchId}`;
+              if (isJoinedNow && !processedAutomaticNotificationsKeys.has(joinInitKey)) {
+                triggerAutomaticNotification({
+                  title: "⚔️ MATCH REGISTRATION SUCCESSFUL",
+                  message: `You have successfully purchased an entry ticket for custom lobby "${match.title}" (ID: #${match.matchId}). Roster spot booked!`,
+                  type: "match",
+                  matchId: match.matchId,
+                  key: joinInitKey
+                });
+              }
+            }
+
+            // Cache the state
+            lastRegisteredMatchesCache[match.matchId] = JSON.parse(JSON.stringify(match));
+          });
+        });
+
+        // Listen to private transactions log changes to trigger real-time balance update notifications
+        getPrivateCollection(currentUser.uid, 'transactions').onSnapshot((snap) => {
+          snap.docChanges().forEach((change) => {
+            if (change.type === "added") {
+              const tx = change.doc.data();
+              const txTime = tx.timestamp?.seconds * 1000;
+              if (txTime && (Date.now() - txTime < 30000)) { // occurred within last 30s
+                const txKey = `tx_alert_${change.doc.id}`;
+                if (!processedAutomaticNotificationsKeys.has(txKey)) {
+                  let alertTitle = "💰 WALLET BALANCE UPDATED";
+                  let alertType = "payment";
+                  let amtPrefixed = tx.amount > 0 ? `+NPR ${tx.amount.toFixed(2)}` : `-NPR ${Math.abs(tx.amount).toFixed(2)}`;
+                  
+                  if (tx.type === 'welcome_bonus') {
+                    alertTitle = "🎁 WELCOME BONUS RECEIVED";
+                  } else if (tx.type === 'referral_bonus') {
+                    alertTitle = "🤝 AFFILIATE COMMISSION REWARD";
+                  }
+
+                  triggerAutomaticNotification({
+                    title: alertTitle,
+                    message: `Wallet activity detected. Balance adjusted by ${amtPrefixed}. Details: ${tx.description || 'N/A'}.`,
+                    type: alertType,
+                    matchId: tx.matchId || '',
+                    key: txKey
+                  });
+                }
+              }
+            }
+          });
+        });
+
+        // Run an active time-ticker to detect when Joined/Hosted matches are starting NOW
+        setInterval(() => {
+          const nowMs = Date.now();
+          Object.values(lastRegisteredMatchesCache).forEach(match => {
+            if (match.startTime && match.status !== 'completed' && match.status !== 'expired') {
+              const startMs = match.startTime.seconds * 1000;
+              const uniqueTimeKey = `start_now_${match.matchId}`;
+
+              // Trigger within a 2-minute starting window
+              if (nowMs >= startMs && nowMs <= startMs + (120 * 1000)) {
+                if (!processedAutomaticNotificationsKeys.has(uniqueTimeKey)) {
+                  triggerAutomaticNotification({
+                    title: "⚔️ MATCH IS STARTING NOW!",
+                    message: `Lobby "${match.title}" (ID: #${match.matchId}) has officially started! Open room inputs to verify lobby rankings.`,
+                    type: "match",
+                    matchId: match.matchId,
+                    key: uniqueTimeKey
+                  });
+                }
+              }
+            }
+          });
+        }, 15000); // Check every 15 seconds
+
+      } catch (error) {
+        console.error("Failed to initialize match change observer daemon:", error);
+      }
+    }
+
+    // Evaluates live changes on matches in real-time
+    function evaluateMatchStateChanges(oldMatch, newMatch) {
+      const matchId = newMatch.matchId;
+
+      // 1. Check if Custom Room Credentials have just been published/sent by Host
+      const oldCredsSent = oldMatch.customMatchId && oldMatch.customMatchId.trim() !== '';
+      const newCredsSent = newMatch.customMatchId && newMatch.customMatchId.trim() !== '';
+      const credsKey = `creds_sent_${matchId}`;
+
+      if (!oldCredsSent && newCredsSent) {
+        if (!processedAutomaticNotificationsKeys.has(credsKey)) {
+          triggerAutomaticNotification({
+            title: "🔑 ROOM CREDENTIALS RELEASED!",
+            message: `The host shared credentials for "${newMatch.title}". Room ID: ${newMatch.customMatchId} | Pass: ${newMatch.matchPassword || 'None'}. Join now!`,
+            type: "match",
+            matchId: matchId,
+            key: credsKey
+          });
+        }
+      }
+
+      // 2. Check if a new player has joined the roster
+      const oldPlayersCount = (oldMatch.players || []).filter(p => p && p.role !== 'creator').length;
+      const newPlayersCount = (newMatch.players || []).filter(p => p && p.role !== 'creator').length;
+      const joinKey = `player_join_${matchId}_${newPlayersCount}`;
+
+      if (newPlayersCount > oldPlayersCount) {
+        // Notify both host and players about roster expansion
+        if (!processedAutomaticNotificationsKeys.has(joinKey)) {
+          const amIHost = newMatch.creatorUid === currentUser.uid;
+          triggerAutomaticNotification({
+            title: "👥 NEW CONTENDER JOINED!",
+            message: amIHost 
+              ? `A new player registered for your hosted lobby "${newMatch.title}". Total players: ${newPlayersCount}/${newMatch.maxPlayers || 20}.`
+              : `Lobby slots updated for "${newMatch.title}". Registered users: ${newPlayersCount}/${newMatch.maxPlayers || 20}.`,
+            type: "system",
+            matchId: matchId,
+            key: joinKey
+          });
+        }
+      }
+
+      // 3. Check if match has been concluded (Winner Selected / Money Sent)
+      const oldCompleted = oldMatch.status === 'completed' || oldMatch.payoutProcessed;
+      const newCompleted = newMatch.status === 'completed' || newMatch.payoutProcessed;
+      const completeKey = `concluded_${matchId}`;
+
+      if (!oldCompleted && newCompleted) {
+        if (!processedAutomaticNotificationsKeys.has(completeKey)) {
+          // Identify if we won, lost, or hosted
+          const isCreator = newMatch.creatorUid === currentUser.uid;
+          const userRosterObj = (newMatch.players || []).find(p => p && p.uid === currentUser.uid);
+          
+          let resultTitle = "🏆 MATCH CONCLUDED";
+          let resultMsg = `Tournament lobby "${newMatch.title}" (ID: #${matchId}) is completed. View payouts to inspect ledger transfers.`;
+          
+          if (isCreator) {
+            resultTitle = "💸 ORGANIZER COMMISSION TRANSFERRED!";
+            resultMsg = `Lobby "${newMatch.title}" is settled. Your platform creator profit has been credited.`;
+          } else if (userRosterObj) {
+            const outcome = userRosterObj.gameOutcome || userRosterObj.outcome;
+            const rank = userRosterObj.lobbyRank || userRosterObj.rank;
+
+            if (outcome === 'winner' || rank === 1 || rank === 2 || rank === 3) {
+              resultTitle = "👑 VICTORY! NPR WALLET CREDITED";
+              resultMsg = `Congratulations! You placed on the winners board for "${newMatch.title}". Prize shares credited safely.`;
+            } else {
+              resultTitle = "💀 MATCH COMPLETED";
+              resultMsg = `Tournament ended. You participated in "${newMatch.title}" but did not hit winner thresholds this time. Keep trying!`;
+            }
+          }
+
+          triggerAutomaticNotification({
+            title: resultTitle,
+            message: resultMsg,
+            type: "payment",
+            matchId: matchId,
+            key: completeKey
+          });
+        }
+      }
+    }
+
+    // Handles writing the dynamic calculated notification directly into the private database path (Rule 1)
+    async function triggerAutomaticNotification(notifObj) {
+      if (!currentUser || !db) return;
+
+      try {
+        // Guard to prevent duplication
+        if (processedAutomaticNotificationsKeys.has(notifObj.key)) return;
+        processedAutomaticNotificationsKeys.add(notifObj.key);
+        localStorage.setItem('axis_notif_processed_keys', JSON.stringify(Array.from(processedAutomaticNotificationsKeys)));
+
+        // Write directly to Firestore using Sandbox Rule 1 Paths
+        const ref = getPrivateCollection(currentUser.uid, 'notifications').doc();
+        await ref.set({
+          title: notifObj.title,
+          message: notifObj.message,
+          type: notifObj.type,
+          matchId: notifObj.matchId,
+          seen: false,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Trigger real-time visual toast
+        showNotificationToast(`New Alert: ${notifObj.title}`, "success");
+      } catch (err) {
+        console.error("Auto-notification engine write failure: ", err);
+      }
+    }
+
+    // Render alerts
+    function renderNotificationsFeed() {
+      const container = document.getElementById('notificationsList');
+      container.innerHTML = '';
+
+      // Local list filtering (Adhering to Rule 2 - No complex compound queries)
+      const filteredList = globalCachedNotifications.filter(item => {
+        if (currentActiveFilter === 'unread') return item.seen === false || item.seen === undefined;
+        if (currentActiveFilter !== 'all') {
+          return item.type === currentActiveFilter;
+        }
+        return true;
+      });
+
+      if (filteredList.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-bell-slash"></i>
+            <h3 style="color: #fff; font-size: 16px; margin-bottom: 6px;">No Notifications Discovered</h3>
+            <p style="font-size: 13px; max-width: 320px; margin: 0 auto;">Lobby credentials, roster announcements, and wallet credit updates will appear in this feed.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredList.forEach(alert => {
+        const isRead = alert.seen === true;
+        const alertType = alert.type || 'match';
+
+        // Categorize icon parameters
+        let iconClass = 'fas fa-info-circle';
+        let colorClass = 'info';
+
+        if (alertType === 'payment') {
+          iconClass = 'fas fa-wallet';
+          colorClass = 'success';
+        } else if (alertType === 'system') {
+          iconClass = 'fas fa-cog';
+          colorClass = 'warning';
+        } else if (alertType === 'admin') {
+          iconClass = 'fas fa-shield-alt';
+          colorClass = 'error';
+        } else if (alertType === 'match') {
+          iconClass = 'fas fa-trophy';
+          colorClass = 'info';
+        }
+
+        // --- SPECIFIC EVENT ACTION TYPE ROUTING ---
+        let ctaButtonHTML = '';
+        const titleText = (alert.title || '').toLowerCase();
+        const msgText = (alert.message || '').toLowerCase();
+        const targetMatchId = alert.matchId || '';
+
+        if (targetMatchId) {
+          const isWinnerSelectionCall = titleText.includes('winner') || msgText.includes('winner') || titleText.includes('vote') || msgText.includes('vote') || titleText.includes('placements') || titleText.includes('select');
+          const isPayoutCompleteCall = titleText.includes('won') || msgText.includes('won') || titleText.includes('reward') || msgText.includes('reward') || titleText.includes('transfer') || msgText.includes('payout') || titleText.includes('completed') || msgText.includes('completed') || msgText.includes('refund');
+
+          if (isPayoutCompleteCall) {
+            ctaButtonHTML = `
+              <button class="route-action-cta-btn" onclick="event.stopPropagation(); navigateToLobbyDetails('${targetMatchId}', 'payout')">
+                <i class="fas fa-file-invoice-dollar"></i> View Verified Payouts Receipts
+              </button>
+            `;
+          } else if (isWinnerSelectionCall) {
+            ctaButtonHTML = `
+              <button class="route-action-cta-btn" onclick="event.stopPropagation(); navigateToLobbyDetails('${targetMatchId}', 'select')">
+                <i class="fas fa-gavel"></i> Vote / Manage Match Placements
+              </button>
+            `;
+          } else {
+            ctaButtonHTML = `
+              <button class="route-action-cta-btn" onclick="event.stopPropagation(); navigateToLobbyDetails('${targetMatchId}', 'my_matches')">
+                <i class="fas fa-gamepad"></i> Open Match Details Page
+              </button>
+            `;
+          }
+        } else if (titleText.includes('referral') || titleText.includes('affiliate') || msgText.includes('bonus') || msgText.includes('referred') || titleText.includes('profile') || msgText.includes('profile')) {
+          ctaButtonHTML = `
+            <button class="route-action-cta-btn" onclick="event.stopPropagation(); window.location.href='profile.html'">
+              <i class="fas fa-user-gear"></i> Inspect Account Settings
+            </button>
+          `;
+        }
+
+        // Format timestamps safely
+        const dateObj = alert.timestamp?.seconds ? new Date(alert.timestamp.seconds * 1000) : new Date();
+        const timeAgoText = formatTimeDifference(dateObj);
+
+        container.innerHTML += `
+          <div class="notification-item ${isRead ? '' : 'unread'}" onclick="handleAlertInteraction('${alert.id}')">
+            <div class="notification-icon ${colorClass}">
+              <i class="${iconClass}"></i>
+            </div>
+            <div class="notification-content">
+              <div class="notification-title">
+                ${alert.title || 'System Alert'}
+                ${isRead ? '' : '<span class="nav-badge" style="position:static; width:8px; height:8px; display:inline-block; margin-left:6px; background:var(--accent);"></span>'}
+              </div>
+              <div class="notification-message">${alert.message || ''}</div>
+              <div class="notification-meta">
+                <span class="notification-time">${timeAgoText}</span>
+                <div class="notification-actions-small">
+                  ${isRead ? '' : `<button onclick="event.stopPropagation(); markAlertAsRead('${alert.id}')"><i class="fas fa-envelope-open"></i> Read</button>`}
+                  <button onclick="event.stopPropagation(); deleteSingleAlert('${alert.id}')"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+              </div>
+              ${ctaButtonHTML}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // --- SMART ROUTING LOGIC TRIGGER ---
+    function navigateToLobbyDetails(matchId, pageActionType) {
+      if (!matchId) return;
+
+      if (pageActionType === 'payout') {
+        window.location.href = `match-success.html?matchId=${matchId}`;
+      } else if (pageActionType === 'select') {
+        window.location.href = `match-winner.html?matchId=${matchId}`;
+      } else {
+        window.location.href = `my-matches.html?matchId=${matchId}`;
+      }
+    }
+
+    async function handleAlertInteraction(alertId) {
+      const alertObj = globalCachedNotifications.find(n => n.id === alertId);
+      if (!alertObj) return;
+
+      if (alertObj.seen === false || alertObj.seen === undefined) {
+        await markAlertAsRead(alertId);
+      }
+
+      const matchId = alertObj.matchId || '';
+      if (matchId) {
+        const titleText = (alertObj.title || '').toLowerCase();
+        const msgText = (alertObj.message || '').toLowerCase();
+        const isWinnerSelectionCall = titleText.includes('winner') || msgText.includes('winner') || titleText.includes('vote') || msgText.includes('vote');
+        const isPayoutCompleteCall = titleText.includes('won') || msgText.includes('won') || titleText.includes('reward') || msgText.includes('reward') || titleText.includes('transfer') || msgText.includes('payout') || titleText.includes('completed') || msgText.includes('completed') || msgText.includes('refund');
+
+        if (isPayoutCompleteCall) {
+          navigateToLobbyDetails(matchId, 'payout');
+        } else if (isWinnerSelectionCall) {
+          navigateToLobbyDetails(matchId, 'select');
+        } else {
+          navigateToLobbyDetails(matchId, 'my_matches');
+        }
+      }
+    }
+
+    async function markAlertAsRead(id) {
+      try {
+        await getPrivateCollection(currentUser.uid, 'notifications').doc(id).update({
+          seen: true,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (err) {
+        console.error("Mark read transaction error:", err);
+      }
+    }
+
+    async function markAllAsRead() {
+      const unreads = globalCachedNotifications.filter(n => n.seen === false || n.seen === undefined);
+      if (unreads.length === 0) {
+        showNotificationToast("All alert parameters read.", "info");
+        return;
+      }
+
+      try {
+        const batch = db.batch();
+        unreads.forEach(u => {
+          const ref = getPrivateCollection(currentUser.uid, 'notifications').doc(u.id);
+          batch.update(ref, { seen: true });
+        });
+        await batch.commit();
+        showNotificationToast("Marked all notifications as read.", "success");
+      } catch (err) {
+        console.error("Batch read updates failed:", err);
+        showNotificationToast("Failed updating batch read logs.", "error");
+      }
+    }
+
+    async function deleteSingleAlert(id) {
+      if (!confirm("Remove this alert transaction from feed?")) return;
+      try {
+        await getPrivateCollection(currentUser.uid, 'notifications').doc(id).delete();
+        showNotificationToast("Notification deleted.", "success");
+      } catch (err) {
+        console.error("Alert delete failed:", err);
+      }
+    }
+
+    async function clearAllNotifications() {
+      if (globalCachedNotifications.length === 0) return;
+      if (!confirm("Are you sure you want to permanently clear your notifications history?")) return;
+
+      try {
+        const batch = db.batch();
+        globalCachedNotifications.forEach(n => {
+          const ref = getPrivateCollection(currentUser.uid, 'notifications').doc(n.id);
+          batch.delete(ref);
+        });
+        await batch.commit();
+        showNotificationToast("Notifications cleared successfully.", "success");
+      } catch (err) {
+        console.error("Clear notifications failed:", err);
+        showNotificationToast("Could not complete delete operation.", "error");
+      }
+    }
+
+    function refreshNotifications() {
+      subscribeToProfileAndBalance();
+      showNotificationToast("Ledger values synced.", "success");
+    }
+
+    function switchFilterTab(tabName, element) {
+      document.querySelectorAll('.notification-filter').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+      currentActiveFilter = tabName;
+      renderNotificationsFeed();
+    }
+
+    function updateStatsWidgets() {
+      const total = globalCachedNotifications.length;
+      const unread = globalCachedNotifications.filter(n => n.seen === false || n.seen === undefined).length;
+      const matchAlertsCount = globalCachedNotifications.filter(n => n.type === 'match').length;
+      const paymentsCount = globalCachedNotifications.filter(n => n.type === 'payment').length;
+
+      document.getElementById('totalNotifications').textContent = total;
+      document.getElementById('unreadCount').textContent = unread;
+      document.getElementById('matchNotifications').textContent = matchAlertsCount;
+      document.getElementById('paymentNotifications').textContent = paymentsCount;
+
+      // Update active Alerts Bottom Nav badge counter
+      const navBadge = document.getElementById('navAlertBadge');
+      if (unread > 0) {
+        navBadge.style.display = 'flex';
+        navBadge.textContent = unread;
+      } else {
+        navBadge.style.display = 'none';
+      }
+    }
+
+    // Time Ago formatter
+    function formatTimeDifference(targetDate) {
+      const differenceInSeconds = Math.floor((new Date() - targetDate) / 1000);
+      if (differenceInSeconds < 60) return 'Just now';
+      if (differenceInSeconds < 3600) return `${Math.floor(differenceInSeconds / 60)} minutes ago`;
+      if (differenceInSeconds < 86400) return `${Math.floor(differenceInSeconds / 3600)} hours ago`;
+      return targetDate.toLocaleDateString();
+    }
+
+    function goBack() {
+      window.location.href = "index.html";
+    }
+
+    function showNotificationToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = 'notification-toast';
+      
+      let borderClr = 'var(--accent)';
+      let icon = 'fa-info-circle';
+      if (type === 'success') { borderClr = 'var(--success)'; icon = 'fa-check-circle'; }
+      else if (type === 'error') { borderClr = 'var(--error)'; icon = 'fa-exclamation-triangle'; }
+      
+      toast.style.borderLeftColor = borderClr;
+      toast.innerHTML = `
+        <i class="fas ${icon}" style="color: ${borderClr}; font-size: 16px;"></i>
+        <div style="flex:1; font-size:12.5px; color:#fff; font-weight:600;">${message}</div>
+      `;
+      
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 50);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+  </script>
+</body>
+</html>

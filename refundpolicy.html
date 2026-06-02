@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Refund Policy - Make Trend Battle</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look matching other screens */
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 20px; /* space for bottom navigation bar */
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Bubble Cards */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+
+    .bubble-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .section-header {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      font-size: 14.5px;
+      color: #e8eef3;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    ul, ol {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    li strong {
+      color: #fff;
+    }
+
+    .highlight-banner {
+      background: rgba(0, 234, 255, 0.04);
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .highlight-banner p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .policy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .policy-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .policy-box {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .policy-box-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .policy-box-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Interactive Live Refund Tracker list */
+    .refund-tracker-panel {
+      background: rgba(0, 234, 255, 0.02);
+      border: 1.5px solid rgba(0, 234, 255, 0.15);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 15px rgba(0, 234, 255, 0.08);
+    }
+
+    .tracker-header {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tracker-payout-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .tracker-payout-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .tracker-value {
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .empty-tracker-text {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .contact-info {
+      background: rgba(46, 204, 113, 0.04);
+      border-left: 4px solid var(--success);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-top: 24px;
+    }
+
+    .contact-info p {
+      margin-bottom: 8px;
+    }
+    .contact-info p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Fixed Bottom Navigation Row Style Fix */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; /* FORCE horizontal alignment */
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+
+    /* Notification Box */
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #notificationBox.show { top: 85px; }
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+
+    .home-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-family: var(--font-primary);
+    }
+    
+    .home-btn:hover {
+      background: rgba(0, 234, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBackToReferrer()">
+      <i class="fas fa-arrow-left"></i> Exit
+    </button>
+    <button class="home-btn" onclick="window.location.href='/'">
+      <i class="fas fa-home"></i> Home
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="notificationBox"></div>
+
+  <div class="container">
+    
+    <!-- Hero Header -->
+    <div class="bubble-card" style="text-align: center; padding: 35px 24px;">
+      <h1 class="page-title">Refund Policy</h1>
+      <p style="color: var(--muted); font-size: 15px; max-width: 600px; margin: 0 auto;">
+        At Rocky Axis Esports, we ensure clear, transparent billing. This Refund Policy describes our automated refund safeguards, entry ticket returns, and withdrawal guarantees.
+      </p>
+    </div>
+
+    <!-- 🔒 LIVE MY REFUNDS TRACKER PANEL -->
+    <div class="refund-tracker-panel" id="privateRefundTrackerBox" style="display: none;">
+      <div class="tracker-header">
+        <i class="fas fa-receipt"></i> My Live Refund Ledger Logs <span style="font-size: 11px; opacity: 0.7;">(Recent Transactions)</span>
+      </div>
+      <div id="trackerLogsContainer">
+        <div class="empty-tracker-text">
+          <i class="fas fa-circle-notch fa-spin"></i> Syncing your wallet transaction history...
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Assurance Banner -->
+    <div class="highlight-banner">
+      <p><i class="fas fa-shield-halved"></i> Automated Safety Guard: If a custom lobby is canceled or fails to start, our system automatically refunds 100% of your ticket fee instantly back to your wallet.</p>
+    </div>
+
+    <!-- Policy Divisions Grid -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-ticket-alt"></i> Entry Fee & Ticket Guidelines</h2>
+      <div class="policy-grid">
+        
+        <div class="policy-box">
+          <div class="policy-box-title"><i class="fas fa-circle-check" style="color: var(--success);"></i> Automatic Refunds</div>
+          <div class="policy-box-desc">
+            If an organizer cancels a lobby, or if technical system anomalies prevent a custom match room from launching, your ticket fee is returned instantly.
+          </div>
+        </div>
+
+        <div class="policy-box">
+          <div class="policy-box-title"><i class="fas fa-circle-xmark" style="color: var(--error);"></i> Voluntary Exits</div>
+          <div class="policy-box-desc">
+            Tickets are generally non-refundable once matches are actively running. Voluntary exits, disconnections, or late-joins are not eligible for refunds.
+          </div>
+        </div>
+
+        <div class="policy-box">
+          <div class="policy-box-title"><i class="fas fa-wallet" style="color: var(--accent);"></i> Wallet Cash Balance</div>
+          <div class="policy-box-desc">
+            Your deposited security wallet balances are held safely. Refund requests for accidental double payments are resolved quickly upon verification.
+          </div>
+        </div>
+
+        <div class="policy-box">
+          <div class="policy-box-title"><i class="fas fa-gift" style="color: var(--purple);"></i> Promotional Credits</div>
+          <div class="policy-box-desc">
+            Welcome bonuses, affiliate referral commissions, and promotional vouchers can be spent on entry tickets but cannot be directly withdrawn.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Withdrawal Assurances -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-hourglass-start"></i> Wallet Withdrawal Process</h2>
+      <p>
+        ROCKY AXIS ESPORTS ensures fast, hassle-free withdrawals from your wallet balance. Our financial framework guarantees:
+      </p>
+      <ul>
+        <li><strong>Swift Processing Windows:</strong> Once approved, withdrawals are fast-tracked and completed within **24-48 business hours**.</li>
+        <li><strong>Transaction Transparency:</strong> Withdrawal status updates, along with any necessary verification steps, are sent directly to your feed.</li>
+        <li><strong>No Hidden Costs:</strong> Rocky Axis only deducts actual transaction fees charged by payment gateways (eSewa, Khalti, or mobile transfers).</li>
+      </ul>
+    </div>
+
+    <!-- Dispute Resolutions -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-hand-holding-hand"></i> Filing a Refund Claim</h2>
+      <p>
+        If you experience transaction anomalies, you can easily open an audit case:
+      </p>
+      <ol>
+        <li>Submit a fast-track dispute report inside your ended lobby dashboard.</li>
+        <li>Our admin panel audits lobby logs and screenshot proofs to verify the claim.</li>
+        <li>Verified transaction errors are settled directly back to your player wallet within 24 hours.</li>
+      </ol>
+
+      <div class="contact-info">
+        <p><strong><i class="fas fa-headset"></i> Rocky Axis Billing Support:</strong></p>
+        <p style="font-size: 13.5px; color: var(--muted);">Email helpline: <span style="color: #fff; font-weight: 700;">billing@rockyaxis.com</span></p>
+        <p style="font-size: 13.5px; color: var(--muted);">WhatsApp / Direct support line: <span style="color: var(--accent); font-weight: 700;">+977 9815800906</span></p>
+        <p style="font-size: 13.5px; color: var(--muted);">Average Response Time: <span style="color: var(--success); font-weight: 700;">12-24 Hours</span></p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase init failed: ", err);
+        showToast("Failed to establish database networks.", "error");
+        return;
+      }
+
+      // Check auth state & complete anonymous fallback (Rule 3)
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await syncPlayerRefundTransactionsLogs();
+        } else {
+          // Automatic login backup to fulfill Firestore Rule 3
+          try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+              await auth.signInWithCustomToken(__initial_auth_token);
+            } else {
+              await auth.signInAnonymously();
+            }
+          } catch (e) {
+            console.error("Auth fallback error:", e);
+          }
+        }
+      });
+    });
+
+    // Subscribes to private transaction logs changes to grab refund events (Rule 1 & Rule 2 compliant)
+    async function syncPlayerRefundTransactionsLogs() {
+      const trackerBox = document.getElementById('privateRefundTrackerBox');
+      const container = document.getElementById('trackerLogsContainer');
+
+      if (!currentUser) return;
+
+      try {
+        getPrivateCollection(currentUser.uid, 'transactions').onSnapshot((snapshot) => {
+          const transactionList = [];
+          snapshot.forEach(doc => {
+            transactionList.push({ id: doc.id, ...doc.data() });
+          });
+
+          // Rule 2 Compliant: Filter & Sort transaction lists inside client-side memory
+          const refundsOnly = transactionList.filter(t => t.type === 'match_entry_fee_refund' || t.type === 'refund' || (t.description && t.description.toLowerCase().includes('refund')));
+          
+          refundsOnly.sort((a, b) => {
+            const timeA = a.timestamp?.seconds || 0;
+            const timeB = b.timestamp?.seconds || 0;
+            return timeB - timeA;
+          });
+
+          if (refundsOnly.length > 0) {
+            trackerBox.style.display = 'block';
+            container.innerHTML = '';
+            
+            refundsOnly.forEach(tx => {
+              const dateObj = tx.timestamp?.seconds ? new Date(tx.timestamp.seconds * 1000) : new Date();
+              const formattedDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+              container.innerHTML += `
+                <div class="tracker-payout-row">
+                  <div style="min-width:0; padding-right:12px;">
+                    <div style="font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${tx.description || 'System Refund Payout'}</div>
+                    <div style="font-size:11px; color:var(--muted); margin-top:3px;"><i class="far fa-clock"></i> ${formattedDate}</div>
+                  </div>
+                  <span class="tracker-value">+NPR ${parseFloat(tx.amount || 0).toFixed(2)}</span>
+                </div>
+              `;
+            });
+          } else {
+            // Keep box hidden if user has no recent refunds
+            trackerBox.style.display = 'none';
+          }
+        }, err => {
+          console.error("Failed to sync refund logs:", err);
+          trackerBox.style.display = 'none';
+        });
+      } catch (err) {
+        console.error("Refund tracker connection warning: ", err);
+      }
+    }
+
+    function goBackToReferrer() {
+      const referrer = document.referrer;
+      if (referrer && referrer !== '') {
+        window.location.href = referrer;
+      } else {
+        window.history.back();
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>

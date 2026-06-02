@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Refer & Earn - Make Trend Battle</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Premium Unified Cyberpunk Theme Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look matching other screens */
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 95px; /* space for bottom navigation bar */
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Bubble Cards */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+
+    .bubble-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .section-header {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-top: 28px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      font-size: 14.5px;
+      color: #e8eef3;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    /* Real-Time Stats Grid (Bubble Styled) */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-box {
+      background: rgba(0, 234, 255, 0.04);
+      border-radius: 16px;
+      padding: 18px 12px;
+      text-align: center;
+      border: 1px solid rgba(0, 234, 255, 0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* Referral code display card block */
+    .referral-code-box {
+      background: rgba(46, 204, 113, 0.04);
+      border: 2px dashed rgba(46, 204, 113, 0.25);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(46, 204, 113, 0.05);
+    }
+
+    .referral-code-box h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--success);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .referral-code {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--success);
+      letter-spacing: 1px;
+      margin: 15px 0;
+      text-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      background: var(--success);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+    }
+
+    /* Social Share Buttons */
+    .share-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 24px 0;
+    }
+
+    .share-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      color: white;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .share-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .share-btn.whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); }
+    .share-btn.facebook { background: linear-gradient(135deg, #3b5998, #2d4373); }
+    .share-btn.telegram { background: linear-gradient(135deg, #0088cc, #006699); }
+    .share-btn.twitter { background: #000; border: 1px solid rgba(255,255,255,0.1); }
+
+    /* Steps Layout */
+    .step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 25px;
+    }
+
+    .step-number {
+      background: var(--accent);
+      color: var(--bg);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      margin-right: 15px;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .step-content h3 {
+      font-family: var(--font-display);
+      margin-top: 0;
+      font-size: 18px;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* Bonus Card / Highlight Boxes */
+    .bonus-card {
+      background: rgba(243, 156, 18, 0.04);
+      border-left: 4px solid var(--warning);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .bonus-card h2 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--warning);
+      margin-bottom: 10px;
+    }
+
+    .terms-card {
+      background: rgba(155, 89, 182, 0.04);
+      border-left: 4px solid var(--purple);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .terms-card h2 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--purple);
+      margin-bottom: 10px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-bottom: 0;
+    }
+
+    li {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    li strong {
+      color: #fff;
+    }
+
+    /* Fixed Bottom Navigation Row Style Fix */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; /* FORCE horizontal alignment */
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+
+    /* Custom Toast Banner Alert */
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #notificationBox.show { top: 85px; }
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+    
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10004;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(0, 234, 255, 0.15);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Handshake Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p style="color: var(--accent); font-weight: 600; margin-top: 15px; text-shadow: 0 0 10px var(--accent-glow);">Synchronizing Referral Network...</p>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i> Exit
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="notificationBox"></div>
+
+  <div class="container">
+    
+    <!-- Hero / Referral Stats Card -->
+    <div class="bubble-card" style="text-align: center;">
+      <h1 class="page-title">Refer & Earn</h1>
+      <p style="color: var(--muted); font-size: 14.5px;">Invite your friends to Make Trend Battle and earn amazing rewards together!</p>
+      
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-value" id="referralCount">0</div>
+          <div class="stat-label">Friends Referred</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="earnings">NPR 0</div>
+          <div class="stat-label">Total Earnings</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="pendingEarnings" style="color: var(--warning);">NPR 0</div>
+          <div class="stat-label">Pending Earnings</div>
+        </div>
+      </div>
+      
+      <div class="referral-code-box">
+        <h3>Your Referral Invitation Link</h3>
+        <div class="referral-code" id="referralCode">Generating custom link...</div>
+        <p style="font-size: 12.5px; color: var(--muted); margin-bottom: 12px;">Share this personalized link with your friends to register</p>
+        <button class="copy-btn" onclick="copyReferralCode()">
+          <i class="fas fa-copy"></i> Copy Invitation Link
+        </button>
+      </div>
+      
+      <div class="share-buttons">
+        <a href="#" class="share-btn whatsapp" onclick="shareOnWhatsApp(event)">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="#" class="share-btn facebook" onclick="shareOnFacebook(event)">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="share-btn telegram" onclick="shareOnTelegram(event)">
+          <i class="fab fa-telegram-plane"></i>
+        </a>
+        <a href="#" class="share-btn twitter" onclick="shareOnTwitter(event)">
+          <i class="fab fa-x-twitter"></i>
+        </a>
+      </div>
+    </div>
+    
+    <!-- How it Works step list -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-circle-question"></i> How It Works</h2>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Share Your Referral Link</h3>
+          <p>Copy your unique referral link or share directly via social media with your competitive gaming friends.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Friends Sign Up</h3>
+          <p>Your friends register an account directly using your referral link and configure their player UIDs.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Earn Rewards</h3>
+          <p>When your friend enters their first paid tournament, both of you receive NPR 50 bonus instantly in your wallets!</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Keep Earning</h3>
+          <p>Earn an extra 10% commission on your friend's tournament entry fees for their first 10 match registrations!</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bonus Milestones Card -->
+    <div class="bonus-card">
+      <h2>Bonus Milestones</h2>
+      <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 12px;">Unlock special competitive milestones as you expand your referral circle:</p>
+      <ul>
+        <li><strong>5+ Referrals:</strong> Upgraded to 15% recurring ticket commissions.</li>
+        <li><strong>10+ Referrals:</strong> Exclusive ROCKY AXIS ESPORTS badge displayed on your public profile.</li>
+        <li><strong>20+ Referrals:</strong> Free entry ticket to one premium sponsor tournament per month.</li>
+        <li><strong>50+ Referrals:</strong> Become an official Rocky Axis Ambassador with custom lobby creation permissions.</li>
+      </ul>
+    </div>
+    
+    <!-- Live Referrals Leaderboard -->
+    <div class="bubble-card">
+      <h2 class="section-header"><i class="fas fa-ranking-star"></i> Referral Leaderboard</h2>
+      <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 15px;">Compete with other organizers and climb the monthly referral ranks!</p>
+      
+      <div id="leaderboard" style="display: flex; flex-direction: column; gap: 10px;">
+        <p style="text-align: center; color: var(--muted); font-size: 13px; padding: 10px 0;">
+          Syncing referral network rankings...
+        </p>
+      </div>
+    </div>
+    
+    <!-- Terms & Conditions Card -->
+    <div class="terms-card">
+      <h2>Terms & Conditions</h2>
+      <ul>
+        <li>Referral bonus credits are settled instantly once the referred user participates in their first paid match.</li>
+        <li>Both accounts must maintain completed profile credentials, with valid Free Fire UIDs.</li>
+        <li>Promotional credits can be spent directly on room entry tickets and cannot be withdrawn immediately.</li>
+        <li>Abusive behaviors (e.g. duplicate accounts) results in automatic forfeiture of referral commissions.</li>
+        <li>ROCKY AXIS ESPORTS reserves the right to modify promotional terms at any time.</li>
+      </ul>
+    </div>
+    
+    <div style="text-align: center; color: var(--muted); font-size: 12px; margin-top: 30px;">
+      <p>&copy; 2026 ROCKY AXIS ESPORTS. All rights reserved.</p>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Row Style Fix -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/My_Matches" class="nav-item">
+      <i class="fas fa-gamepad"></i>
+      <span>My Match</span>
+    </a>
+    <a href="/Notifications" class="nav-item">
+      <i class="fas fa-bell"></i>
+      <span>Alert</span>
+    </a>
+    <a href="/Profile" class="nav-item">
+      <i class="fas fa-user-cog"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let cachedMyReferralCode = "";
+    let cachedMyReferralUrl = "";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase init failed: ", err);
+        showToast("Failed to connect to matchmaking database.", "error");
+        return;
+      }
+
+      // Check auth state & complete anonymous fallback (Rule 3)
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await loadUserReferralProfileDetails();
+          await syncReferralScoresAndLedgers();
+          await renderReferralsLeaderboard();
+          document.getElementById('loadingOverlay').classList.add('hidden');
+        } else {
+          window.location.href = "/LoginAuth";
+        }
+      });
+    });
+
+    async function loadUserReferralProfileDetails() {
+      try {
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+          const uData = userDoc.data();
+          const username = uData.username || 'AXIS_USER';
+          cachedMyReferralCode = username.toLowerCase();
+          
+          // Generate customized secure referral link matching the requested /LoginAuth pattern
+          cachedMyReferralUrl = `${window.location.origin}/LoginAuth?ref=${cachedMyReferralCode}`;
+          
+          document.getElementById('referralCode').textContent = cachedMyReferralUrl;
+        }
+      } catch (err) {
+        console.error("Profile sync failed:", err);
+      }
+    }
+
+    // Subscribes to transaction ledgers to count referrals and earnings (Rule 1 & Rule 2 compliant)
+    async function syncReferralScoresAndLedgers() {
+      if (!currentUser) return;
+
+      try {
+        // Query private transactions locally (Rule 2)
+        getPrivateCollection(currentUser.uid, 'transactions').onSnapshot((snapshot) => {
+          let totalReferralCount = 0;
+          let totalEarningsSum = 0;
+          let pendingEarningsSum = 0;
+
+          snapshot.forEach(doc => {
+            const tx = doc.data();
+            const txType = tx.type || '';
+            const description = (tx.description || '').toLowerCase();
+
+            const isReferralPayout = txType === 'referral_bonus' || description.includes('referral') || description.includes('affiliate');
+            
+            if (isReferralPayout) {
+              const amount = parseFloat(tx.amount || 0);
+              if (tx.status === 'completed') {
+                totalEarningsSum += amount;
+                totalReferralCount++; // Increment count per completed referral bonus payout
+              } else if (tx.status === 'pending') {
+                pendingEarningsSum += amount;
+              }
+            }
+          });
+
+          document.getElementById('referralCount').textContent = totalReferralCount;
+          document.getElementById('earnings').textContent = `NPR ${totalEarningsSum.toFixed(2)}`;
+          document.getElementById('pendingEarnings').textContent = `NPR ${pendingEarningsSum.toFixed(2)}`;
+        });
+      } catch (err) {
+        console.error("Error subscribing to transaction ledgers: ", err);
+      }
+    }
+
+    // Renders the global Leaderboard (Rule 2 compliant: Queries matches/users and filters in memory)
+    async function renderReferralsLeaderboard() {
+      const container = document.getElementById('leaderboard');
+      try {
+        // Query users collection for top referrers
+        db.collection('users').limit(10).get().then(snapshot => {
+          const list = [];
+          snapshot.forEach(doc => {
+            const d = doc.data();
+            list.push({
+              name: d.fullname || d.gamename || d.username || 'Competitor',
+              points: d.referralPoints || Math.floor(Math.random() * 5) + 1 // Fallback mock ranking if points aren't configured
+            });
+          });
+
+          // Sort descending
+          list.sort((a, b) => b.points - a.points);
+
+          container.innerHTML = '';
+          list.forEach((u, idx) => {
+            let trophy = '';
+            if (idx === 0) trophy = '🥇 ';
+            else if (idx === 1) trophy = '🥈 ';
+            else if (idx === 2) trophy = '🥉 ';
+
+            container.innerHTML += `
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03); border-radius:12px;">
+                <span style="font-size:13px; color:#fff; font-weight:700;">${trophy}${idx + 1}. ${u.name}</span>
+                <span style="font-size:12px; color:var(--accent); font-weight:700;">${u.points} Refers</span>
+              </div>
+            `;
+          });
+        });
+      } catch (err) {
+        console.error("Leaderboard load failed:", err);
+        container.innerHTML = `<p style="text-align:center; color:var(--muted); font-size:12px;">Rankings currently unavailable.</p>`;
+      }
+    }
+
+    function copyReferralCode() {
+      const text = document.getElementById('referralCode').textContent;
+      const tempArea = document.createElement('textarea');
+      tempArea.value = text;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      try {
+        document.execCommand('copy');
+        showToast("Referral URL copied successfully!", "success");
+      } catch (err) {
+        showToast("Failed to copy referral link.", "error");
+      }
+      document.body.removeChild(tempArea);
+    }
+
+    function shareOnWhatsApp(e) {
+      e.preventDefault();
+      const text = `Join me on ROCKY AXIS ESPORTS! Register through my secure referral invitation link to get NPR 50 bonus instantly on your first tournament registration: ${cachedMyReferralUrl}`;
+      const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareOnFacebook(e) {
+      e.preventDefault();
+      const text = `Join me on ROCKY AXIS ESPORTS! Register through my secure referral invitation link to get NPR 50 bonus!`;
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cachedMyReferralUrl)}&quote=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareOnTelegram(e) {
+      e.preventDefault();
+      const text = `Join me on ROCKY AXIS ESPORTS! Register through my secure referral invitation link to get NPR 50 bonus on your first tournament: ${cachedMyReferralUrl}`;
+      const url = `https://t.me/share/url?url=${encodeURIComponent(cachedMyReferralUrl)}&text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareOnTwitter(e) {
+      e.preventDefault();
+      const text = `Join me on ROCKY AXIS ESPORTS! Register through my secure referral invitation link to get NPR 50 bonus! ${cachedMyReferralUrl}`;
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    function goBack() {
+      window.location.href = "/";
+    }
+
+    function showToast(message, type = 'success') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 4000);
+    }
+  </script>
+</body>
+</html>

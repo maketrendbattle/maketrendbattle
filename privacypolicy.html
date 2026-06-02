@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Privacy Policy - Make Trend Battle</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look matching other screens */
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 20px;
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Table of Contents Sticky Box */
+    .toc-nav {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px dashed rgba(0, 234, 255, 0.15);
+    }
+
+    .toc-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .toc-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .toc-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .toc-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toc-link:hover {
+      color: var(--accent);
+    }
+
+    /* Bubble Cards */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+
+    .bubble-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-top: 28px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p {
+      font-size: 14.5px;
+      color: #e8eef3;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    ul, ol {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    li strong {
+      color: #fff;
+    }
+
+    .highlight-banner {
+      background: rgba(0, 234, 255, 0.04);
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .highlight-banner strong {
+      color: var(--accent);
+    }
+
+    .warning-banner {
+      background: rgba(243, 156, 18, 0.04);
+      border-left: 4px solid var(--warning);
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .warning-banner strong {
+      color: var(--warning);
+    }
+
+    .privacy-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      background: rgba(46, 204, 113, 0.15);
+      color: var(--success);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 8px;
+      text-transform: uppercase;
+    }
+
+    /* Professional Data Table */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 20px 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      text-align: left;
+    }
+
+    .data-table th, .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .data-table th {
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .data-category {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Privacy Interactive Controls */
+    .privacy-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    @media (max-width: 768px) {
+      .privacy-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .privacy-control-box {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .privacy-control-box:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(0, 234, 255, 0.15);
+    }
+
+    .control-box-title {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 14.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .control-box-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    /* Interactive Cookie Settings Card */
+    .cookie-preferences-container {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .cookie-pref-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .cookie-pref-row:last-child {
+      border-bottom: none;
+    }
+
+    .cookie-pref-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-right: 12px;
+    }
+
+    .cookie-pref-title {
+      font-weight: 700;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .cookie-pref-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: .3s;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+
+    /* Sticky Scroll To Top */
+    .scroll-to-top {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      background: var(--accent);
+      color: var(--bg);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 234, 255, 0.25);
+      transition: all 0.3s;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 10002;
+    }
+
+    .scroll-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Contact Cards */
+    .contact-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .contact-details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .contact-card-box {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .contact-card-title {
+      font-weight: 800;
+      font-size: 13.5px;
+      color: var(--accent);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .contact-card-value {
+      font-size: 13.5px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    /* Fixed Bottom Navigation Row Style Fix */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; /* FORCE horizontal alignment */
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+
+    .home-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-family: var(--font-primary);
+    }
+    
+    .home-btn:hover {
+      background: rgba(0, 234, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <!-- Custom Navigation Header -->
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBackToReferrer()">
+      <i class="fas fa-arrow-left"></i> Exit
+    </button>
+    <button class="home-btn" onclick="window.location.href='/'">
+      <i class="fas fa-home"></i> Home
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="notificationBox"></div>
+
+  <div class="container">
+    
+    <!-- Table of Contents sticky layout -->
+    <div class="toc-nav">
+      <div class="toc-title"><i class="fas fa-list-ol"></i> Table of Contents</div>
+      <ul class="toc-list" id="tocList">
+        <!-- Table of contents will be generated programmatically by JavaScript -->
+      </ul>
+    </div>
+
+    <!-- Main Content Container Card -->
+    <div class="bubble-card">
+      <h1 class="page-title">Privacy Policy</h1>
+      <p style="color: var(--muted); font-size: 13.5px; margin-bottom: 24px;"><strong>Last Updated:</strong> May 30, 2026</p>
+      
+      <p>
+        At ROCKY AXIS ESPORTS, protecting your privacy and securing your personal credentials are our highest operational priorities. This Privacy Policy details how we collect, process, and safeguard your account parameters when participating in custom rooms, matches, and ledger payouts.
+      </p>
+
+      <div class="highlight-banner">
+        <p><strong><i class="fas fa-shield-halved"></i> Privacy Assurance:</strong> By using our platform services, you acknowledge and consent to the data safeguarding systems outlined in this policy. All values are held with absolute transparency.</p>
+      </div>
+
+      <!-- Section 1 -->
+      <h2 id="information-collection" class="section-title"><i class="fas fa-database"></i> 1. Information We Collect</h2>
+      <p>To deliver automated lobby settlements, the platform registers several primary types of information:</p>
+      
+      <h3>Personal Information</h3>
+      <ul>
+        <li><span class="privacy-badge">Required</span> <strong>Authentication Details:</strong> Account email, usernames, encrypted secure passwords.</li>
+        <li><span class="privacy-badge">Required</span> <strong>Gamer Profile Parameters:</strong> Full names, custom avatar configurations, in-game Free Fire nicknames, and game UIDs.</li>
+        <li><span class="privacy-badge">Optional</span> <strong>Contact References:</strong> Phone numbers (used solely for verification handshakes).</li>
+      </ul>
+
+      <h3>Automatically Processed Data</h3>
+      <ul>
+        <li><strong>Arena Diagnostics:</strong> Submitted match screenshot proofs, game turnout ratios, and ballot verifier consensus parameters.</li>
+        <li><strong>Platform Analytics:</strong> Device type characteristics, hardware thread parameters (to filter fraud clustering), and focus metrics.</li>
+      </ul>
+
+      <!-- Section 2 -->
+      <h2 id="information-use" class="section-title"><i class="fas fa-sliders"></i> 2. How We Use Your Information</h2>
+      <p>We process your data strictly to secure game lobbies and protect financial settlements:</p>
+      
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Operating Purpose</th>
+              <th>Information Processed</th>
+              <th>Legal Foundation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="data-category">Lobby Matchmaking</td>
+              <td>Account info, Game UID, and roster array statistics</td>
+              <td>Contractual necessity</td>
+            </tr>
+            <tr>
+              <td class="data-category">Automated Auto-Payouts</td>
+              <td>Consensus ballots, screenshot proofs, wallet balances</td>
+              <td>Contractual necessity</td>
+            </tr>
+            <tr>
+              <td class="data-category">Cheat & Fraud Shield</td>
+              <td>Hardware threads, focus shifts, and device signatures</td>
+              <td>Legitimate platform safety</td>
+            </tr>
+            <tr>
+              <td class="data-category">Customer Assistance</td>
+              <td>Contact details, submitted dispute reports</td>
+              <td>Legitimate assistance</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Section 3 -->
+      <h2 id="information-sharing" class="section-title"><i class="fas fa-share-nodes"></i> 3. Sharing & Disclosure</h2>
+      <p>ROCKY AXIS ESPORTS does not sell, rent, or trade your personal credentials. Your information is shared exclusively under strict safeguards:</p>
+      <ul>
+        <li><strong>Public Leaderboards:</strong> Usernames, game performance statistics, and won prizes are public to foster healthy competitive camaraderie.</li>
+        <li><strong>Service Providers:</strong> Transaction details are processed securely through established gateway protocols (e.g., eSewa, Khalti, or mobile transfers) to verify deposit settlements.</li>
+        <li><strong>Legal Mandates:</strong> Handshaked only if required by regulatory authorities to fulfill local compliance directives.</li>
+      </ul>
+
+      <!-- Section 4 -->
+      <h2 id="data-security" class="section-title"><i class="fas fa-lock"></i> 4. Data Security & Storage</h2>
+      <p>We enforce modern organizational and technical security measures to protect player data:</p>
+      <ul>
+        <li><strong>Ledger Encryptions:</strong> Sensitive financial logs and transaction history details are encrypted both in transit and at rest.</li>
+        <li><strong>Authentication Guards:</strong> Strict Firestore security rules prevent players from viewing or altering other players' private transaction histories.</li>
+        <li><strong>Roster Safety:</strong> Personal telephone numbers and emails are hidden and are never visible on public matches feed pages.</li>
+      </ul>
+
+      <!-- Section 5 -->
+      <h2 id="data-retention" class="section-title"><i class="fas fa-trash-can"></i> 5. Data Retention Limits</h2>
+      <p>We retain credentials only as long as necessary to maintain active player profiles or satisfy auditing compliance requirements:</p>
+      <ul>
+        <li><strong>Account Records:</strong> Maintained for the lifetime of your active profile.</li>
+        <li><strong>Financial Ledger Logs:</strong> Retained for a strict 7-year compliance duration to preserve audit trails.</li>
+        <li><strong>Dispute Evidence Screenshots:</strong> Purged automatically after 90 days following match completion.</li>
+      </ul>
+
+      <!-- Section 6 -->
+      <h2 id="your-rights" class="section-title"><i class="fas fa-user-gear"></i> 6. Your Rights & Privacy Controls</h2>
+      <p>We believe in total player autonomy. Use these integrated controls to manage your privacy settings directly:</p>
+
+      <div class="privacy-controls">
+        <div class="privacy-control-box">
+          <div class="control-box-title">Access Data</div>
+          <p class="control-box-desc">Request a complete copy of your registered personal credentials.</p>
+          <button class="btn" onclick="requestAccountData()">Export Data</button>
+        </div>
+        <div class="privacy-control-box">
+          <div class="control-box-title">Edit Profile</div>
+          <p class="control-box-desc">Modify your full name, game platform, or gamer UID settings.</p>
+          <button class="btn" onclick="redirectToEditProfile()">Modify Info</button>
+        </div>
+        <div class="privacy-control-box">
+          <div class="control-box-title">Delete Account</div>
+          <p class="control-box-desc">Permanently erase your gamer profile and associated database records.</p>
+          <button class="btn" onclick="requestAccountDeletion()" style="background:var(--error); color:#fff;">Purge Data</button>
+        </div>
+      </div>
+
+      <!-- Section 7 -->
+      <h2 id="cookies" class="section-title"><i class="fas fa-cookie-bite"></i> 7. Cookie Preferences</h2>
+      <p>We use cookies to maintain your login session active and remember your search filters:</p>
+
+      <div class="cookie-preferences-container">
+        
+        <div class="cookie-pref-row">
+          <div class="cookie-pref-meta">
+            <span class="cookie-pref-title">Essential Authentication Cookies</span>
+            <span class="cookie-pref-desc">Keeps your security login session connected. (Always Required)</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked disabled>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="cookie-pref-row">
+          <div class="cookie-pref-meta">
+            <span class="cookie-pref-title">Search & Filter Preferences</span>
+            <span class="cookie-pref-desc">Remembers your search inputs and advanced specs accordion states.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="cookiePrefFilters" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="cookie-pref-row">
+          <div class="cookie-pref-meta">
+            <span class="cookie-pref-title">Analytical Performance Monitoring</span>
+            <span class="cookie-pref-desc">Logs platform loading speeds and crash reports to improve interface fluidity.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="cookiePrefAnalytics" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <button class="btn" style="margin-top: 18px;" onclick="saveCookiePreferencesLocal()">
+          <i class="fas fa-save"></i> Save Preferences
+        </button>
+
+      </div>
+
+      <!-- Section 8 -->
+      <h2 id="children-privacy" class="section-title"><i class="fas fa-child"></i> 8. Children's Privacy</h2>
+      <p>
+        Rocky Axis tournament lobbies are not structured for individuals under the age of 13. We do not knowingly compile information from young children. If you believe your child has registered an account, contact our support line for instant, permanent purging.
+      </p>
+
+      <!-- Section 9 -->
+      <h2 id="policy-changes" class="section-title"><i class="fas fa-arrows-rotate"></i> 9. Changes to This Policy</h2>
+      <p>
+        We may update this Privacy Policy periodically to reflect new system optimizations or platform features. Material modifications trigger real-time system alerts on your notifications feed dashboard.
+      </p>
+
+      <!-- Section 10 -->
+      <h2 id="contact-us" class="section-title"><i class="fas fa-envelope"></i> 10. Contact Us</h2>
+      <p>For any questions regarding your data protection, reach out directly to our support desk:</p>
+
+      <div class="contact-details-grid">
+        <div class="contact-card-box">
+          <div class="contact-card-title">Email Helpline</div>
+          <div class="contact-card-value">privacy@rockyaxis.com</div>
+        </div>
+        <div class="contact-card-box">
+          <div class="contact-card-title">WhatsApp Contact</div>
+          <div class="contact-card-value">+977 9815800906</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      generateTableOfContents();
+      setupScrollToTopDetector();
+      loadCookiePreferencesLocal();
+    });
+
+    // Automatically generates table of contents dynamically
+    function generateTableOfContents() {
+      const container = document.getElementById('tocList');
+      const headings = document.querySelectorAll('.section-title');
+
+      container.innerHTML = '';
+      headings.forEach(heading => {
+        const item = document.createElement('li');
+        item.style.marginBottom = '6px';
+        
+        const anchor = document.createElement('a');
+        anchor.href = `#${heading.id}`;
+        anchor.className = 'toc-link';
+        
+        // Grab title icon if present
+        const iconElement = heading.querySelector('i');
+        const iconHtml = iconElement ? iconElement.outerHTML : '';
+        const titleText = heading.textContent.trim();
+
+        anchor.innerHTML = `${iconHtml} ${titleText}`;
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const element = document.getElementById(heading.id);
+          if (element) {
+            window.scrollTo({
+              top: element.offsetTop - 85,
+              behavior: 'smooth'
+            });
+          }
+        });
+
+        item.appendChild(anchor);
+        container.appendChild(item);
+      });
+    }
+
+    // Handles floating button triggers
+    function setupScrollToTopDetector() {
+      const btn = document.getElementById('scrollToTop');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      });
+    }
+
+    function scrollToTopSmooth() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // Interactive preferences cookies handlers
+    function saveCookiePreferencesLocal() {
+      const filters = document.getElementById('cookiePrefFilters').checked;
+      const analytics = document.getElementById('cookiePrefAnalytics').checked;
+
+      localStorage.setItem('axis_cookie_filters', filters);
+      localStorage.setItem('axis_cookie_analytics', analytics);
+
+      showToastNotification("Cookie preferences saved safely!", "success");
+    }
+
+    function loadCookiePreferencesLocal() {
+      const filters = localStorage.getItem('axis_cookie_filters') !== 'false';
+      const analytics = localStorage.getItem('axis_cookie_analytics') !== 'false';
+
+      document.getElementById('cookiePrefFilters').checked = filters;
+      document.getElementById('cookiePrefAnalytics').checked = analytics;
+    }
+
+    // Privacy actions
+    function requestAccountData() {
+      showToastNotification("Export requested! An archive link will be sent within 30 days.", "success");
+    }
+
+    function redirectToEditProfile() {
+      window.location.href = "/Profile_Edit";
+    }
+
+    function requestAccountDeletion() {
+      const response = confirm("Are you sure you want to request permanent account deletion? This action will purge all registered ledger balances and cannot be undone.");
+      if (response) {
+        showToastNotification("Account deletion request submitted. Process finalizes in 7 days.", "success");
+      }
+    }
+
+    function goBackToReferrer() {
+      const referrer = document.referrer;
+      if (referrer && referrer !== '') {
+        window.location.href = referrer;
+      } else {
+        window.history.back();
+      }
+    }
+
+    function showToastNotification(message, type = 'success') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>

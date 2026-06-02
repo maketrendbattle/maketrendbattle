@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - Winner Verification Panel</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.35);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look matching other views */
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 95px;
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      user-select: none;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 85% 85%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--card-light); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Header */
+    .custom-header {
+      position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display); font-weight: 800; font-size: 24px;
+      color: var(--accent); letter-spacing: 1.5px; display: flex; align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span { font-size: 28px; margin-right: 8px; color: #fff; }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08); border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px; color: var(--accent); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2); transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card); border-radius: var(--radius); padding: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 234, 255, 0.15);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    }
+
+    .card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d);
+    }
+
+    .section-header {
+      font-family: var(--font-display); font-size: 20px; font-weight: 700;
+      margin-bottom: 20px; color: var(--accent); border-bottom: 1px solid rgba(0, 234, 255, 0.06);
+      padding-bottom: 12px; display: flex; align-items: center; justify-content: space-between;
+      letter-spacing: 0.5px;
+    }
+
+    /* General Roster Grid */
+    .roster-grid {
+      display: grid; grid-template-columns: 1fr; gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .contender-card {
+      background: var(--card-light); border: 1.5px solid rgba(255,255,255,0.05);
+      border-radius: 16px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+      position: relative; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .contender-card.voted { border-color: var(--success); }
+    .contender-card.pending { border-color: var(--warning); }
+
+    .avatar-wrapper {
+      width: 48px; height: 48px; border-radius: 50%; background: #1e2640;
+      border: 2px solid var(--accent); display: flex; align-items: center;
+      justify-content: center; overflow: hidden; box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
+      flex-shrink: 0;
+    }
+    .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+    .contender-meta { flex: 1; min-width: 0; }
+    .contender-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+    .contender-username { font-family: var(--font-mono); font-size: 14px; color: var(--accent); font-weight: 700; }
+    .contender-details-row { display: flex; flex-direction: column; gap: 4px; border-top: 1px dashed rgba(255, 255, 255, 0.05); padding-top: 6px; }
+    .contender-ingame-label { font-size: 13.5px; font-weight: 700; color: #fff; }
+    .contender-uid-label { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+    .contender-level-label { font-size: 12px; color: var(--success); font-weight: 600; }
+
+    /* Vote Inputs Forms */
+    .vote-panel-inputs { display: flex; flex-direction: column; gap: 16px; margin-top: 15px; }
+    .vote-input-box { display: flex; flex-direction: column; gap: 6px; }
+    .vote-input-box label { font-size: 12px; color: var(--muted); font-weight: 700; letter-spacing: 0.5px; }
+
+    /* Input & Select fields */
+    .select-payout, .input-text, .textarea-field {
+      width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.03);
+      border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 10px; color: #fff;
+      font-size: 14px; font-weight: 600; outline: none; transition: border-color 0.3s;
+    }
+    .select-payout:focus, .input-text:focus, .textarea-field:focus { border-color: var(--accent); }
+    
+    .select-payout {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a94b0' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat; background-position: right 18px center; background-size: 15px;
+    }
+
+    .textarea-field {
+      resize: vertical; min-height: 80px; font-family: var(--font-primary); font-size: 13px;
+    }
+
+    /* Interactive Upload Box */
+    .proof-upload-container {
+      background: rgba(0, 234, 255, 0.03);
+      border: 2px dashed rgba(0, 234, 255, 0.2);
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      transition: all 0.3s;
+      margin-top: 8px;
+      cursor: pointer;
+      position: relative;
+    }
+    .proof-upload-container:hover {
+      background: rgba(0, 234, 255, 0.06);
+      border-color: var(--accent);
+    }
+    .proof-upload-container i {
+      font-size: 28px; color: var(--accent); margin-bottom: 8px;
+    }
+    .proof-upload-container p {
+      font-size: 12px; color: var(--muted);
+    }
+    .file-input {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+    .upload-preview-wrapper {
+      margin-top: 10px; position: relative; display: inline-block; max-width: 100%;
+    }
+    .upload-preview-wrapper img {
+      max-height: 120px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .upload-preview-wrapper .remove-preview-btn {
+      position: absolute; top: -8px; right: -8px; background: var(--error);
+      color: white; border: none; width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 10px;
+      cursor: pointer;
+    }
+
+    /* Timer */
+    .timer-box {
+      background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(0, 234, 255, 0.2);
+      border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+      margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .timer-box i { font-size: 24px; color: var(--accent); }
+    .timer-clock { font-family: monospace; font-size: 24px; font-weight: 800; color: #fff; margin-left: auto; }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg); border: none; padding: 16px; border-radius: 12px; cursor: pointer;
+      font-weight: 700; font-size: 16px; width: 100%; display: flex; align-items: center;
+      justify-content: center; gap: 10px; box-shadow: 0 5px 20px rgba(0, 234, 255, 0.25);
+      transition: all 0.3s;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
+    .btn:disabled { background: rgba(255,255,255,0.06) !important; color: var(--muted) !important; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
+
+    .btn-warning {
+      background: rgba(243, 156, 18, 0.15); border: 1px solid var(--warning); color: var(--warning);
+    }
+    .btn-warning:hover:not(:disabled) { background: rgba(243, 156, 18, 0.25); box-shadow: 0 4px 15px rgba(243, 156, 18, 0.2); }
+
+    .btn-continue {
+      background: linear-gradient(135deg, var(--success) 0%, #27ae60 100%) !important;
+      color: #fff !important;
+      font-size: 18px;
+      box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+    }
+
+    /* Status Pill Badge inside cards */
+    .status-badge {
+      font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-block; text-transform: uppercase;
+    }
+    .badge-voted { border: 1px solid var(--success); color: var(--success); background: rgba(46, 204, 113, 0.1); }
+    .badge-pending { border: 1px solid var(--warning); color: var(--warning); background: rgba(243, 156, 18, 0.1); }
+    .badge-host { border: 1px solid var(--purple); color: var(--purple); background: rgba(155, 89, 182, 0.1); }
+    .badge-opponent { border: 1px solid var(--error); color: var(--error); background: rgba(231, 76, 60, 0.1); }
+    .badge-joined { border: 1px solid var(--success); color: var(--success); background: rgba(46, 204, 113, 0.1); }
+    .badge-me { border: 1px solid var(--accent); color: var(--accent); background: rgba(0, 234, 255, 0.1); margin-left: 5px; }
+
+    /* Notification box */
+    #notificationBox {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%); padding: 15px 25px; border-radius: 8px;
+      background: var(--card); border-left: 4px solid var(--accent); color: #fff;
+      font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10000;
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    #notificationBox.show { opacity: 1; }
+    #notificationBox.error { border-left-color: var(--error); }
+    #notificationBox.success { border-left-color: var(--success); }
+
+    /* ⚡ TOP-FIXED NEON ACTION LOADING BAR */
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    /* Full Page Loading Overlay (Used during final resolution submission) */
+    .loading-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,8,18,0.9);
+      display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10009;
+      backdrop-filter: blur(5px);
+    }
+    .loading-overlay.show { display: flex; }
+    .spinner { width: 50px; height: 50px; border: 4px solid rgba(0, 234, 255, 0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Fixed Bottom Navigation Row */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; 
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-item i {
+      font-size: 18px;
+    }
+    
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <div class="loading-overlay" id="fullScreenLoader">
+    <div class="spinner"></div>
+    <p id="loaderMessage" style="color: var(--accent); font-weight: 600; margin-top: 15px; text-shadow: 0 0 10px var(--accent-glow);">Processing Results...</p>
+  </div>
+
+  <header class="custom-header">
+    <div class="logo-container"><span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE</div>
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+  </header>
+
+  <div id="notificationBox">Rocky Axis Security Handshake</div>
+
+  <div class="container">
+    
+    <!-- Timer Alert -->
+    <div class="timer-box" id="timerBox">
+      <i class="fas fa-hourglass-half"></i>
+      <div class="timer-text">
+        <h4 style="color: var(--accent); margin: 0; font-size: 15px; font-weight: 700;" id="timerTitle">Match Status</h4>
+        <p style="font-size: 12px; color: var(--muted); margin-top: 2px;" id="timerLabel">Loading state...</p>
+      </div>
+      <div class="timer-clock" id="countdownClock">--:--</div>
+    </div>
+
+    <!-- Voting Card -->
+    <div class="card" id="formSubmissionContainer">
+      <h4 class="section-header"><i class="fas fa-clipboard-check"></i> Submit Match Results</h4>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
+        Please select the accurate winner(s) for this match. Providing false results will result in account penalties.
+      </p>
+
+      <div class="vote-panel-inputs" id="payoutFormSelections">
+        <!-- Generated inputs -->
+      </div>
+
+      <!-- Dynamic Upload Proof & Personal Rank Sections (Conditional on self-selection) -->
+      <div class="vote-input-box" id="personalRankSection" style="display: none; margin-top: 15px;">
+        <label><i class="fas fa-user-tag" style="color: var(--warning);"></i> YOUR PERSONAL PLACEMENT RANK</label>
+        <select class="select-payout" id="selectMyRank" onchange="validateFormReadyState()">
+          <option value="">-- Choose Your Rank --</option>
+          <option value="1">1st Place Winner</option>
+          <option value="2">2nd Place</option>
+          <option value="3">3rd Place</option>
+          <option value="unranked">Unranked / Other</option>
+        </select>
+      </div>
+
+      <div class="vote-input-box" id="proofUploadSection" style="display: none; margin-top: 15px;">
+        <label><i class="fas fa-upload" style="color: var(--accent);"></i> VICTORY PROOF REQUIRED</label>
+        <div class="proof-upload-container">
+          <i class="fas fa-image"></i>
+          <p id="proofUploadStatusText">Upload screenshot of victory scoreboard</p>
+          <input type="file" class="file-input" id="proofFileInput" accept="image/*" onchange="encodeProofFileToBase64(this)">
+        </div>
+        <div id="proofPreviewArea" style="display: none; text-align: center;">
+          <div class="upload-preview-wrapper">
+            <img id="proofPreviewImg" src="" alt="Proof Preview">
+            <button class="remove-preview-btn" onclick="clearProofFile()">&times;</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" style="margin-top: 25px;" id="submitBallotBtn" onclick="submitParticipantBallot()" disabled>
+        <i class="fas fa-paper-plane"></i> Submit Results
+      </button>
+    </div>
+
+    <!-- Continue Dashboard Button Card (Only appears when fully resolved) -->
+    <div class="card" id="continueBtnCard" style="display: none; border-color: var(--success); background: rgba(46, 204, 113, 0.02); text-align: center;">
+      <p style="font-size: 14px; color: #fff; margin-bottom: 15px; font-weight: 600;"><i class="fas fa-lock-open" style="color: var(--success);"></i> All match rankings have been verified and finalized.</p>
+      <button class="btn btn-continue" onclick="routeToSettlementPage()">
+        Continue to Overview <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- Active Participants Grid -->
+    <div class="card">
+      <h3 class="section-header"><i class="fas fa-users"></i> Registered Competitors</h3>
+      <div class="roster-grid" id="contendersGrid">
+        <!-- Dynamic profile cards -->
+      </div>
+    </div>
+
+    <!-- Unified Dispute & Report Card -->
+    <div class="card" id="reportDisputeContainer">
+      <h4 class="section-header"><i class="fas fa-flag" style="color: var(--error);"></i> File a Dispute/Report</h4>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 15px;">
+        Notice cheat codes, teaming, or duplicate logins? File a fast-track dispute report.
+      </p>
+
+      <div class="vote-panel-inputs">
+        <div class="vote-input-box">
+          <label>REPORT TITLE</label>
+          <input type="text" id="reportTitle" class="input-text" placeholder="e.g., Host Abusing Overrides / Collusion">
+        </div>
+        
+        <div class="vote-input-box">
+          <label>DESCRIPTION & EVIDENCE SUMMARY</label>
+          <textarea id="reportDesc" class="textarea-field" placeholder="Provide complete facts about match anomalies..."></textarea>
+        </div>
+
+        <div class="vote-input-box">
+          <label><i class="fas fa-camera"></i> REPORT EVIDENCE (Optional)</label>
+          <div class="proof-upload-container">
+            <i class="fas fa-cloud-upload-alt" style="color: var(--muted);"></i>
+            <p id="reportUploadStatusText">Upload screenshot or file proof</p>
+            <input type="file" class="file-input" id="reportFileInput" accept="image/*,video/*" onchange="encodeReportFileToBase64(this)">
+          </div>
+          <div id="reportPreviewArea" style="display: none; text-align: center;">
+            <div class="upload-preview-wrapper">
+              <img id="reportPreviewImg" src="" alt="Report Preview">
+              <button class="remove-preview-btn" onclick="clearProofFile()">&times;</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-warning" style="margin-top: 10px;" id="submitReportBtn" onclick="submitDisputeReport()">
+          <i class="fas fa-paper-plane"></i> File Report
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Row Style Fix -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/inmatchjoin" class="nav-item active"><i class="fas fa-gamepad"></i><span>Games</span></a>
+    <a href="/My_Matches" class="nav-item"><i class="fas fa-bell"></i><span>Joined Games</span></a>
+    <a href="/Profile" class="nav-item"><i class="fas fa-user"></i><span>Control</span></a>
+  </nav>
+  <!-- Update bottom nav icons -->
+  <style>
+    .nav-item[href="/My_Matches"] i { content: "\f091"; } /* fa-trophy */
+    .nav-item[href="/Profile"] i { content: "\f4fe"; } /* fa-user-cog */
+  </style>
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let currentMatchId = null;
+    let activeMatchDocId = null;
+    let activeMatchPayload = null;
+    let globalActiveEnrolledList = [];
+    let voteSnapshotEntries = [];
+    let consensusTimer = null;
+    let verificationInProcess = false; 
+    let hostIsActivePlayerInLobby = false; 
+
+    // Media Cache Strings
+    let encodedProofBase64 = "";
+    let encodedReportBase64 = "";
+
+    // Memory Cache for User Profiles resolution
+    const dynamicProfileCache = {};
+
+    // Sandbox Paths
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+      const urlParameters = new URLSearchParams(window.location.search);
+      currentMatchId = urlParameters.get('matchId') || urlParameters.get('id');
+
+      if (!currentMatchId) {
+        showNotification("No target match identifier was found.", "error");
+        setTimeout(() => window.location.href = "/My_Matches", 3000);
+        return;
+      }
+
+      try {
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await auth.signInWithCustomToken(__initial_auth_token);
+        } else {
+          await auth.signInAnonymously();
+        }
+      } catch (err) {
+        console.error("Firebase startup error: ", err);
+        showNotification("Failed to configure session security layers.", "error");
+        return;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await executeMatchRosterBootstrapper();
+        } else {
+          window.location.href = "/LoginAuth";
+        }
+      });
+    });
+
+    // Resolves and caches joined competitor metadata (Gamer nicknames & avatars)
+    async function resolveProfiles(uidsList) {
+      let updated = false;
+      for (const uid of uidsList) {
+        if (!dynamicProfileCache[uid]) {
+          dynamicProfileCache[uid] = { loading: true };
+          try {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+              const userData = userDoc.data();
+              dynamicProfileCache[uid] = {
+                name: userData.gamename || userData.username || 'Competitor',
+                username: userData.username ? `@${userData.username.toLowerCase()}` : '@gamer',
+                gameUid: userData.gameUid || userData.gameuid || 'N/A',
+                avatar: userData.avatarDataURL || userData.profilePic || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`,
+                level: userData.level || 50
+              };
+              updated = true;
+            } else {
+              dynamicProfileCache[uid] = {
+                name: 'Competitor',
+                username: '@gamer',
+                gameUid: 'N/A',
+                avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`,
+                level: 50
+              };
+            }
+          } catch (err) {
+            console.warn("Failed resolving profile for uid:", uid);
+          }
+        }
+      }
+      if (updated) {
+        renderRosterInterface(globalActiveEnrolledList);
+        setupGameValidationRulesets();
+      }
+    }
+
+    async function executeMatchRosterBootstrapper() {
+      try {
+        // Realtime dynamic subscription to the active match
+        getPublicCollection('matches').where('matchId', '==', currentMatchId).limit(1).onSnapshot(async (snapshot) => {
+          if (snapshot.empty) {
+            showNotification("Match records not found in database.", "error");
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            return;
+          }
+
+          const doc = snapshot.docs[0];
+          activeMatchDocId = doc.id;
+          activeMatchPayload = doc.data();
+          globalActiveEnrolledList = activeMatchPayload.players || [];
+
+          // Resolve active competitor profiles
+          const uidsToResolve = new Set(globalActiveEnrolledList.map(p => p.uid).filter(Boolean));
+          if (activeMatchPayload.creatorUid) uidsToResolve.add(activeMatchPayload.creatorUid);
+          await resolveProfiles(Array.from(uidsToResolve));
+
+          // 🛡️ SECURITY OUTCOME-DECLARED CHECK & INSTANT REDIRECT
+          if (activeMatchPayload.outcomeDeclared === true || activeMatchPayload.status === 'Winner Declared' || activeMatchPayload.payoutProcessed) {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            document.getElementById('continueBtnCard').style.display = 'block';
+            document.getElementById('formSubmissionContainer').style.display = 'none';
+            return;
+          }
+
+          hostIsActivePlayerInLobby = globalActiveEnrolledList.some(p => p.uid === activeMatchPayload.creatorUid && p.role !== 'creator');
+
+          // Evaluate timing stages of gameplay vs current real clock
+          evaluateCurrentLobbyTimingState();
+
+          document.getElementById('loadingOverlay').classList.add('hidden');
+        }, (err) => {
+          console.error("Match sync failed:", err);
+          showNotification("Failed to synchronize active match parameters.", "error");
+          document.getElementById('loadingOverlay').classList.add('hidden');
+        });
+
+        // Realtime dynamic subscription to the cast votes
+        getPublicCollection('matches').where('matchId', '==', currentMatchId).limit(1).get().then(snap => {
+          if (!snap.empty) {
+            snap.docs[0].ref.collection('votes').onSnapshot((voteSnap) => {
+              voteSnapshotEntries = [];
+              voteSnap.forEach(vDoc => {
+                voteSnapshotEntries.push({ voterId: vDoc.id, ...vDoc.data() });
+              });
+
+              renderRosterInterface(globalActiveEnrolledList);
+              evaluateMatrixResolutionLogic();
+            });
+          }
+        });
+
+        startConsensusWindowTimeline();
+
+      } catch (err) {
+        console.error("Match bootstrap failure: ", err);
+        showNotification("Failed to configure lobby roster profiles.", "error");
+        document.getElementById('loadingOverlay').classList.add('hidden');
+      }
+    }
+
+    // 🛡️ REAL-TIME TIMING RESOLUTION STATE SYSTEM 
+    let matchConcludeTimeMsGlobal = 0;
+    function evaluateCurrentLobbyTimingState() {
+      const matchStartTimeMs = activeMatchPayload.startTime?.seconds ? (activeMatchPayload.startTime.seconds * 1000) : Date.now();
+      const matchDurationMinutes = parseInt(activeMatchPayload.duration || activeMatchPayload.matchDuration || 30);
+      const matchDurationMs = matchDurationMinutes * 60 * 1000;
+      matchConcludeTimeMsGlobal = matchStartTimeMs + matchDurationMs;
+
+      const currentTimeStampMs = Date.now();
+      const formContainer = document.getElementById('formSubmissionContainer');
+
+      if (currentTimeStampMs < matchConcludeTimeMsGlobal) {
+        // Match not concluded yet! Block ballot creation
+        const secondsRemaining = Math.max(0, Math.floor((matchConcludeTimeMsGlobal - currentTimeStampMs) / 1000));
+        const minLeft = Math.floor(secondsRemaining / 60);
+        const secLeft = secondsRemaining % 60;
+
+        formContainer.innerHTML = `
+          <div style="text-align: center; padding: 25px 15px; color: var(--warning); background: rgba(243, 156, 18, 0.02); border: 1.5px dashed rgba(243, 156, 18, 0.2); border-radius: 12px;">
+            <i class="fas fa-hourglass-half fa-spin" style="font-size: 32px; margin-bottom: 12px; text-shadow: 0 0 10px rgba(243,156,18,0.3);"></i>
+            <h5 style="font-family: var(--font-display); font-size: 16px; font-weight: 800;">Lobby Arena Not Finished</h5>
+            <p style="font-size: 12.5px; color: var(--muted); margin-top: 6px; line-height: 1.5;">
+              Match gameplay is actively running. Results submission opens once gameplay concludes.<br>
+              Time Remaining: <span style="font-family: monospace; color: #fff; font-weight: 700;">${minLeft}:${secLeft.toString().padStart(2, '0')}</span>
+            </p>
+          </div>
+        `;
+        document.getElementById('submitBallotBtn').disabled = true;
+      } else {
+        // Concluded: Ensure the default voting layout exists or gets generated
+        const checkInputs = document.getElementById('selectWinner1');
+        if (!checkInputs) {
+          formContainer.innerHTML = `
+            <h4 class="section-header"><i class="fas fa-clipboard-check"></i> Submit Match Results</h4>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
+              Please select the accurate winner(s) for this match. Providing false results will result in account penalties.
+            </p>
+            <div class="vote-panel-inputs" id="payoutFormSelections"></div>
+            
+            <div class="vote-input-box" id="personalRankSection" style="display: none; margin-top: 15px;">
+              <label><i class="fas fa-user-tag" style="color: var(--warning);"></i> YOUR PERSONAL PLACEMENT RANK</label>
+              <select class="select-payout" id="selectMyRank">
+                <option value="">-- Choose Your Rank --</option>
+                <option value="1">1st Place Winner</option>
+                <option value="2">2nd Place</option>
+                <option value="3">3rd Place</option>
+                <option value="unranked">Unranked / Other</option>
+              </select>
+            </div>
+
+            <div class="vote-input-box" id="proofUploadSection" style="display: none; margin-top: 15px;">
+              <label><i class="fas fa-upload" style="color: var(--accent);"></i> VICTORY PROOF REQUIRED</label>
+              <div class="proof-upload-container">
+                <i class="fas fa-image"></i>
+                <p id="proofUploadStatusText">Upload screenshot of victory scoreboard</p>
+                <input type="file" class="file-input" id="proofFileInput" accept="image/*" onchange="encodeProofFileToBase64(this)">
+              </div>
+              <div id="proofPreviewArea" style="display: none; text-align: center;">
+                <div class="upload-preview-wrapper">
+                  <img id="proofPreviewImg" src="" alt="Proof Preview">
+                  <button class="remove-preview-btn" onclick="clearProofFile()">&times;</button>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn" style="margin-top: 25px;" id="submitBallotBtn" onclick="submitParticipantBallot()" disabled>
+              <i class="fas fa-paper-plane"></i> Submit Results
+            </button>
+          `;
+          setupGameValidationRulesets();
+        }
+      }
+    }
+
+    function setupGameValidationRulesets() {
+      const container = document.getElementById('payoutFormSelections');
+      if (!container) return; 
+      
+      const style = activeMatchPayload.type || 'BR';
+      container.innerHTML = '';
+
+      if (style === 'BR') {
+        container.innerHTML = `
+          <div class="vote-input-box">
+            <label><i class="fas fa-trophy" style="color: gold;"></i> SELECT 1ST PLACE WINNER</label>
+            <select class="select-payout" id="selectWinner1" onchange="handleWinnerChange()"></select>
+          </div>
+          <div class="vote-input-box">
+            <label><i class="fas fa-medal" style="color: silver;"></i> SELECT 2ND PLACE WINNER</label>
+            <select class="select-payout" id="selectWinner2" onchange="handleWinnerChange()"></select>
+          </div>
+          <div class="vote-input-box">
+            <label><i class="fas fa-award" style="color: #cd7f32;"></i> SELECT 3RD PLACE WINNER</label>
+            <select class="select-payout" id="selectWinner3" onchange="handleWinnerChange()"></select>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="vote-input-box">
+            <label><i class="fas fa-crown" style="color: var(--accent);"></i> SELECT MATCH WINNER</label>
+            <select class="select-payout" id="selectWinner1" onchange="handleWinnerChange()"></select>
+          </div>
+        `;
+      }
+
+      setTimeout(() => {
+        const selectors = container.querySelectorAll('.select-payout');
+        selectors.forEach(select => {
+          select.innerHTML = `<option value="">-- Choose Profile --</option>`;
+          
+          if (style === 'BR') {
+            globalActiveEnrolledList.forEach(player => {
+              const cached = dynamicProfileCache[player.uid] || { name: player.gamename || player.username };
+              select.innerHTML += `<option value="${player.uid}">${cached.name} ${player.role === 'creator' ? '(Host)' : ''}</option>`;
+            });
+          } else {
+            globalActiveEnrolledList.forEach(p => {
+              const cached = dynamicProfileCache[p.uid] || { name: p.gamename || p.username };
+              select.innerHTML += `<option value="${p.uid}">${cached.name} ${p.role === 'creator' ? '(Host)' : '(Opponent)'}</option>`;
+            });
+          }
+        });
+      }, 100);
+    }
+
+    function handleWinnerChange() {
+      const style = activeMatchPayload.type || 'BR';
+      let isOwnSelf = false;
+
+      const w1 = document.getElementById('selectWinner1')?.value;
+      const w2 = document.getElementById('selectWinner2')?.value;
+      const w3 = document.getElementById('selectWinner3')?.value;
+
+      if (w1 && w1 === currentUser.uid) isOwnSelf = true;
+      if (style === 'BR') {
+        if (w2 && w2 === currentUser.uid) isOwnSelf = true;
+        if (w3 && w3 === currentUser.uid) isOwnSelf = true;
+      }
+
+      const proofSection = document.getElementById('proofUploadSection');
+      const personalRankSection = document.getElementById('personalRankSection');
+
+      if (isOwnSelf) {
+        if (proofSection) proofSection.style.display = 'block';
+        if (style === 'BR' && personalRankSection) {
+          personalRankSection.style.display = 'flex';
+        }
+      } else {
+        if (proofSection) proofSection.style.display = 'none';
+        if (personalRankSection) personalRankSection.style.display = 'none';
+        clearProofFile(); 
+        
+        const myRankInput = document.getElementById('selectMyRank');
+        if (myRankInput) myRankInput.value = '';
+      }
+      validateFormReadyState();
+    }
+
+    function encodeProofFileToBase64(inputElement) {
+      const file = inputElement.files[0];
+      if (!file) return;
+
+      if (file.size > 1.5 * 1024 * 1024) {
+        showNotification("File size too large. Please select a compressed image under 1.5MB.", "error");
+        inputElement.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        encodedProofBase64 = e.target.result;
+        document.getElementById('proofUploadStatusText').innerHTML = `<span style="color: var(--success); font-weight: 700;"><i class="fas fa-check"></i> Proof Loaded Successfully</span>`;
+        
+        const previewArea = document.getElementById('proofPreviewArea');
+        const previewImg = document.getElementById('proofPreviewImg');
+        previewImg.src = encodedProofBase64;
+        previewArea.style.display = 'block';
+        validateFormReadyState();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearProofFile() {
+      encodedProofBase64 = "";
+      const fileInput = document.getElementById('proofFileInput');
+      if (fileInput) fileInput.value = "";
+      
+      const statusText = document.getElementById('proofUploadStatusText');
+      if (statusText) statusText.textContent = "Upload screenshot of victory scoreboard";
+
+      const previewArea = document.getElementById('proofPreviewArea');
+      if (previewArea) previewArea.style.display = 'none';
+      validateFormReadyState();
+    }
+
+    function encodeReportFileToBase64(inputElement) {
+      const file = inputElement.files[0];
+      if (!file) return;
+
+      if (file.size > 1.5 * 1024 * 1024) {
+        showNotification("File size too large. Please select an image under 1.5MB.", "error");
+        inputElement.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        encodedReportBase64 = e.target.result;
+        document.getElementById('reportUploadStatusText').innerHTML = `<span style="color: var(--success); font-weight: 700;"><i class="fas fa-check"></i> Evidence Loaded Successfully</span>`;
+        
+        const previewArea = document.getElementById('reportPreviewArea');
+        const previewImg = document.getElementById('reportPreviewImg');
+        previewImg.src = encodedReportBase64;
+        previewArea.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearReportFile() {
+      encodedReportBase64 = "";
+      const fileInput = document.getElementById('reportFileInput');
+      if (fileInput) fileInput.value = "";
+      
+      const statusText = document.getElementById('reportUploadStatusText');
+      if (statusText) statusText.textContent = "Upload screenshot or file proof";
+
+      const previewArea = document.getElementById('reportPreviewArea');
+      if (previewArea) previewArea.style.display = 'none';
+    }
+
+    async function submitDisputeReport() {
+      const title = document.getElementById('reportTitle').value.trim();
+      const desc = document.getElementById('reportDesc').value.trim();
+
+      if (!title || !desc) {
+        showNotification("Please provide a Report Title and Description.", "error");
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitReportBtn');
+      submitBtn.disabled = true;
+
+      try {
+        await getPublicCollection('reports').add({
+          matchId: currentMatchId,
+          reporterId: currentUser.uid,
+          reporterName: currentUser.displayName || 'Competitor',
+          title: title,
+          description: desc,
+          mediaBase64: encodedReportBase64 || "",
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showNotification("Report submitted successfully.", "success");
+        
+        document.getElementById('reportTitle').value = "";
+        document.getElementById('reportDesc').value = "";
+        clearReportFile();
+
+      } catch (err) {
+        console.error("Dispute report submission failure: ", err);
+        showNotification("Could not submit the report.", "error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    function renderRosterInterface(players) {
+      const grid = document.getElementById('contendersGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      if (players.length === 0) {
+        grid.innerHTML = `<p style="font-size: 12px; color: var(--muted); text-align: center; padding: 20px 0;">No registered users in this match.</p>`;
+        return;
+      }
+
+      const isCsOrLw = activeMatchPayload.type === 'CS' || activeMatchPayload.type === 'LW';
+
+      players.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'contender-card';
+
+        const hasVoted = voteSnapshotEntries.some(v => v.voterId === p.uid);
+        let badgeHtml = '';
+        
+        if (p.role === 'creator' || p.uid === activeMatchPayload.creatorUid) {
+          badgeHtml = `<span class="status-badge badge-host"><i class="fas fa-shield-alt"></i> Player A / Host</span>`;
+        } else if (isCsOrLw) {
+          badgeHtml = `<span class="status-badge badge-opponent"><i class="fas fa-crosshairs"></i> Player B / Opponent</span>`;
+        } else {
+          badgeHtml = `<span class="status-badge badge-joined"><i class="fas fa-user-check"></i> Joined Player</span>`;
+        }
+
+        const isMe = (p.uid === currentUser.uid);
+        const meTag = isMe ? `<span class="status-badge badge-me">ME</span>` : '';
+
+        // Voting status border highlight
+        if (hasVoted) div.className = 'contender-card voted';
+        else div.className = 'contender-card pending';
+
+        const resolved = dynamicProfileCache[p.uid] || { 
+          name: p.gamename || p.username || 'Competitor', 
+          username: p.username ? `@${p.username}` : '@gamer',
+          gameUid: p.gameUid || p.gameuid || 'N/A', 
+          avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(p.uid)}`,
+          level: p.level || 50
+        };
+
+        div.innerHTML = `
+          <div class="avatar-wrapper">
+            <img src="${resolved.avatar}" alt="Icon">
+          </div>
+          <div class="contender-meta">
+            <div class="contender-name-row">
+              <span class="contender-username">${resolved.username}</span>
+              ${badgeHtml}
+              ${meTag}
+            </div>
+            <div class="contender-details-row">
+              <span class="contender-ingame-label">Name: ${resolved.name}</span>
+              <span class="contender-uid-label">UID: <span style="color: var(--accent);">${resolved.gameUid}</span></span>
+              <span class="contender-level-label">Level: ${resolved.level}</span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    // =========================================================================
+    // 🕰| ALIGNED TIMING RESOLUTION STATE SYSTEM DAEMON
+    // =========================================================================
+    function startConsensusWindowTimeline() {
+      if (consensusTimer) clearInterval(consensusTimer);
+
+      consensusTimer = setInterval(() => {
+        const currentTimeStampMs = Date.now();
+
+        evaluateCurrentLobbyTimingState();
+
+        if (currentTimeStampMs < matchConcludeTimeMsGlobal) {
+          const gameplayDiff = matchConcludeTimeMsGlobal - currentTimeStampMs;
+          const gameplayMins = Math.floor(gameplayDiff / (60 * 1000));
+          const gameplaySecs = Math.floor((gameplayDiff % (60 * 1000)) / 1000);
+
+          document.getElementById('countdownClock').textContent = 
+            `${gameplayMins.toString().padStart(2, '0')}:${gameplaySecs.toString().padStart(2, '0')}`;
+          document.getElementById('timerLabel').textContent = "Gameplay in progress...";
+          return;
+        }
+
+        const cutoffBoundary = matchConcludeTimeMsGlobal + (60 * 60 * 1000); // 60 minutes deadline submission window
+        const diff = cutoffBoundary - currentTimeStampMs;
+
+        if (diff <= 0) {
+          document.getElementById('countdownClock').textContent = "00:00";
+          document.getElementById('timerLabel').textContent = "Results processing active.";
+          if (voteSnapshotEntries.length >= 1) {
+            executeContinuousConsensusAnalysis(true); // Force cascade execution
+          }
+          return;
+        }
+
+        const mins = Math.floor(diff / (60 * 1000));
+        const secs = Math.floor((diff % (60 * 1000)) / 1000);
+
+        document.getElementById('countdownClock').textContent = 
+          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('timerLabel').textContent = "Awaiting final submissions";
+      }, 1000);
+    }
+
+    function validateFormReadyState() {
+      const mode = activeMatchPayload.type || 'BR';
+      const submitBtn = document.getElementById('submitBallotBtn');
+      const userHasVoted = voteSnapshotEntries.some(v => v.voterId === currentUser.uid);
+
+      if (userHasVoted) return;
+
+      const w1 = document.getElementById('selectWinner1')?.value;
+
+      let isOwnSelfSelected = false;
+      if (w1 === currentUser.uid) isOwnSelfSelected = true;
+
+      if (mode === 'CS' || mode === 'LW') {
+        if (!w1) {
+          submitBtn.disabled = true;
+          return;
+        }
+        if (isOwnSelfSelected && !encodedProofBase64) {
+          submitBtn.disabled = true;
+        } else {
+          submitBtn.disabled = false;
+        }
+      } else {
+        const w2 = document.getElementById('selectWinner2')?.value;
+        const w3 = document.getElementById('selectWinner3')?.value;
+        const myRank = document.getElementById('selectMyRank')?.value;
+
+        if (w2 === currentUser.uid || w3 === currentUser.uid) isOwnSelfSelected = true;
+
+        if (!w1 || !w2 || !w3 || (w1 === w2) || (w1 === w3) || (w2 === w3)) {
+          submitBtn.disabled = true;
+          return;
+        }
+
+        if (isOwnSelfSelected) {
+          if ((myRank === '1' || myRank === '2' || myRank === '3') && encodedProofBase64) {
+            submitBtn.disabled = false;
+          } else if (myRank === 'unranked') {
+            submitBtn.disabled = false; // Unranked doesn't strictly force the upload
+          } else {
+            submitBtn.disabled = true;
+          }
+        } else {
+          submitBtn.disabled = false;
+        }
+      }
+    }
+
+    async function submitParticipantBallot() {
+      const mode = activeMatchPayload.type || 'BR';
+      const w1 = document.getElementById('selectWinner1')?.value;
+      const w2 = document.getElementById('selectWinner2')?.value || '';
+      const w3 = document.getElementById('selectWinner3')?.value || '';
+      const myRank = document.getElementById('selectMyRank')?.value || '';
+
+      document.getElementById('submitBallotBtn').disabled = true;
+
+      try {
+        const matchRef = getPublicCollection('matches').doc(activeMatchDocId);
+        
+        await matchRef.collection('votes').doc(currentUser.uid).set({
+          voterId: currentUser.uid,
+          winnerSelected: w1,
+          rank2Selected: w2,
+          rank3Selected: w3,
+          personalRankClaim: myRank,
+          screenshotProof: encodedProofBase64 || "",
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showNotification("Match results registered successfully.", "success");
+        setupGameValidationInputs();
+      } catch (err) {
+        console.error("Ballot commit transaction anomaly:", err);
+        showNotification("Database submission error occurred.", "error");
+        document.getElementById('submitBallotBtn').disabled = false;
+      }
+    }
+
+    // =========================================================================
+    // THE MATRICES & ALGORITHMS TO SELECT THE ACTUAL WINNER DEFINITIVELY
+    // =========================================================================
+    async function evaluateMatrixResolutionLogic() {
+      if (!activeMatchPayload || !activeMatchDocId) return;
+
+      const mode = activeMatchPayload.type || 'BR';
+      const currentStatus = activeMatchPayload.status || 'Waiting for Result Submission';
+      
+      const totalRegisteredCount = globalActiveEnrolledList.length;
+      const submittedVotesCount = voteSnapshotEntries.length;
+
+      document.getElementById('matchStatusLabel').textContent = currentStatus.toUpperCase();
+
+      // UI Flow Checkpoint: If status is finalized, reveal Continue button and lock down everything else
+      if (['Winner Declared', 'Winner Finalized'].includes(currentStatus)) {
+        document.getElementById('continueBtnCard').style.display = 'block';
+        document.getElementById('formSubmissionContainer').style.display = 'none';
+        return;
+      }
+
+      if (mode === 'CS' || mode === 'LW') {
+        const playerA = globalActiveEnrolledList.find(p => p.role === 'creator')?.uid;
+        const playerB = globalActiveEnrolledList.find(p => p.role !== 'creator')?.uid;
+
+        if (!playerA || !playerB) return; 
+
+        const voteA = voteSnapshotEntries.find(v => v.voterId === playerA);
+        const voteB = voteSnapshotEntries.find(v => v.voterId === playerB);
+
+        // CASE 6: No Player Submits a Vote before timeout limit
+        if (!voteA && !voteB) {
+          const matchStartTimeSeconds = activeMatchPayload.startTime?.seconds || (Date.now() / 1000);
+          const matchDurationMinutes = parseInt(activeMatchPayload.duration || activeMatchPayload.matchDuration || 30);
+          const timeElapsedSinceStartSeconds = (Date.now() / 1000) - matchStartTimeSeconds;
+          const allowedSubmissionGraceSeconds = (matchDurationMinutes + 60) * 60;
+
+          if (timeElapsedSinceStartSeconds >= allowedSubmissionGraceSeconds) {
+            await updateMatchStatusField('Expired');
+          } else {
+            updateMatchStatusDisplayOnly('Waiting for Result Submission');
+          }
+          return;
+        }
+
+        // CASE 4: Only One Player Submits a Vote before the deadline
+        if ((voteA && !voteB) || (!voteA && voteB)) {
+          updateMatchStatusDisplayOnly('Waiting for Opponent');
+          
+          const matchStartTimeSeconds = activeMatchPayload.startTime?.seconds || (Date.now() / 1000);
+          const matchDurationMinutes = parseInt(activeMatchPayload.duration || activeMatchPayload.matchDuration || 30);
+          const timeElapsedSinceStartSeconds = (Date.now() / 1000) - matchStartTimeSeconds;
+          const allowedSubmissionGraceSeconds = (matchDurationMinutes + 60) * 60;
+
+          if (timeElapsedSinceStartSeconds >= allowedSubmissionGraceSeconds) {
+            const explicitWinner = voteA ? voteA.winnerSelected : voteB.winnerSelected;
+            if (explicitWinner) {
+              await executeAutomaticWinnerCommit(explicitWinner);
+            }
+          }
+          return;
+        }
+
+        // Both players submitted their ballots
+        if (voteA && voteB) {
+          const selectionA = voteA.winnerSelected;
+          const selectionB = voteB.winnerSelected;
+
+          // CASE 1: Both Players Select Player A
+          if (selectionA === playerA && selectionB === playerA) {
+            await executeAutomaticWinnerCommit(playerA);
+            return;
+          }
+
+          // CASE 2: Both Players Select Player B
+          if (selectionA === playerB && selectionB === playerB) {
+            await executeAutomaticWinnerCommit(playerB);
+            return;
+          }
+
+          // CASE 3: Both Players Select Themselves (Dispute)
+          if (selectionA === playerA && selectionB === playerB) {
+            await updateMatchStatusField('Waiting for Verification');
+            return;
+          }
+
+          // CASE 5: Players Select Each Other as Winner (No dispute but verification required)
+          if (selectionA === playerB && selectionB === playerA) {
+            await updateMatchStatusField('Waiting for Verification');
+            return;
+          }
+        }
+
+      } else {
+        // --- BATTLE ROYALE MULTI-PLAYER PLURALITY RANK DETERMINATION ALGORITHM ---
+        
+        // Wait until everyone registers their vote
+        if (submittedVotesCount < totalRegisteredCount) {
+          updateMatchStatusDisplayOnly('Waiting for Result Submission');
+          return;
+        }
+
+        const tallyRank1 = {}, tallyRank2 = {}, tallyRank3 = {};
+
+        voteSnapshotEntries.forEach(vote => {
+          if (vote.winnerSelected) tallyRank1[vote.winnerSelected] = (tallyRank1[vote.winnerSelected] || 0) + 1;
+          if (vote.rank2Selected) tallyRank2[vote.rank2Selected] = (tallyRank2[vote.rank2Selected] || 0) + 1;
+          if (vote.rank3Selected) tallyRank3[vote.rank3Selected] = (tallyRank3[vote.rank3Selected] || 0) + 1;
+        });
+
+        const checkRankMajority = (tallyMap) => {
+          let maxVotes = 0;
+          let winners = [];
+          Object.keys(tallyMap).forEach(uid => {
+            if (tallyMap[uid] > maxVotes) {
+              maxVotes = tallyMap[uid];
+              winners = [uid];
+            } else if (tallyMap[uid] === maxVotes) {
+              winners.push(uid);
+            }
+          });
+          return { max: maxVotes, tiedList: winners, isTie: winners.length > 1 };
+        };
+
+        const res1 = checkRankMajority(tallyRank1);
+        const res2 = checkRankMajority(tallyRank2);
+        
+        const checkRank3Filtered = {};
+        Object.keys(tallyRank3).forEach(uid => {
+          if (uid !== res1.tiedList[0] && uid !== res2.tiedList[0]) {
+            checkRank3Filtered[uid] = tallyRank3[uid];
+          }
+        });
+        const res3 = checkRankMajority(checkRank3Filtered);
+
+        // TIE HANDLING: If any rank has a tie majority, shift to "Waiting for Verification"
+        if (res1.isTie || res2.isTie || res3.isTie) {
+          await updateMatchStatusField('Waiting for Verification');
+          return;
+        }
+
+        // AUTOMATIC VERIFICATION: All positions possess absolute mathematically clear majorities
+        if (res1.tiedList.length === 1 && res2.tiedList.length === 1) {
+          const finalW1 = res1.tiedList[0];
+          const finalW2 = res2.tiedList[0];
+          const finalW3 = res3.tiedList[0] || "";
+
+          await executeBattleRoyaleRankCommit(finalW1, finalW2, finalW3);
+        }
+      }
+    }
+
+    function updateMatchStatusDisplayOnly(statusStr) {
+      document.getElementById('matchStatusLabel').textContent = statusStr.toUpperCase();
+    }
+
+    async function updateMatchStatusField(targetStatus) {
+      if (activeMatchPayload.status === targetStatus) return;
+      try {
+        await getPublicCollection('matches').doc(activeMatchDocId).update({
+          status: targetStatus,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(err) {
+        console.error("Failed writing status shift:", err);
+      }
+    }
+
+    async function executeAutomaticWinnerCommit(winnerUid) {
+      try {
+        const matchDocRef = getPublicCollection('matches').doc(activeMatchDocId);
+        
+        const updatedRoster = globalActiveEnrolledList.map(player => {
+          const obj = { ...player };
+          if (player.uid === winnerUid) {
+            obj.gameOutcome = 'winner';
+            obj.outcome = 'winner';
+            obj.rank = 1;
+          } else {
+            obj.gameOutcome = 'loser';
+            obj.outcome = 'loser';
+            obj.rank = 2;
+          }
+          return obj;
+        });
+
+        await matchDocRef.update({
+          players: updatedRoster,
+          status: 'Winner Declared',
+          outcomeDeclared: true,
+          outcomeDeclaredAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showNotification("Match results resolved automatically.", "success");
+      } catch (err) {
+        console.error("Outcome commit blocker exception:", err);
+      }
+    }
+
+    async function executeBattleRoyaleRankCommit(w1, w2, w3) {
+      try {
+        const matchDocRef = getPublicCollection('matches').doc(activeMatchDocId);
+
+        const updatedRoster = globalActiveEnrolledList.map(player => {
+          const obj = { ...player };
+          if (player.uid === w1) {
+            obj.rank = 1; obj.lobbyRank = 1;
+          } else if (player.uid === w2) {
+            obj.rank = 2; obj.lobbyRank = 2;
+          } else if (player.uid === w3) {
+            obj.rank = 3; obj.lobbyRank = 3;
+          } else {
+            obj.rank = 4; delete obj.lobbyRank;
+          }
+          return obj;
+        });
+
+        await matchDocRef.update({
+          players: updatedRoster,
+          status: 'Winner Declared',
+          outcomeDeclared: true,
+          outcomeDeclaredAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showNotification("Battle Royale majority rankings finalized automatically.", "success");
+      } catch (err) {
+        console.error("BR automatic settlement failure:", err);
+      }
+    }
+
+    function routeToSettlementPage() {
+      window.location.href = `/Match_Success?matchId=${currentMatchId}`;
+    }
+
+    function goBack() {
+      window.location.href = "/My_Matches";
+    }
+
+    function showNotification(message, type = 'info') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 4000);
+    }
+  </script>
+</body>
+</html>

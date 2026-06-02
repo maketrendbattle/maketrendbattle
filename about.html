@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>About Us, Guides & Reviews - Make Trend Battle</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px;
+      --header-height: 70px;
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      --br-gradient: linear-gradient(135deg, #ff7b00, #ff5500);
+      --cs-gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      --lw-gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 20px;
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 26px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Bubble Cards */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s ease;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    .page-hero-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .section-header {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Search Component */
+    .search-topics-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .search-topics-bar i {
+      position: absolute;
+      left: 16px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .search-topics-input {
+      width: 100%;
+      padding: 16px 16px 16px 48px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1.5px solid rgba(0, 234, 255, 0.25);
+      border-radius: 50px;
+      color: #fff;
+      font-size: 14.5px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 234, 255, 0.05);
+    }
+
+    .search-topics-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .search-match-highlight {
+      background-color: rgba(0, 234, 255, 0.25);
+      border-bottom: 2px solid var(--accent);
+      color: #fff;
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+
+    /* Steps & Features */
+    .feature-step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .step-number {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.2);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .step-content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Grid Layouts */
+    .earning-grid, .why-us-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .earning-grid, .why-us-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .earning-box, .why-us-box {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .earning-box:hover, .why-us-box:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(0, 234, 255, 0.1);
+    }
+
+    .earning-title, .why-us-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .earning-desc, .why-us-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* FAQ Collapsible Accordions */
+    .faq-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .faq-item {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-trigger {
+      width: 100%;
+      padding: 18px 20px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: var(--font-primary);
+      font-size: 14.5px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .faq-trigger i {
+      color: var(--accent);
+      transition: transform 0.3s ease;
+    }
+
+    .faq-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
+      background: rgba(0, 0, 0, 0.15);
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    .faq-item.active {
+      border-color: rgba(0, 234, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .faq-item.active .faq-trigger i {
+      transform: rotate(180deg);
+    }
+
+    .faq-item.active .faq-content {
+      max-height: 500px;
+      padding: 0 20px 20px 20px;
+      transition: max-height 0.3s cubic-bezier(1, 0, 1, 0), padding 0.3s ease;
+    }
+
+    /* Comment Form & Star Rating Inputs */
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-row label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .textarea-field {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .star-rating-selector {
+      display: flex;
+      gap: 8px;
+      margin: 4px 0;
+    }
+
+    .rating-star {
+      font-size: 24px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.15s ease, transform 0.1s ease;
+    }
+
+    .rating-star:hover {
+      transform: scale(1.15);
+    }
+
+    .rating-star.active {
+      color: #ffca28;
+      text-shadow: 0 0 8px rgba(255, 202, 40, 0.4);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg);
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      width: 100%;
+      font-family: var(--font-primary);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 234, 255, 0.5);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Live Comment Deck List */
+    .comments-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 15px;
+    }
+
+    .comment-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .comment-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .commenter-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .comment-star-display {
+      color: #ffca28;
+      font-size: 12px;
+      display: flex;
+      gap: 3px;
+    }
+
+    .comment-title-text {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .comment-body-message {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .comment-date {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Fixed Bottom Navigation */
+
+
+    /* Custom Toast Notification Alert */
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #notificationBox.show { top: 85px; }
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+
+    .home-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-family: var(--font-primary);
+    }
+    
+    .home-btn:hover {
+      background: rgba(0, 234, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Navigation Header -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBackToReferrer()">
+      <i class="fas fa-arrow-left"></i> Exit
+    </button>
+    <button class="home-btn" onclick="window.location.href='/'">
+      <i class="fas fa-home"></i> Home
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <!-- Notification Banner -->
+  <div id="notificationBox"></div>
+
+  <div class="container">
+    
+    <!-- Hero / Introduction Card -->
+    <div class="bubble-card" style="text-align: center; padding: 35px 24px;">
+      <h1 class="page-hero-title">About Make Trend Battle</h1>
+      <p style="color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 600px; margin: 0 auto;">
+        Make Trend Battle is Nepal's premier, next-generation custom room matchmaking arena built specifically for competitive Free Fire gameplay. We empower game organizers to build interactive communities and help skilled mobile gamers win cash awards securely.
+      </p>
+    </div>
+
+    <!-- Search Engine Section -->
+    <div class="search-topics-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" id="topicSearchInput" class="search-topics-input" placeholder="Search topics (e.g., 'earning', 'faq', 'refund', 'cs')..." oninput="executeTopicTextSearch()">
+    </div>
+
+    <!-- Why Choose Us / Value Proposition -->
+    <div class="bubble-card search-target-item">
+      <h2 class="section-header"><i class="fas fa-star"></i> Why Choose Make Trend</h2>
+      <div class="why-us-grid">
+        <div class="why-us-box">
+          <div class="why-us-title"><i class="fas fa-bolt" style="color: #ff9900;"></i> Instant Auto-Settle</div>
+          <div class="why-us-desc">
+            No long waiting hours. Our background observers settle room ledgers exactly 30 minutes after gameplay finishes.
+          </div>
+        </div>
+        <div class="why-us-box">
+          <div class="why-us-title"><i class="fas fa-user-shield" style="color: #2ecc71;"></i> Pure Integrity Systems</div>
+          <div class="why-us-desc">
+            The Trend Forensic Verifier compares lobby screenshots, player coordinates, and system metrics to prevent collusion.
+          </div>
+        </div>
+        <div class="why-us-box">
+          <div class="why-us-title"><i class="fas fa-hand-holding-dollar" style="color: #00eaff;"></i> Dynamic Profit Splits</div>
+          <div class="why-us-desc">
+            We provide structured match types. Earn up to 100% of room ticket sales as a Creator, or take the whole prize pool as a Player.
+          </div>
+        </div>
+        <div class="why-us-box">
+          <div class="why-us-title"><i class="fas fa-network-wired" style="color: #9b59b6;"></i> Dual System Limit Protection</div>
+          <div class="why-us-desc">
+            Clash Squad and Lone Wolf duels automatically close when exactly 2 players join, ensuring slots remain strict and clear.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How To Use / Platform Pipeline -->
+    <div class="bubble-card search-target-item">
+      <h2 class="section-header"><i class="fas fa-book-open"></i> Player Guide & Steps</h2>
+      
+      <div class="feature-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Create or Browse Lobbies</h3>
+          <p>Creators configure custom maps (Bermuda, Kalahari, Purgatory), weapon restrictions, and ticket entry fees. Competitive contenders browse public listings dynamically on their dashboard feeds.</p>
+        </div>
+      </div>
+
+      <div class="feature-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Register & Claim Seats</h3>
+          <p>Purchase custom room tickets securely from your account balance. Clash Squad and Lone Wolf duels automatically assign players, while BR lobbies count dynamic slot limits beautifully.</p>
+        </div>
+      </div>
+
+      <div class="feature-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Play & Receive Payouts</h3>
+          <p>Compete on Free Fire. Once concluded, players submit outcomes to the Forensic Verifier. Winners get their cash credited automatically 30 minutes later following background audit completions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earning Ideas & Economic Models -->
+    <div class="bubble-card search-target-item">
+      <h2 class="section-header"><i class="fas fa-coins"></i> Earning Mechanics</h2>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom: 16px; line-height: 1.6;">
+        Choose your specialized earning format designed to return value directly to players and match creators:
+      </p>
+
+      <div class="earning-grid">
+        <div class="earning-box">
+          <div class="earning-title"><i class="fas fa-crown" style="color: gold;"></i> Clash Squad Duels</div>
+          <div class="earning-desc">
+            In CS/LW matches, both players stake ticket fees. The verified victor takes **100% of the Winner Prize plus 100% of both ticket deposits**.
+          </div>
+        </div>
+
+        <div class="earning-box">
+          <div class="earning-title"><i class="fas fa-users-rays" style="color: #ff5500;"></i> NonPaid-Profit (BR)</div>
+          <div class="earning-desc">
+            Organize tournaments with zero capital. Collect entry fees; **75% is divided amongst Top 1, 2, and 3**, and **25% goes to you** as organizing profit.
+          </div>
+        </div>
+
+        <div class="earning-box">
+          <div class="earning-title"><i class="fas fa-shield" style="color: var(--success);"></i> Creator-Sponsor (BR)</div>
+          <div class="earning-desc">
+            Sponsor prizes for Top 1, 2, and 3 upfront. As player turnouts grow, **100% of all player entry fees is paid back to your wallet** as pure profit!
+          </div>
+        </div>
+
+        <div class="earning-box">
+          <div class="earning-title"><i class="fas fa-gift" style="color: var(--purple);"></i> Affiliate Code Bonuses</div>
+          <div class="earning-desc">
+            Invite players using your unique affiliate referral link. Instantly receive NPR cash bonuses when your referred friends play their first custom lobbies.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals, Missions & Future Upgrades -->
+    <div class="bubble-card search-target-item">
+      <h2 class="section-header"><i class="fas fa-compass"></i> Vision, Goals & Future Roadmaps</h2>
+      <p style="color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 12px;">
+        Our mission is to establish a secure esport tournament network. Here is what we are striving for:
+      </p>
+      <div style="display:flex; flex-direction:column; gap:12px; font-size:13.5px; color:var(--muted); line-height:1.6;">
+        <div><strong>🏆 Community Recognition:</strong> Building rank progression systems to showcase local mobile pro-players on monthly leaderboards.</div>
+        <div><strong>⚔️ Multi-Game Portals:</strong> Expanding match creation support to other mobile titles, including PUBG Mobile and Call of Duty Mobile.</div>
+        <div><strong>📦 Decentralized API Verifiers:</strong> Constructing AI verifiers to scan scoreboard outcomes instantly, eliminating manual ticket resolution timelines completely.</div>
+      </div>
+    </div>
+
+    <!-- FAQ Accordions -->
+    <div class="bubble-card search-target-item">
+      <h2 class="section-header"><i class="fas fa-question-circle"></i> Frequently Asked Questions (FAQ)</h2>
+      <div class="faq-wrapper">
+        
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaqAccordion(this)">
+            <span>How does the system calculate CS and Lone Wolf slots?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-content">
+            CS and LW rooms strictly allow exactly 2 players total: the Creator/Host and the Opponent. Once the opponent registers, the lobby is automatically marked full and removed from public listings so that no other users can see or join it.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaqAccordion(this)">
+            <span>When do I receive my match winnings?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-content">
+            Winnings are distributed automatically. Exactly 30 minutes after the scheduled gameplay concludes, the Axis Forensics system compiles all match data, resolves ties, and transfers NPR directly to the winner's wallet.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaqAccordion(this)">
+            <span>Why is a screenshot upload required when I win?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-content">
+            For maximum fairness, if you select yourself as a match winner (OwnSelf), you are required to upload a victory screenshot. This proof is used by the system to verify game outcomes. If you are voting for another competitor, the screenshot requirement is hidden.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaqAccordion(this)">
+            <span>Can Creators participate in their own BR matches?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-content">
+            Yes! Creators can participate in BR matches. When calculating consensus, the Creator's ballot holds equal voting weight (1.0) alongside all other active players, ensuring democratic fairness.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaqAccordion(this)">
+            <span>What happens if there is a tie on the winners board?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-content">
+            Ties are broken cleanly by our multi-layered algorithm: first, by looking at early registration timestamps (the player who paid and joined first gets priority), and second, via alphabetical string sequence comparisons of User IDs.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" onclick="toggleFaqAccordion(this)">
+            <span>Is my money safe if no one submits game outcomes?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="faq-content">
+            Absolutely. If a match concludes and absolutely no ballots or outcomes are reported by the players, the fallback cascade triggers. The platform initiates an automatic refund, returning 100% of individual entry fees back to player wallets.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Interactive Comment Form Box -->
+    <div class="bubble-card search-target-item">
+      <h2 class="section-header"><i class="fas fa-comments"></i> Share Your Feedback</h2>
+      <p style="color: var(--muted); font-size: 14px; margin-bottom: 18px; line-height: 1.5;">
+        Your comments and evaluations help us polish Rocky Axis Esports. Share your reviews and let us know what you think of our arena.
+      </p>
+
+      <div class="form-row">
+        <label>Your Full Name</label>
+        <input type="text" id="feedbackName" class="input-field" placeholder="Enter your full name...">
+      </div>
+
+      <div class="form-row">
+        <label>Rate Our Arena</label>
+        <div class="star-rating-selector" id="starRatingSelector">
+          <i class="fas fa-star rating-star" data-rating="1"></i>
+          <i class="fas fa-star rating-star" data-rating="2"></i>
+          <i class="fas fa-star rating-star" data-rating="3"></i>
+          <i class="fas fa-star rating-star" data-rating="4"></i>
+          <i class="fas fa-star rating-star" data-rating="5"></i>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Review Title</label>
+        <input type="text" id="feedbackTitle" class="input-field" placeholder="Summarize your experience (e.g., 'Awesome Lobbies!')">
+      </div>
+
+      <div class="form-row">
+        <label>Your Review Message</label>
+        <textarea id="feedbackComment" class="input-field textarea-field" placeholder="Write your valuable feedback here..."></textarea>
+      </div>
+
+      <button class="btn" id="submitFeedbackBtn" onclick="submitUserFeedbackComment()">
+        <i class="fas fa-paper-plane"></i> Submit Feedback Review
+      </button>
+    </div>
+
+    <!-- Global Comments Display Deck Section -->
+    <div class="bubble-card search-target-item">
+      <h2 class="section-header"><i class="fas fa-users-viewfinder"></i> Global Contender Reviews</h2>
+      <div class="comments-deck" id="commentsDisplayContainer">
+        <div class="empty-state">
+          <i class="fas fa-circle-notch fa-spin" style="font-size:24px;"></i>
+          <p style="margin-top:10px;">Loading community feedback board...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation Row Style Fix -->
+
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let localSelectedRating = 5; // Default stars selection count
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Setup star selection events
+      setupStarClickSelector();
+
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase init failed: ", err);
+        showToast("Database networks failed to establish.", "error");
+        return;
+      }
+
+      // Check auth state & complete anonymous fallback (Rule 3)
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          currentUser = user;
+          await loadCurrentProfileData();
+        } else {
+          // Automatic login backup to fulfill Firestore Rule 3
+          try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+              await auth.signInWithCustomToken(__initial_auth_token);
+            } else {
+              await auth.signInAnonymously();
+            }
+          } catch (e) {
+            console.error("Auth fallback error:", e);
+          }
+        }
+        
+        // Sync comments live stream
+        syncCommentsFeedLive();
+      });
+    });
+
+    async function loadCurrentProfileData() {
+      try {
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+          const uData = userDoc.data();
+          const pName = uData.fullname || uData.gamename || uData.username || '';
+          if (pName) {
+            document.getElementById('feedbackName').value = pName;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not populate profile values: ", err);
+      }
+    }
+
+    // FAQ Accordion Toggler
+    function toggleFaqAccordion(element) {
+      const parent = element.parentElement;
+      const isActive = parent.classList.contains('active');
+      
+      // Close all accordions first
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      if (!isActive) {
+        parent.classList.add('active');
+      }
+    }
+
+    // Dynamic Topic Search Filtering
+    function executeTopicTextSearch() {
+      const q = document.getElementById('topicSearchInput').value.trim().toLowerCase();
+      const targets = document.querySelectorAll('.search-target-item');
+
+      targets.forEach(item => {
+        // Reset previously highlighted matches
+        removeSearchHighlights(item);
+
+        if (!q) {
+          item.style.display = 'block';
+          return;
+        }
+
+        const textContent = item.textContent.toLowerCase();
+        if (textContent.includes(q)) {
+          item.style.display = 'block';
+          applySearchHighlights(item, q);
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function applySearchHighlights(element, query) {
+      const innerHTML = element.innerHTML;
+      
+      // Escape query characters to prevent regex breaking
+      const escapedQuery = query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      
+      // Target only text nodes that are not inside tag properties
+      const regex = new RegExp(`(?![^<>]*>)(${escapedQuery})`, 'gi');
+      
+      element.innerHTML = innerHTML.replace(regex, '<span class="search-match-highlight">$1</span>');
+    }
+
+    function removeSearchHighlights(element) {
+      const highlights = element.querySelectorAll('.search-match-highlight');
+      highlights.forEach(h => {
+        const parent = h.parentNode;
+        parent.replaceChild(document.createTextNode(h.textContent), h);
+        parent.normalize(); // Merges adjacent text nodes
+      });
+    }
+
+    // Configures Interactive Star Selector click handlers
+    function setupStarClickSelector() {
+      const stars = document.querySelectorAll('.rating-star');
+      updateStarsUI(localSelectedRating);
+
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          const ratingVal = parseInt(this.getAttribute('data-rating'));
+          localSelectedRating = ratingVal;
+          updateStarsUI(ratingVal);
+        });
+      });
+    }
+
+    function updateStarsUI(ratingValue) {
+      const stars = document.querySelectorAll('.rating-star');
+      stars.forEach(s => {
+        const starIdx = parseInt(s.getAttribute('data-rating'));
+        if (starIdx <= ratingValue) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+    }
+
+    // Subscribes to public comments live (Adheres to Rule 1 & Rule 2 local sorting in memory)
+    function syncCommentsFeedLive() {
+      try {
+        getPublicCollection('comments').onSnapshot((snapshot) => {
+          const localComments = [];
+          snapshot.forEach(doc => {
+            localComments.push({ id: doc.id, ...doc.data() });
+          });
+
+          // Rule 2 Compliant: Sort comment nodes inside client-side JS memory cleanly by timestamp descending
+          localComments.sort((a, b) => {
+            const timeA = a.createdAt?.seconds || 0;
+            const timeB = b.createdAt?.seconds || 0;
+            return timeB - timeA;
+          });
+
+          renderCommentsList(localComments);
+        }, err => {
+          console.error("Comments stream synced failed: ", err);
+          document.getElementById('commentsDisplayContainer').innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-exclamation-triangle" style="font-size:24px; color:var(--error);"></i>
+              <p>Failed to sync global contender reviews.</p>
+            </div>
+          `;
+        });
+      } catch (e) {
+        console.error("Comment hook failure:", e);
+      }
+    }
+
+    function renderCommentsList(commentsList) {
+      const container = document.getElementById('commentsDisplayContainer');
+      container.innerHTML = '';
+
+      if (commentsList.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-comment-slash" style="font-size: 32px; opacity: 0.3;"></i>
+            <p>No contender reviews cast yet. Be the first to leave a feedback review!</p>
+          </div>
+        `;
+        return;
+      }
+
+      commentsList.forEach(c => {
+        let starsHTML = '';
+        const rating = c.rating || 5;
+        for (let i = 1; i <= 5; i++) {
+          starsHTML += `<i class="fas fa-star" style="color: ${i <= rating ? '#ffca28' : 'var(--muted)'};"></i>`;
+        }
+
+        const dateObj = c.createdAt?.seconds ? new Date(c.createdAt.seconds * 1000) : new Date();
+        const formattedDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        container.innerHTML += `
+          <div class="comment-card">
+            <div class="comment-top-row">
+              <span class="commenter-name"><i class="fas fa-user-circle"></i> ${c.fullName || 'Competitor'}</span>
+              <div class="comment-star-display">${starsHTML}</div>
+            </div>
+            <div class="comment-title-text">${c.title || 'Review Update'}</div>
+            <div class="comment-body-message">${c.comment || ''}</div>
+            <div class="comment-date"><i class="far fa-clock"></i> ${formattedDate}</div>
+          </div>
+        `;
+      });
+    }
+
+    // Handles safe write operations strictly following Rule 1, 2, 3 paths
+    async function submitUserFeedbackComment() {
+      const name = document.getElementById('feedbackName').value.trim();
+      const title = document.getElementById('feedbackTitle').value.trim();
+      const comment = document.getElementById('feedbackComment').value.trim();
+
+      if (!name) {
+        showToast("Please enter your Full Name.", "error");
+        return;
+      }
+      if (!title) {
+        showToast("Please enter a Review Title.", "error");
+        return;
+      }
+      if (!comment) {
+        showToast("Please write a Comment message.", "error");
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitFeedbackBtn');
+      submitBtn.disabled = true;
+
+      try {
+        // Enforce Firestore Auth checks before executing transactions (Rule 3)
+        if (!currentUser) {
+          throw new Error("Local user credentials not synchronized. Retrying authentication...");
+        }
+
+        // Writes directly using correct Sandbox Rule 1 collections
+        const ref = getPublicCollection('comments').doc();
+        await ref.set({
+          uid: currentUser.uid,
+          fullName: name,
+          rating: localSelectedRating,
+          title: title,
+          comment: comment,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showToast("Thank you! Your feedback has been posted safely.", "success");
+
+        // Clear out input values (Leaving name populated for user's convenience)
+        document.getElementById('topicSearchInput').value = '';
+        executeTopicTextSearch(); // Reset hidden nodes
+        document.getElementById('feedbackTitle').value = '';
+        document.getElementById('feedbackComment').value = '';
+        localSelectedRating = 5;
+        updateStarsUI(5);
+
+      } catch (err) {
+        console.error("Comment submission failed: ", err);
+        showToast(err.message || "Failed to post comment records to ledger.", "error");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    function goBackToReferrer() {
+      const referrer = document.referrer;
+      if (referrer && referrer !== '') {
+        window.location.href = referrer;
+      } else {
+        window.history.back();
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>

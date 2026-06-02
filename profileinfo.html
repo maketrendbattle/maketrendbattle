@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Make Trend Battle - Edit Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium Unified Cyberpunk Theme Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --text-dim: #94a3b8;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.3);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 16px;
+      --header-height: 70px;
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 95px; /* Space for fixed bottom navigation */
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+    
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+    
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+    
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+    
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.2);
+      border-radius: 8px;
+      color: var(--accent);
+      padding: 8px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.15);
+      color: #fff;
+    }
+    
+    /* Main Container */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 10px 16px;
+    }
+    
+    /* Cards */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    
+    /* Profile Header */
+    .profile-header {
+      text-align: center;
+      margin-bottom: 24px;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.2) 0%, var(--card) 100%);
+    }
+    
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--card-light);
+      color: var(--accent);
+      font-size: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-weight: 700;
+      overflow: hidden;
+      border: 4px solid var(--accent);
+      position: relative;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .avatar-upload-label {
+      display: inline-block;
+      background: rgba(0, 234, 255, 0.08);
+      color: var(--accent);
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      margin-top: 10px;
+      font-weight: 600;
+      border: 1px solid rgba(0, 234, 255, 0.15);
+    }
+    
+    .avatar-upload-label:hover {
+      background: rgba(0, 234, 255, 0.15);
+      color: #fff;
+    }
+    
+    .avatar-upload-input {
+      display: none;
+    }
+    
+    .profile-username-display {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      font-family: var(--font-display);
+    }
+    
+    /* Input Groups */
+    .input-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    
+    .field-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .field-wrapper i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 16px;
+      pointer-events: none;
+      transition: color 0.2s;
+      z-index: 2;
+    }
+    
+    .field-wrapper .toggle-password {
+      left: auto;
+      right: 15px;
+      cursor: pointer;
+      pointer-events: all;
+      z-index: 2;
+    }
+    
+    .auth-input {
+      width: 100%;
+      padding: 14px 15px 14px 45px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-primary);
+    }
+    
+    .auth-input:focus {
+      border-color: var(--accent);
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+      outline: none;
+    }
+    
+    .auth-input:focus + i {
+      color: var(--accent);
+    }
+    
+    /* Floating Labels */
+    .floating-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .auth-input::placeholder {
+        color: rgba(255, 255, 255, 0.2);
+    }
+
+    .auth-input:focus ~ .floating-label {
+        color: var(--accent);
+    }
+    
+    /* Textarea */
+    textarea.auth-input {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    /* Buttons */
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: #050812;
+      border: none;
+      padding: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: background 0.2s, transform 0.1s;
+      text-align: center;
+      width: 100%;
+      box-shadow: 0 5px 15px rgba(0, 234, 255, 0.3);
+      font-family: var(--font-primary);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .btn:active {
+      transform: scale(0.98);
+    }
+    
+    .btn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      margin-top: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 18, 0.95);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10020;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-content-container {
+      background: var(--card);
+      border: 1.5px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 30px var(--accent-glow);
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* Section Headers */
+    .section-header {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Notification Toast */
+    #notificationBox {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, top 0.3s, visibility 0s 0.3s;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,0.85);
+      border-left: 4px solid var(--accent);
+    }
+    
+    #notificationBox.show {
+      opacity: 1;
+      top: 65px;
+      visibility: visible;
+      transition: opacity 0.3s, top 0.3s;
+    }
+    
+    #notificationBox i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+    
+    #notificationBox.success { border-left-color: var(--success); background: rgba(46,204,113,0.07); }
+    #notificationBox.error { border-left-color: var(--error); background: rgba(231,76,60,0.06); }
+    #notificationBox.info { border-left-color: var(--accent); background: rgba(0,234,255,0.06); }
+    
+    /* Loading */
+    #loadingScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s;
+    }
+    
+    #loadingScreen.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .loader {
+      border: 4px solid var(--card);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    #loadingScreen p {
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 10px;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Error Messages */
+    .input-error {
+      color: var(--error);
+      font-size: 12px;
+      margin-top: 5px;
+      opacity: 0;
+      transform: translateY(-5px);
+      transition: opacity 0.3s, transform 0.3s;
+      height: 0;
+    }
+    
+    .input-error.show {
+      opacity: 1;
+      transform: translateY(0);
+      height: auto;
+    }
+
+    /* Fixed Bottom Navigation (HORIZONTAL ROW STYLE FIX) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; 
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0,234,255,0.3);
+    }
+    
+    /* Responsive */
+    @media (max-width: 480px) {
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+      }
+    }
+
+    /* ⚡ TOP-FIXED NEON ACTION LOADING BAR */
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <div class="logo-container">
+      <span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE
+    </div>
+    <div style="width: 60px;"></div> <!-- Spacer for alignment -->
+  </header>
+  
+  <div id="notificationBox"></div>
+  
+  <div id="loadingScreen">
+    <div class="loader"></div>
+    <p>Loading...</p>
+  </div>
+  
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="card profile-header">
+      <div class="profile-avatar" id="profileAvatar">U</div>
+      <label for="avatarUpload" class="avatar-upload-label">
+        <i class="fas fa-camera"></i> Change Profile Picture
+      </label>
+      <input type="file" id="avatarUpload" class="avatar-upload-input" accept="image/*">
+      <input type="hidden" id="avatarDataURL">
+      
+      <div class="profile-username-display" id="profileUsernameDisplay">@username</div>
+    </div>
+    
+    <!-- Basic Information -->
+    <div class="card">
+      <h3 class="section-header">Basic Information</h3>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="text" id="editFullname" class="auth-input" placeholder="Enter your full name" required>
+          <i class="fas fa-user"></i>
+        </div>
+        <label class="floating-label">Full Name</label>
+        <div class="input-error" id="editFullnameError"></div>
+      </div>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="email" id="editEmail" class="auth-input" placeholder="example@mail.com" required inputmode="email">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <label class="floating-label">Email Address</label>
+        <div class="input-error" id="editEmailError"></div>
+      </div>
+
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="text" id="editUsername" class="auth-input" placeholder="username" required autocomplete="off">
+          <i class="fas fa-at"></i>
+        </div>
+        <label class="floating-label">Username</label>
+        <div class="input-error" id="editUsernameError"></div>
+      </div>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <select id="editPlatform" class="auth-input" onchange="togglePlatformRequirements()">
+            <option value="">Select Platform</option>
+            <option value="Free Fire">Free Fire</option>
+            <option value="PUBG Mobile">PUBG Mobile</option>
+            <option value="Call of Duty">Call of Duty</option>
+          </select>
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <label class="floating-label">Game Platform</label>
+      </div>
+
+      <!-- Verified UID (Conditional requirement highlight indicator) -->
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="text" id="editGameuid" class="auth-input" placeholder="Numeric ID" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+          <i class="fas fa-id-card"></i>
+        </div>
+        <label class="floating-label" id="lblGameuid">Game UID</label>
+        <div class="input-error" id="editGameuidError"></div>
+      </div>
+
+      <!-- In-game Nickname (Conditional requirement highlight indicator) -->
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="text" id="editGamename" class="auth-input" placeholder="In-game Name">
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <label class="floating-label" id="lblGamename">In-game Name</label>
+        <div class="input-error" id="editGamenameError"></div>
+      </div>
+
+      <!-- Game Level (Added Numerical Parameter Validation Input) -->
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="text" id="editLevel" class="auth-input" placeholder="Numeric Account Level (e.g. 50)" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <label class="floating-label" id="lblLevel">Game Level</label>
+        <div class="input-error" id="editLevelError"></div>
+      </div>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="text" id="editContact" class="auth-input" placeholder="10-digit number" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+          <i class="fas fa-phone"></i>
+        </div>
+        <label class="floating-label">Phone Number</label>
+      </div>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <textarea id="editBio" class="auth-input" placeholder="Tell us about yourself..." style="height:100px; resize:vertical;"></textarea>
+          <i class="fas fa-edit"></i>
+        </div>
+        <label class="floating-label">Bio</label>
+      </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="card">
+      <button class="btn" onclick="saveProfile()">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+      <button class="btn btn-secondary" onclick="showChangePasswordModal()">
+        <i class="fas fa-key"></i> Change Password
+      </button>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div class="modal-overlay" id="changePasswordModal">
+    <div class="modal-content-container">
+      <button class="close-btn" onclick="closeModal('changePasswordModal')">
+        <i class="fas fa-times"></i>
+      </button>
+      <h3 class="section-header">Change Password</h3>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="password" id="currentPassword" class="auth-input" placeholder="Enter current password" required>
+          <i class="fas fa-lock"></i>
+          <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('currentPassword', this)"></i>
+        </div>
+        <label class="floating-label">Current Password</label>
+        <div class="input-error" id="currentPasswordError"></div>
+      </div>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="password" id="newPassword" class="auth-input" placeholder="Enter new password (min. 6 characters)" required>
+          <i class="fas fa-lock"></i>
+          <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('newPassword', this)"></i>
+        </div>
+        <label class="floating-label">New Password</label>
+        <div class="input-error" id="newPasswordError"></div>
+      </div>
+      
+      <div class="input-group">
+        <div class="field-wrapper">
+          <input type="password" id="confirmNewPassword" class="auth-input" placeholder="Confirm new password" required>
+          <i class="fas fa-lock"></i>
+          <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirmNewPassword', this)"></i>
+        </div>
+        <label class="floating-label">Confirm New Password</label>
+        <div class="input-error" id="confirmNewPasswordError"></div>
+      </div>
+      
+      <button class="btn" onclick="changePassword()">Update Password</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="/Home" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/My_Matches" class="nav-item">
+      <i class="fas fa-trophy"></i>
+      <span>My Match</span>
+    </a>
+    <a href="/Notifications" class="nav-item">
+      <i class="fas fa-bell"></i>
+      <span>Alert</span>
+    </a>
+    <a href="/Profile" class="nav-item active">
+      <i class="fas fa-user-cog"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    // Initialize Firebase
+    let app, auth, db, storage;
+    
+    function initializeFirebase() {
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = app.auth();     
+        db = app.firestore(); 
+        storage = app.storage();
+        db.settings({ ignoreUndefinedProperties: true });
+        
+        console.log("Firebase initialized successfully");
+        return true;
+      } catch (error) {
+        console.error("Firebase initialization error:", error);
+        showNotification("Error initializing app. Please refresh.", 'error');
+        return false;
+      }
+    }
+    
+    // Global variables
+    let currentUser = null;
+    let currentProfileData = null;
+    
+    // UI Elements
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileUsernameDisplay = document.getElementById('profileUsernameDisplay');
+    const avatarUpload = document.getElementById('avatarUpload');
+    const avatarDataURL = document.getElementById('avatarDataURL');
+    const notificationBox = document.getElementById('notificationBox');
+    const loadingScreen = document.getElementById('loadingScreen');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    // Show notification
+    let notificationTimeout;
+    function showNotification(message, type = 'info', duration = 3000) {
+      clearTimeout(notificationTimeout);
+      
+      let icon = 'fas fa-info-circle';
+      let className = 'info';
+      if (type === 'success') {
+        icon = 'fas fa-check-circle';
+        className = 'success';
+      } else if (type === 'error') {
+        icon = 'fas fa-times-circle';
+        className = 'error';
+      }
+
+      notificationBox.innerHTML = `<i class="${icon}"></i> <span>${message}</span>`;
+      notificationBox.className = ''; 
+      notificationBox.classList.add(className, 'show');
+
+      notificationTimeout = setTimeout(() => {
+        notificationBox.classList.remove('show');
+      }, duration);
+    }
+    
+    // Show/hide loading
+    function showLoading(show) {
+      if (show) {
+        loadingScreen.classList.add('show');
+        if (loadingOverlay) loadingOverlay.classList.remove('hidden');
+      } else {
+        loadingScreen.classList.remove('show');
+        if (loadingOverlay) loadingOverlay.classList.add('hidden');
+      }
+    }
+    
+    // Go back to main app
+    function goBack() {
+      window.location.href = '/Profile';
+    }
+    
+    // Modal functions
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.add('show');
+    }
+    
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+    
+    // Toggle password visibility
+    function togglePasswordVisibility(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash toggle-password';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye toggle-password';
+      }
+    }
+    
+    // Clear error messages
+    function clearErrors() {
+      document.querySelectorAll('.input-error').forEach(error => {
+        error.classList.remove('show');
+        error.textContent = '';
+      });
+    }
+    
+    // Show error for specific input
+    function showError(inputId, message) {
+      const errorElement = document.getElementById(inputId + 'Error');
+      if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+      }
+    }
+    
+    // Image compression function
+    function compressImage(file, maxWidth, maxHeight, quality, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          let canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Calculate new dimensions
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Get compressed data URL
+          let compressedDataURL = canvas.toDataURL('image/jpeg', quality);
+          
+          // Further compress to target size (1-4KB)
+          const MAX_SIZE_BYTES = 4096;
+          const MIN_SIZE_BYTES = 1024;
+          let currentQuality = quality;
+          let currentDataURL = compressedDataURL;
+          let size = currentDataURL.length * 0.75; // Approximate size in bytes
+          
+          // Reduce quality until we reach target size
+          while (size > MAX_SIZE_BYTES && currentQuality > 0.1) {
+            currentQuality -= 0.1;
+            currentDataURL = canvas.toDataURL('image/jpeg', currentQuality);
+            size = currentDataURL.length * 0.75;
+          }
+          
+          // If still too small, increase quality slightly
+          while (size < MIN_SIZE_BYTES && currentQuality < 0.9) {
+            currentQuality += 0.05;
+            currentDataURL = canvas.toDataURL('image/jpeg', currentQuality);
+            size = currentDataURL.length * 0.75;
+          }
+          
+          callback(currentDataURL);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Avatar upload
+    avatarUpload.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification("Please select an image smaller than 5MB.", 'error');
+        return;
+      }
+      
+      showLoading(true);
+      
+      // Compress and preview image
+      compressImage(file, 200, 200, 0.7, function(compressedDataURL) {
+        avatarDataURL.value = compressedDataURL;
+        profileAvatar.innerHTML = `<img src="${compressedDataURL}" alt="avatar">`;
+        showLoading(false);
+        showNotification('Profile picture updated!', 'success');
+      });
+    });
+    
+    // Username validation - lowercase and alphanumeric only
+    document.getElementById('editUsername').addEventListener('input', function() {
+      this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+    });
+
+    // Handle required visual changes when a game platform is selected
+    function togglePlatformRequirements() {
+      const platform = document.getElementById('editPlatform').value;
+      const lblGameuid = document.getElementById('lblGameuid');
+      const lblGamename = document.getElementById('lblGamename');
+      const lblLevel = document.getElementById('lblLevel');
+
+      if (platform) {
+        lblGameuid.innerHTML = `Game UID <span style="color: var(--error);">*</span>`;
+        lblGamename.innerHTML = `In-game Name <span style="color: var(--error);">*</span>`;
+        lblLevel.innerHTML = `Game Level <span style="color: var(--error);">*</span>`;
+      } else {
+        lblGameuid.innerHTML = `Game UID`;
+        lblGamename.innerHTML = `In-game Name`;
+        lblLevel.innerHTML = `Game Level`;
+        
+        // Remove active errors since platform requirement is cleared
+        document.getElementById('editGameuidError').classList.remove('show');
+        document.getElementById('editGamenameError').classList.remove('show');
+        document.getElementById('editLevelError').classList.remove('show');
+      }
+    }
+    
+    // Load user profile data
+    async function loadUserProfile() {
+      if (!currentUser) return;
+      
+      try {
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (userDoc.exists) {
+          currentProfileData = userDoc.data();
+          populateFormData();
+        }
+      } catch (error) {
+        console.error("Error loading user profile:", error);
+        showNotification('Failed to load profile data', 'error');
+      }
+    }
+    
+    // Populate form with user data
+    function populateFormData() {
+      if (!currentProfileData) return;
+      
+      // Basic information
+      document.getElementById('editFullname').value = currentProfileData.fullname || '';
+      document.getElementById('editEmail').value = currentProfileData.email || currentUser.email || '';
+      document.getElementById('editUsername').value = currentProfileData.username || '';
+      document.getElementById('editGamename').value = currentProfileData.gamename || '';
+      document.getElementById('editGameuid').value = currentProfileData.gameuid || currentProfileData.gameUid || '';
+      document.getElementById('editLevel').value = currentProfileData.level || '';
+      document.getElementById('editPlatform').value = currentProfileData.platform || currentProfileData.gamePlatform || '';
+      document.getElementById('editContact').value = currentProfileData.contact || '';
+      document.getElementById('editBio').value = currentProfileData.bio || '';
+      avatarDataURL.value = currentProfileData.avatarDataURL || currentProfileData.profilePic || '';
+      
+      // Update profile header
+      profileUsernameDisplay.textContent = `@${currentProfileData.username || 'username'}`;
+      
+      if (currentProfileData.avatarDataURL || currentProfileData.profilePic) {
+        profileAvatar.innerHTML = `<img src="${currentProfileData.avatarDataURL || currentProfileData.profilePic}" alt="avatar">`;
+      } else {
+        profileAvatar.textContent = (currentProfileData.username || 'U').charAt(0).toUpperCase();
+      }
+
+      togglePlatformRequirements();
+    }
+    
+    // Save profile changes
+    async function saveProfile() {
+      if (!currentUser || !currentProfileData) return;
+      
+      clearErrors();
+      
+      const fullname = document.getElementById('editFullname').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const username = document.getElementById('editUsername').value.trim();
+      const gamename = document.getElementById('editGamename').value.trim();
+      const gameuid = document.getElementById('editGameuid').value.trim();
+      const levelRaw = document.getElementById('editLevel').value.trim();
+      const platform = document.getElementById('editPlatform').value;
+      const contact = document.getElementById('editContact').value.trim();
+      const bio = document.getElementById('editBio').value.trim();
+      const avatar = avatarDataURL.value;
+      
+      // Common validations
+      if (!fullname) {
+        showError('editFullname', 'Full name is required');
+        return;
+      }
+      
+      if (!email) {
+        showError('editEmail', 'Email is required');
+        return;
+      }
+
+      if (!username) {
+        showError('editUsername', 'Username is required');
+        return;
+      }
+      
+      if (username.length < 2) {
+        showError('editUsername', 'Username must be at least 2 characters');
+        return;
+      }
+      
+      // Check if username is available (if changed)
+      if (username !== currentProfileData.username) {
+        const usernameQuery = await db.collection('users').where('username', '==', username).get();
+        if (!usernameQuery.empty) {
+          showError('editUsername', 'Username already taken. Please choose another.');
+          return;
+        }
+      }
+
+      // Conditional validation logic:
+      // If a platform is chosen, Gamer Nickname, Game UID, and Game Level must be entered.
+      if (platform) {
+        if (!gameuid) {
+          showError('editGameuid', 'Game UID is required when a Game Platform is selected');
+          return;
+        }
+        if (!gamename) {
+          showError('editGamename', 'In-game Name is required when a Game Platform is selected');
+          return;
+        }
+        if (!levelRaw) {
+          showError('editLevel', 'Game Level is required when a Game Platform is selected');
+          return;
+        }
+        
+        const parsedLevel = parseInt(levelRaw);
+        if (isNaN(parsedLevel) || parsedLevel <= 0) {
+          showError('editLevel', 'Please enter a valid Account Level');
+          return;
+        }
+
+        // Friendly advice for competitive eligibility warning
+        if (parsedLevel < 50) {
+          showNotification('Warning: Account level must be 50+ to register for active esport matches!', 'error', 5000);
+        }
+      }
+      
+      showLoading(true);
+      
+      try {
+        const levelInt = levelRaw ? parseInt(levelRaw) : 0;
+
+        await db.collection("users").doc(currentUser.uid).update({
+          fullname,
+          email,
+          username,
+          gamename,
+          gameuid,
+          level: levelInt,
+          platform,
+          gamePlatform: platform, // Synchronize both field structures safely
+          contact,
+          bio,
+          avatarDataURL: avatar,
+          profilePic: avatar // Synchronize both image fields safely
+        });
+        
+        currentProfileData.fullname = fullname;
+        currentProfileData.email = email;
+        currentProfileData.username = username;
+        currentProfileData.gamename = gamename;
+        currentProfileData.gameuid = gameuid;
+        currentProfileData.level = levelInt;
+        currentProfileData.platform = platform;
+        currentProfileData.gamePlatform = platform;
+        currentProfileData.contact = contact;
+        currentProfileData.bio = bio;
+        currentProfileData.avatarDataURL = avatar;
+        currentProfileData.profilePic = avatar;
+        
+        // Update profile header
+        profileUsernameDisplay.textContent = `@${username}`;
+        
+        showNotification('Profile updated successfully!', 'success');
+        // Also update the current user's display name in Firebase Auth if username changed
+        if (currentUser.displayName !== username) {
+          await currentUser.updateProfile({ displayName: username });
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        showNotification('Failed to update profile', 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+    
+    // Show change password modal
+    function showChangePasswordModal() {
+      // Reset form
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmNewPassword').value = '';
+      
+      clearErrors();
+      
+      showModal('changePasswordModal');
+    }
+    
+    // Change password
+    async function changePassword() {
+      if (!currentUser) return;
+      
+      clearErrors();
+      
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+      
+      if (!currentPassword) {
+        showError('currentPassword', 'Current password is required');
+        return;
+      }
+      
+      if (!newPassword) {
+        showError('newPassword', 'New password is required');
+        return;
+      }
+      
+      if (!confirmNewPassword) {
+        showError('confirmNewPassword', 'Please confirm your new password');
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        showError('newPassword', 'New password must be at least 6 characters');
+        return;
+      }
+      
+      if (newPassword !== confirmNewPassword) {
+        showError('confirmNewPassword', 'New passwords do not match');
+        return;
+      }
+      
+      showLoading(true);
+      
+      try {
+        // Reauthenticate user
+        const credential = firebase.auth.EmailAuthProvider.credential(currentUser.email, currentPassword);
+        await currentUser.reauthenticateWithCredential(credential);
+        
+        // Update password
+        await currentUser.updatePassword(newPassword);
+        
+        showNotification('Password changed successfully!', 'success');
+        closeModal('changePasswordModal');
+      } catch (error) {
+        console.error("Password change error:", error);
+        let message = 'Failed to change password. Please try again.';
+        if (error.code === 'auth/wrong-password') message = 'Current password is incorrect.';
+        else if (error.code === 'auth/weak-password') message = 'New password is too weak.';
+        
+        showNotification(message, 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+    
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Firebase
+      if (initializeFirebase()) {
+        // Check authentication state
+        auth.onAuthStateChanged(function(user) {
+          if (user) {
+            currentUser = user;
+            loadUserProfile();
+          } else {
+            // Redirect to login if not authenticated
+            window.location.href = '/LoginAuth';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

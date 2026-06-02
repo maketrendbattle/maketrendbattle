@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Match Details & Feed - Make Trend Battle</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Rajdhani:wght@600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    /* Premium Cyberpunk Style Variables */
+    :root {
+      --bg: #050812;
+      --card: #0f172a;
+      --card-light: #1e293b;
+      --muted: #64748b;
+      --accent: #00eaff;
+      --accent-dark: #0099ff;
+      --accent-glow: rgba(0, 234, 255, 0.35);
+      --success: #2ecc71;
+      --error: #e74c3c;
+      --warning: #f39c12;
+      --purple: #9b59b6;
+      --radius: 24px; /* Premium Bubble Look */
+      --header-height: 70px;
+      --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 234, 255, 0.1);
+      --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Rajdhani', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      --br-gradient: linear-gradient(135deg, #ff7b00, #ff5500);
+      --cs-gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      --lw-gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: #e8eef3;
+      padding-top: calc(var(--header-height) + 15px);
+      padding-bottom: 95px;
+      min-height: 100vh;
+      font-family: var(--font-primary);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 234, 255, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(155, 89, 182, 0.05) 0%, transparent 25%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* Fixed App Header Layout */
+    .custom-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: rgba(11, 17, 32, 0.95);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+    }
+
+    .logo-container {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .logo-container span {
+      font-size: 28px;
+      margin-right: 8px;
+      color: #fff;
+    }
+
+    .back-btn {
+      background: rgba(0, 234, 255, 0.08);
+      border: 1px solid rgba(0, 234, 255, 0.3);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 234, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    /* Unified Layout Grid */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* Bubble Match Card Design */
+    .bubble-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .bubble-card:hover {
+      transform: perspective(1000px) rotateX(1deg) translateY(-5px);
+      box-shadow: var(--shadow-3d) !important;
+    }
+
+    .bubble-card:hover {
+      border-color: rgba(0, 234, 255, 0.3) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    .section-header {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .feed-container-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px; /* SPACED FIX FROM SEARCH BOX */
+      margin-bottom: 20px; /* SPACED FIX FROM MATCH CARDS */
+    }
+    
+    .feed-container-title i {
+      color: var(--accent);
+    }
+
+    /* Wallet card indicators */
+    .wallet-info-bar {
+      background: rgba(52, 152, 219, 0.08);
+      border: 1px solid rgba(52, 152, 219, 0.25);
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .wallet-balance-lbl {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wallet-balance-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Warning & eligibility banners */
+    .level-warning-banner {
+      background: rgba(243, 156, 18, 0.08);
+      border: 1px solid rgba(243, 156, 18, 0.25);
+      color: var(--warning);
+      padding: 10px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    /* Match Detail Display Banner */
+    .detail-banner {
+      width: 100%;
+      min-height: 150px;
+      background-size: cover;
+      background-position: center;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: flex-end;
+    }
+
+    /* Header style with no uploaded pic */
+    .detail-banner.no-banner-image {
+      min-height: auto;
+      height: auto;
+      background: transparent;
+      border: none;
+      margin-bottom: 0px; 
+    }
+
+    .detail-banner::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(5,8,18,0) 0%, rgba(5,8,18,0.95) 100%);
+      z-index: 1;
+    }
+    
+    .detail-banner.no-banner-image::after {
+      display: none;
+    }
+
+    .detail-banner-overlay {
+      width: 100%;
+      padding: 16px 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .detail-banner.no-banner-image .detail-banner-overlay {
+      padding: 10px 0 0 0;
+    }
+
+    /* New Modern Lobby ID Capsule */
+    .lobby-id-badge {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .lobby-id-badge .highlight {
+      color: var(--accent);
+      font-weight: 700;
+      text-shadow: 0 0 5px var(--accent-glow);
+    }
+
+    /* 💎 Redesigned Cyberpunk Framed Title Box with Accented Left Neon Border */
+    .premium-title-wrapper {
+      border-left: 4px solid var(--accent);
+      background: linear-gradient(90deg, rgba(0, 234, 255, 0.08) 0%, rgba(15, 23, 42, 0.45) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 4px 16px 16px 4px;
+      padding: 12px 18px;
+      margin-bottom: 12px;
+      box-shadow: inset 10px 0 20px rgba(0, 234, 255, 0.01), 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .premium-title-text {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
+    }
+
+    /* 🔒 Redesigned Subtitle Border Divider below text */
+    .subtitle-border-divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap; 
+      font-size: 13px;
+      color: #fff;
+      font-weight: 700;
+      border-bottom: 2px solid rgba(0, 234, 255, 0.15); /* Sleek Cyan border below */
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    /* Action triggers */
+    .btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--bg);
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      width: 100%;
+      font-family: var(--font-primary);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 234, 255, 0.5);
+    }
+
+    .btn:disabled {
+      background: rgba(255, 255, 255, 0.06) !important;
+      color: var(--muted) !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    .btn-already-joined {
+      background: linear-gradient(135deg, var(--success) 0%, #27ae60 100%) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.25) !important;
+    }
+
+    .btn-already-joined:hover {
+      box-shadow: 0 6px 20px rgba(46, 204, 113, 0.45) !important;
+    }
+
+    /* Renders for Feed list */
+    .tournament-card {
+      background: rgba(15, 23, 42, 0.7) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius) !important;
+      margin-bottom: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 234, 255, 0.15) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .tournament-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 234, 255, 0.35) !important;
+      box-shadow: 0 15px 45px rgba(0, 234, 255, 0.12) !important;
+    }
+
+    /* Tactile Click override - Forces cards to handle redirection beautifully */
+    .tournament-card .btn {
+      pointer-events: none;
+    }
+
+    .banner-view {
+      width: 100%;
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+    }
+
+    .banner-view.no-banner-image {
+      height: auto;
+      background: transparent;
+    }
+
+    .banner-view::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(5,8,18,0.95) 100%);
+      z-index: 1;
+    }
+    
+    .banner-view.no-banner-image::after {
+      display: none;
+    }
+
+    .banner-badge-admin {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 800;
+      z-index: 3;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .banner-badge-new {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--success);
+      color: var(--bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 800;
+      z-index: 3;
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+    }
+
+    .tournament-body-wrap {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Financial Badges & Headers */
+    .t-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .status-pill-badge.upcoming { background: rgba(0, 234, 255, 0.08); color: var(--accent); border-color: rgba(0, 234, 255, 0.2); }
+    .status-pill-badge.live { background: rgba(255, 0, 80, 0.08); color: #ff0050; border-color: rgba(255, 0, 80, 0.3); }
+    .status-pill-badge.joined { background: rgba(46, 204, 113, 0.08); color: var(--success); border-color: rgba(46, 204, 113, 0.3); }
+    .status-pill-badge.expired { background: rgba(231, 76, 60, 0.08); color: var(--error); border-color: rgba(231, 76, 60, 0.3); }
+
+    .badge-financial-grid {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .prize-badge-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      background: rgba(46, 204, 113, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      white-space: nowrap;
+      font-family: var(--font-display);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.15);
+    }
+
+    .entry-badge-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      background: rgba(243, 156, 18, 0.1);
+      color: var(--warning);
+      border: 1px solid rgba(243, 156, 18, 0.3);
+      white-space: nowrap;
+      font-family: var(--font-display);
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.15);
+    }
+
+    /* Structured Specs Details grids */
+    .specs-metric-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1.5px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+
+    .spec-details-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Dynamic Dual Columns specs layout */
+    .specs-columns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .spec-rule-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 2px 0;
+    }
+    
+    .spec-rule-lbl {
+      color: var(--muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .spec-rule-lbl i {
+      color: var(--accent);
+      font-size: 11px;
+      width: 14px;
+      text-align: left;
+    }
+
+    .spec-rule-val {
+      font-weight: 700;
+      color: #fff;
+      font-size: 12.5px;
+      padding-left: 20px;
+    }
+
+    .single-full-spec-highlight {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 10px;
+      font-size: 12.5px;
+    }
+    
+    .single-full-spec-lbl {
+      color: var(--muted);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .single-full-spec-lbl i {
+      color: var(--accent);
+    }
+    
+    .single-full-spec-val {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .creator-attribution-tag {
+      font-size: 11.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px dashed rgba(255,255,255,0.05);
+      padding-top: 8px;
+    }
+
+    .roster-info-text {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Secure Credentials card box (Only shown if joined) */
+    .secure-credentials-card {
+      background: rgba(0, 234, 255, 0.02);
+      border: 1.5px solid rgba(0, 234, 255, 0.15);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 15px rgba(0, 234, 255, 0.1);
+    }
+
+    .secure-credentials-header {
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .secure-credentials-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .cred-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn-tactile {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn-tactile:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Registered Participants list */
+    .unified-competitors-wrapper {
+      margin-top: 15px;
+      margin-bottom: 16px;
+    }
+
+    .competitors-container-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .competitor-row-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(0, 234, 255, 0.08);
+      padding: 14px 18px;
+      border-radius: 16px;
+      min-width: 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .competitor-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--card-light);
+      border: 2px solid var(--accent);
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
+    }
+
+    .competitor-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex-grow: 1;
+    }
+
+    .competitor-player-line1 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .competitor-player-username-tag {
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .competitor-player-line2-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.04);
+      padding-top: 6px;
+    }
+
+    .competitor-player-ingame-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .competitor-player-uid-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .competitor-player-joined-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* Modal / Notification alerts */
+    #notificationBox {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 10002;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #notificationBox.show { top: 85px; }
+    #notificationBox.success { background: rgba(46, 204, 113, 0.95); }
+    #notificationBox.error { background: rgba(231, 76, 60, 0.95); }
+    #notificationBox.info { background: rgba(19, 24, 43, 0.95); border: 1px solid var(--accent); }
+
+    /* Custom Confirm dialog overlays */
+    .confirm-dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 18, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10030;
+      padding: 20px;
+    }
+
+    .confirm-dialog-overlay.show {
+      display: flex;
+    }
+
+    .confirm-dialog-card {
+      background: var(--card);
+      border: 1.5px solid var(--accent);
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 450px;
+      padding: 28px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      animation: modalSlide 0.3s ease;
+    }
+
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(15px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .confirm-icon-box {
+      font-size: 48px;
+      color: var(--accent);
+      margin-bottom: 16px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .confirm-title-text {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .confirm-desc-text {
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .confirm-dialog-card .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .confirm-dialog-card .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .confirm-actions-wrap {
+      display: flex;
+      gap: 15px;
+    }
+
+    .confirm-actions-wrap .btn {
+      flex: 1;
+    }
+
+    /* Fixed Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 75px;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: row; 
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px calc( env(safe-area-inset-bottom, 0px) / 2 );
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 1000;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      gap: 4px;
+      flex: 1;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-item i {
+      font-size: 18px;
+    }
+    
+    .nav-item.active {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+    }
+
+    /* Custom Search Input wrapper */
+    .search-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .search-input-container i {
+      position: absolute;
+      left: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .custom-feed-search-bar {
+      width: 100%;
+      padding: 12px 14px 12px 38px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .custom-feed-search-bar:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(0, 234, 255, 0.15);
+    }
+
+    /* Modal Verification Styling */
+    .verification-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 18, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10050;
+      padding: 20px;
+    }
+
+    .verification-modal-overlay.show {
+      display: flex;
+    }
+
+    .verification-modal-card {
+      background: var(--card);
+      border: 2px solid var(--error);
+      border-radius: var(--radius);
+      padding: 30px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(231, 76, 60, 0.3);
+      animation: modalSlide 0.3s ease;
+    }
+
+    .verification-icon {
+      font-size: 54px;
+      color: var(--error);
+      margin-bottom: 16px;
+      text-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+    }
+
+    .owner-badge {
+      background: rgba(15, 89, 182, 0.15);
+      border: 1px solid var(--purple);
+      color: #d1a4ff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .competitor-badge {
+      background: rgba(0, 234, 255, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    /* 🔒 CYBERPUNK SLIDER / PROGRESS BAR CUSTOM CSS */
+    .roster-progress-container {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .roster-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .roster-progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .roster-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+      border-radius: 10px;
+      box-shadow: 0 0 8px var(--accent);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 🛡️ GAME PLATFORM/TITLE COMPACT GLOWING CSS BADGES */
+    .platform-badge-compact {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px; /* Touches / extremely close as requested */
+      background: rgba(0, 234, 255, 0.06);
+      border: 1px solid rgba(0, 234, 255, 0.15);
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+      white-space: nowrap; 
+    }
+
+    /* Game Platform Image Icon Style */
+    .game-platform-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+    }
+
+    /* Description Box CSS Refinement */
+    .guidelines-desc-box {
+      background: rgba(255, 255, 255, 0.015);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px 12px 12px 4px;
+      padding: 14px 18px;
+      margin-top: 10px;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: #e8eef3;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      border-right: 1px solid rgba(255, 255, 255, 0.03);
+      white-space: pre-wrap; /* BUGFIX: Respects line breaks created by host */
+    }
+
+    /* ⚡ TOP-FIXED NEON ACTION LOADING BAR */
+    .loading-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 234, 255, 0.05);
+      z-index: 10010;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    
+    .loading-bar-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: loadMove 1.5s infinite linear;
+    }
+    
+    @keyframes loadMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+      .bubble-card {
+        padding: 16px;
+        border-radius: 20px !important;
+      }
+      .details-metric-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Fixed pulsing neon loading bar -->
+  <div class="loading-bar-container" id="loadingOverlay">
+    <div class="loading-bar-fill"></div>
+  </div>
+
+  <header class="custom-header">
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Exit</button>
+    <div class="logo-container"><span><i class="fas fa-bolt"></i></span> MAKE TREND BATTLE</div>
+    <div style="width: 75px;"></div>
+  </header>
+
+  <div id="notificationBox"></div>
+
+  <!-- Profile Requirements Verification Guard Modal -->
+  <div class="verification-modal-overlay" id="verificationModal">
+    <div class="verification-modal-card">
+      <div class="verification-icon"><i class="fas fa-triangle-exclamation"></i></div>
+      <h3 style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 12px; letter-spacing: 0.5px;">Gamer Profile Incomplete!</h3>
+      <p style="color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 24px;" id="verificationModalText">
+        To maintain professional competitive integrity, players must have: <br>
+        <strong>1. Account Level 50+<br>2. In-Game Nickname<br>3. Free Fire Game UID<br>4. Game Platform Configured</strong><br><br>
+        Please configure your game parameters now to register.
+      </p>
+      <button class="btn" style="background: linear-gradient(135deg, var(--error) 0%, #c0392b 100%); color: #fff; box-shadow: 0 4px 15px rgba(231,76,60,0.3);" onclick="redirectToProfileEditor()"><i class="fas fa-user-gear"></i> Complete Game Profile</button>
+    </div>
+  </div>
+
+  <!-- Confirmation modal overlay (Zero browser-alert system) -->
+  <div class="confirm-dialog-overlay" id="confirmModal">
+    <div class="confirm-dialog-card">
+      <div class="confirm-icon-box"><i class="fas fa-receipt"></i></div>
+      <div class="confirm-title-text">Confirm Ticket Purchase</div>
+      <div class="confirm-desc-text" id="confirmModalText">Are you sure you want to register for this match? NPR 0.00 will be debited from your wallet balance.</div>
+      <div class="confirm-actions-wrap">
+        <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+        <button class="btn" id="btnModalConfirm" onclick="commitAtomicPurchaseJoin()"><i class="fas fa-ticket-alt"></i> Purchase & Join</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unified container -->
+  <div class="container">
+    
+    <!-- WALLET & WARNING ADVISORIES (Only visible on focused detail view) -->
+    <div id="advisoryArea" style="display: none;">
+      <!-- Eligibility Check Banner -->
+      <div class="level-warning-banner">
+        <i class="fas fa-shield-alt"></i>
+        <span>Security Policy: Active Room Level Requirement: 50+ only. Roster verifiers validate profile level parameters.</span>
+      </div>
+
+      <!-- Wallet Information Bar -->
+      <div class="wallet-info-bar">
+        <span class="wallet-balance-lbl"><i class="fas fa-wallet"></i> Security Wallet Balance:</span>
+        <span class="wallet-balance-val" id="walletBalance">NPR 0.00</span>
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE WORKSPACE -->
+    <div id="workspaceContainer">
+      <!-- Programmatically loaded dynamically based on query parameters -->
+    </div>
+
+  </div>
+
+  <!-- Fixed Bottom App Navigation -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="/inmatchjoin" class="nav-item">
+      <i class="fas fa-gamepad"></i>
+      <span>Games</span>
+    </a>
+    <a href="/My_Matches" class="nav-item">
+      <i class="fas fa-trophy"></i>
+      <span>Joined Games</span>
+    </a>
+    <a href="/Profile" class="nav-item">
+      <i class="fas fa-user-cog"></i>
+      <span>Control</span>
+    </a>
+  </nav>
+
+  <!-- Compat Core Firebase Web SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // System Local Configuration Fallback 
+    const localFirebaseConfig = {
+      apiKey: "AIzaSyCsW8Yy1UKIRX6Sm6SoQr1aZowF8OMFO2g",
+      authDomain: "maketrendbattle-rockyaxis.firebaseapp.com",
+      projectId: "maketrendbattle-rockyaxis",
+      storageBucket: "maketrendbattle-rockyaxis.firebasestorage.app",
+      messagingSenderId: "40509633595",
+      appId: "1:40509633595:web:c6b81d6b62dab62fd8981e",
+      measurementId: "G-L9B1HELEB0"
+    };
+
+    let app, auth, db;
+    let currentUser = null;
+    let currentProfileData = null;
+    let urlMatchIdParam = null;
+    let loadedMatchesList = [];
+    let selectedMatchPayload = null;
+    let selectedMatchDocId = null;
+    let hasLoadedFirstSnapshot = false; // Flag to prevent premature rendering before snapshot resolves
+    
+    // Memory Cache for Player Profiles dynamically queried
+    const dynamicProfileCache = {};
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'maketrendbattle-rockyaxis';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
+
+    function getPublicCollection(colName) {
+      return db.collection('artifacts').doc(appId).collection('public').doc('data').collection(colName);
+    }
+
+    function getPrivateCollection(userId, colName) {
+      return db.collection('artifacts').doc(appId).collection('users').doc(userId).collection(colName);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Parse parameters to identify direct landing trigger
+      const urlParams = new URLSearchParams(window.location.search);
+      urlMatchIdParam = urlParams.get('matchId') || urlParams.get('id');
+
+      try {
+        if (!firebase.apps.length) {
+          app = firebase.initializeApp(firebaseConfig);
+        } else {
+          app = firebase.app();
+        }
+        auth = firebase.auth();
+        db = firebase.firestore();
+      } catch (err) {
+        console.error("Firebase start failed:", err);
+        showNotification("Failed to connect with ledger nodes.", "error");
+        return;
+      }
+
+      auth.onAuthStateChanged(async (user) => {
+        currentUser = user;
+        if (user) {
+          await loadUserProfileAndWallet();
+        }
+        await synchronizeMatchesStream();
+        document.getElementById('loadingOverlay').classList.add('hidden');
+
+        // Real-time auto-refresh: Periodically refresh the UI state to handle match start times
+        setInterval(() => {
+          routeUserInterfaceMode();
+        }, 15000);
+      });
+    });
+
+    async function loadUserProfileAndWallet() {
+      if (!currentUser) return;
+      try {
+        const profileSnap = await db.collection('users').doc(currentUser.uid).get();
+        if (profileSnap.exists) {
+          currentProfileData = profileSnap.data();
+        } else {
+          currentProfileData = {
+            level: 50,
+            gamename: "Competitor",
+            username: "player",
+            gameuid: "N/A",
+            gamePlatform: "Free Fire"
+          };
+        }
+      } catch (err) {
+        console.error("Profile load failed, using local fallback profile:", err);
+        currentProfileData = {
+          level: 50,
+          gamename: "Competitor",
+          username: "player",
+          gameuid: "N/A",
+          gamePlatform: "Free Fire"
+        };
+      }
+
+      // Setup real-time updates for wallet balance
+      try {
+        getPrivateCollection(currentUser.uid, 'wallets').doc('wallet').onSnapshot(snap => {
+          if (snap.exists) {
+            document.getElementById('walletBalance').textContent = `NPR ${(snap.data().balance || 0).toFixed(2)}`;
+          } else {
+            document.getElementById('walletBalance').textContent = `NPR 0.00`;
+          }
+        }, err => {
+          console.error("Wallet listener error:", err);
+        });
+      } catch (err) {
+        console.error("Wallet connection failed:", err);
+      }
+    }
+
+    // Real-time synchronization of matches
+    async function synchronizeMatchesStream() {
+      try {
+        getPublicCollection('matches').onSnapshot((snap) => {
+          loadedMatchesList = [];
+          const uidsToResolve = new Set();
+
+          snap.forEach(doc => {
+            const data = doc.data();
+            loadedMatchesList.push({ id: doc.id, ...data });
+            
+            // Failsafe array detection
+            const playersArray = Array.isArray(data.players) ? data.players : [];
+            playersArray.forEach(p => {
+              if (p && p.uid) uidsToResolve.add(p.uid);
+            });
+            if (data.creatorUid) uidsToResolve.add(data.creatorUid);
+          });
+
+          loadedMatchesList.sort((a, b) => {
+            const timeA = a.createdAt?.seconds || 0;
+            const timeB = b.createdAt?.seconds || 0;
+            return timeB - timeA;
+          });
+
+          // Unblocks UI rendering instantly with cached/default data!
+          hasLoadedFirstSnapshot = true;
+          routeUserInterfaceMode();
+
+          // Resolves dynamically in background
+          resolveProfileCredentials(Array.from(uidsToResolve));
+
+        }, (err) => {
+          console.error("Matches observer error:", err);
+        });
+      } catch (err) {
+        console.error("Observer hook error:", err);
+      }
+    }
+
+    async function resolveProfileCredentials(uidsList) {
+      let updated = false;
+      for (const uid of uidsList) {
+        if (!dynamicProfileCache[uid]) {
+          dynamicProfileCache[uid] = { loading: true };
+          try {
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (userDoc.exists) {
+              const uData = userDoc.data();
+              dynamicProfileCache[uid] = {
+                name: uData.gamename || uData.username || "Organizer",
+                username: uData.username ? `@${uData.username.toLowerCase()}` : '@gamer',
+                gameUid: uData.gameUid || uData.gameuid || "N/A",
+                avatar: uData.avatarDataURL || uData.profilePic || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`
+              };
+              updated = true;
+            } else {
+              dynamicProfileCache[uid] = {
+                name: "Organizer",
+                username: '@gamer',
+                gameUid: "N/A",
+                avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`
+              };
+            }
+          } catch (e) {
+            console.warn("Could not resolve host info:", uid, e);
+            dynamicProfileCache[uid] = {
+              name: "Organizer",
+              username: '@gamer',
+              gameUid: "N/A",
+              avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(uid)}`
+            };
+          }
+        }
+      }
+      if (updated) {
+        routeUserInterfaceMode();
+      }
+    }
+
+    function routeUserInterfaceMode() {
+      if (!hasLoadedFirstSnapshot) return;
+      
+      if (urlMatchIdParam) {
+        document.getElementById('advisoryArea').style.display = 'block';
+        renderFocusedMatchView();
+      } else {
+        document.getElementById('advisoryArea').style.display = 'none';
+        renderInteractiveMatchesFeed();
+      }
+    }
+
+    // Helpers to process dynamic capacity limits & display configurations
+    function getCapacityLimits(match) {
+      const playersList = match.players || [];
+      const playersCount = playersList.length;
+      
+      const isCsOrLw = match.type === 'CS' || match.type === 'LW';
+      const defaultCap = isCsOrLw ? 2 : 20;
+      const totalMaxPlayers = parseInt(match.maxPlayers) || defaultCap;
+      
+      const modeSize = match.mode || match.teamSize || 'Solo';
+      
+      let divisor = 1;
+      if (modeSize === 'Duo') {
+        divisor = 2;
+      } else if (modeSize === 'Squad') {
+        divisor = 4;
+      }
+
+      // STRICT LOGIC: Every 1 member counts as 1 team/slot towards the scaled team limit.
+      const maxSlotsLimit = Math.floor(totalMaxPlayers / divisor) || 1;
+      const currentSlotDisplay = playersCount; 
+
+      const isLobbyFull = currentSlotDisplay >= maxSlotsLimit;
+
+      return {
+        playersCount,
+        totalMaxPlayers,
+        divisor,
+        currentSlotDisplay,
+        maxSlotsLimit,
+        isLobbyFull,
+        modeSize
+      };
+    }
+
+    // -------------------------------------------------------------
+    // RENDER PATH 1: ACTIVE MATCHES FEED
+    // -------------------------------------------------------------
+    function renderInteractiveMatchesFeed() {
+      const parent = document.getElementById('workspaceContainer');
+      const searchQuery = document.getElementById('localFeedSearchInput') ? document.getElementById('localFeedSearchInput').value.trim() : '';
+
+      parent.innerHTML = `
+        <div class="search-input-container">
+          <i class="fas fa-search"></i>
+          <input type="text" id="localFeedSearchInput" class="custom-feed-search-bar" placeholder="Search by title, map, or ID..." oninput="renderInteractiveMatchesFeed()">
+        </div>
+        <div class="feed-container-title"><i class="fas fa-binoculars"></i> Active Esport Lobbies</div>
+        <div id="localFeedContainer"></div>
+      `;
+
+      if (searchQuery) {
+        const input = document.getElementById('localFeedSearchInput');
+        input.value = searchQuery;
+        input.focus();
+      }
+
+      const feedContainer = document.getElementById('localFeedContainer');
+      feedContainer.innerHTML = '';
+
+      const now = Date.now();
+
+      // STRICT LIVE EXPIRED & MATCH FULL FILTERS: 
+      // Hide expired matches, start time matches with no joiners, and fully registered matches.
+      const activeUpcomingList = loadedMatchesList.filter(m => {
+        const matchStartTimeMs = m.startTime?.seconds ? (m.startTime.seconds * 1000) : now;
+        const isStarted = now >= matchStartTimeMs;
+        const otherPlayersJoined = (m.players || []).some(p => p && p.uid !== m.creatorUid);
+
+        if (m.status === 'expired') return false;
+        if (isStarted && !otherPlayersJoined) return false;
+        
+        // Hide match if full (20/20, 10/10, 5/5, etc.)
+        const cap = getCapacityLimits(m);
+        if (cap.isLobbyFull) return false;
+
+        return m.status === 'upcoming' && !isStarted && (m.visibility === 'public' || !m.visibility);
+      });
+      let filteredUpcoming = activeUpcomingList;
+
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filteredUpcoming = activeUpcomingList.filter(m => {
+          return (m.title || '').toLowerCase().includes(q) || 
+                 (m.map || m.mapName || '').toLowerCase().includes(q) || 
+                 (m.matchId || '').toLowerCase().includes(q);
+        });
+      }
+
+      if (filteredUpcoming.length === 0) {
+        feedContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-folder-open" style="font-size: 32px; opacity: 0.3;"></i>
+            <p style="margin-top: 8px;">No active matches found. Refine your query or create a lobby!</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredUpcoming.forEach(m => {
+        const cap = getCapacityLimits(m);
+        const hostProfile = dynamicProfileCache[m.creatorUid] || { name: m.creatorName || 'Organizer', gameUid: 'N/A' };
+        const hostName = hostProfile.name;
+        const hostGameUid = hostProfile.gameUid || 'N/A';
+
+        const entryFee = parseFloat(m.entryFee || m.entryfee || m.fee || 0) || 0;
+        const prizeAmount = parseFloat(m.prize || m.prizePool || m.prizePoolValue || m.winnings || m.winningAmount || 0) || 0;
+
+        let rewardTextVal = prizeAmount;
+        if (m.type === 'BR' && m.brType === 'nonpaid') {
+          rewardTextVal = entryFee * (m.players || []).length;
+        } else if (m.type === 'CS' && m.matchType === 'profit') {
+          rewardTextVal = entryFee * 2;
+        }
+
+        const displayPrizeText = rewardTextVal > 0 ? `NPR ${rewardTextVal.toFixed(2)}` : 'NPR 0.00';
+        const displayEntryText = entryFee > 0 ? `NPR ${entryFee.toFixed(2)}` : 'Free';
+        const matchTypeMode = entryFee > 0 ? "Paid" : "Free";
+
+        let brPrizeHTML = '';
+        if (m.type === 'BR' && m.brType !== 'normal') {
+          let t1, t2, t3;
+          if (m.brType === 'nonpaid') {
+            const total = entryFee * (m.players || []).length;
+            t1 = total * 0.35;
+            t2 = total * 0.25;
+            t3 = total * 0.15;
+          } else {
+            t1 = m.prizes?.top1 || 0;
+            t2 = m.prizes?.top2 || 0;
+            t3 = m.prizes?.top3 || 0;
+          }
+          brPrizeHTML = `
+            <div class="single-full-spec-highlight" style="margin-top: 5px; border-color: rgba(46, 204, 113, 0.2); background: rgba(46, 204, 113, 0.03);">
+              <span class="single-full-spec-lbl"><i class="fas fa-trophy" style="color:var(--success)"></i> Rank Prizes</span>
+              <span class="single-full-spec-val" style="font-size: 11px; color: var(--success);">
+                1st: ${t1.toFixed(0)} | 2nd: ${t2.toFixed(0)} | 3rd: ${t3.toFixed(0)}
+              </span>
+            </div>
+          `;
+        }
+
+        let formatTitle = "Clash Squad";
+        if (m.type === 'BR') formatTitle = "Battle Royale";
+        else if (m.type === 'LW') formatTitle = "Lone Wolf";
+
+        const hasCustomBannerImage = m.banner && m.banner.trim() !== '';
+        const bannerStyleAttribute = hasCustomBannerImage ? `background-image: url('${m.banner}')` : '';
+
+        let headerMarkup = '';
+        if (hasCustomBannerImage) {
+          headerMarkup = `
+            <div class="banner-view" style="${bannerStyleAttribute}">
+              <div class="banner-label-wrap">
+                <div class="premium-title-wrapper">
+                  <div class="premium-title-text">${m.title || 'Esports Match'}</div>
+                </div>
+                <div class="banner-main-sub">
+                  <div class="platform-badge-compact">
+                    <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                    <span>${m.platform || 'Free Fire'}</span>
+                  </div> 
+                  <span style="white-space: nowrap; display:inline-flex; align-items:center; font-weight:700;">• ${formatTitle} Format</span>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          headerMarkup = `
+            <div class="card-header-no-pic">
+              <div class="premium-title-wrapper">
+                <div class="premium-title-text">${m.title || 'Esports Match'}</div>
+              </div>
+              <div class="banner-main-sub" style="margin-top:0;">
+                <div class="platform-badge-compact">
+                  <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                  <span>${m.platform || 'Free Fire'}</span>
+                </div> 
+                <span style="white-space: nowrap; display:inline-flex; align-items:center; font-weight:700;">• ${formatTitle} Format</span>
+              </div>
+            </div>
+          `;
+        }
+
+        // Output Scaled Capacity indicators (Solo = Player/Player max, Duos/Squads = Slot/Slot max)
+        let slotProgressText = '';
+        if (cap.divisor === 1) {
+          slotProgressText = `${cap.playersCount} / ${cap.totalMaxPlayers}`;
+        } else {
+          slotProgressText = `${cap.currentSlotDisplay} / ${cap.maxSlotsLimit}`;
+        }
+
+        const throwableVal = m.limitedAmmo || m.throwableLimit || 'Yes';
+        const characterSkillVal = m.characterSkill || 'Yes';
+        const roundsVal = m.rounds || (m.type === 'LW' ? '5' : m.type === 'CS' ? '7' : 'N/A');
+        const coinVal = m.coin || (m.type === 'BR' ? 'N/A' : '9950');
+        const gunAttributeVal = m.gunAttribute || 'No';
+        const headshotModeVal = m.headshotMode || 'No';
+        const scheduledDateStr = m.startTime?.seconds ? new Date(m.startTime.seconds * 1000).toLocaleString() : 'N/A';
+
+        const cardElement = document.createElement('div');
+        cardElement.className = 'tournament-card';
+        cardElement.setAttribute('style', 'cursor: pointer;');
+        
+        // Clicks routed cleanly to redirect helper
+        cardElement.onclick = (e) => { 
+          selectDirectUrlMatchPage(m.matchId || m.id); 
+        };
+        
+        cardElement.innerHTML = `
+          ${headerMarkup}
+          <div class="tournament-body-wrap">
+            <div class="t-row-header">
+              <span class="status-pill-badge upcoming">Upcoming</span>
+              <div class="badge-financial-grid">
+                <span class="prize-badge-pill">Winning Amount: ${displayPrizeText}</span>
+                <span class="entry-badge-pill">Entry Fee: ${displayEntryText}</span>
+              </div>
+            </div>
+
+            <div class="specs-metric-row">
+              <div class="spec-details-header">
+                <i class="fas fa-microchip"></i> Game Room Configurations
+              </div>
+              
+              <div class="specs-columns-grid">
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-shield-heart"></i> Character Skill</span>
+                  <span class="spec-rule-val" style="color: var(--accent);">${characterSkillVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-cubes"></i> ${m.type === 'BR' ? 'BR Type' : 'Rounds'}</span>
+                  <span class="spec-rule-val">${m.type === 'BR' ? (m.brType === 'creator' ? 'Creator Profit' : m.brType === 'nonpaid' ? 'Non Paid Profit' : 'Normal') : roundsVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-gun"></i> Gun Attributes</span>
+                  <span class="spec-rule-val">${gunAttributeVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-coins"></i> ${m.type === 'BR' ? 'Match Duration' : 'Coins'}</span>
+                  <span class="spec-rule-val">${m.type === 'BR' ? (m.duration || m.matchDuration || '30 Min') : coinVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-crosshairs"></i> Headshot Mode</span>
+                  <span class="spec-rule-val">${headshotModeVal}</span>
+                </div>
+                <div class="spec-rule-row">
+                  <span class="spec-rule-lbl"><i class="fas fa-fire-burner"></i> Ammo Limit</span>
+                  <span class="spec-rule-val">${throwableVal}</span>
+                </div>
+              </div>
+
+              ${brPrizeHTML}
+
+              <div class="single-full-spec-highlight">
+                <span class="single-full-spec-lbl"><i class="fas fa-map-location-dot"></i> Selected Map & Size</span>
+                <span class="single-full-spec-val">${m.map || m.mapName || 'Bermuda'} (${m.mode || m.teamSize || 'Solo'})</span>
+              </div>
+
+              <div class="single-full-spec-highlight">
+                <span class="single-full-spec-lbl"><i class="fas fa-tags"></i> Match Type Mode</span>
+                <span class="single-full-spec-val" style="color: var(--warning);">${matchTypeMode}</span>
+              </div>
+
+              <div class="single-full-spec-highlight">
+                <span class="single-full-spec-lbl"><i class="fas fa-clock"></i> Match Start Time</span>
+                <span class="single-full-spec-val" style="color: var(--accent); font-family: var(--font-mono); font-weight:700;">${scheduledDateStr}</span>
+              </div>
+            </div>
+
+            <div class="creator-attribution-tag">
+              <i class="fas fa-crown" style="color: gold; font-size:11px;"></i>
+              <span>Creator: <strong style="color:#fff;">${hostName}</strong> <span style="font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-left:4px;">(Game UID: ${hostGameUid})</span></span>
+            </div>
+
+            <div class="roster-progress-container">
+              <div class="roster-progress-header">
+                <span>Roster Seats filled</span>
+                <span style="color: var(--accent); font-weight: bold; font-family: var(--font-mono); font-size:13.5px;">${slotProgressText}</span>
+              </div>
+              <div class="roster-progress-track">
+                <div class="roster-progress-fill" style="width: ${(cap.playersCount / cap.totalMaxPlayers) * 100}%"></div>
+              </div>
+            </div>
+
+            <button class="btn">
+              <i class="fas fa-ticket-alt"></i> Click To Join Or View
+            </button>
+          </div>
+        `;
+        feedContainer.appendChild(cardElement);
+      });
+    }
+
+    function selectDirectUrlMatchPage(mId) {
+      // Dynamic query preserves actual document execution filename / nested context paths perfectly
+      const currentPath = window.location.pathname;
+      window.location.href = `${currentPath}?matchId=${mId}`;
+    }
+
+    // -------------------------------------------------------------
+    // RENDER PATH 2: FOCUSED TOURNAMENT DETAIL VIEW
+    // -------------------------------------------------------------
+    function renderFocusedMatchView() {
+      const parent = document.getElementById('workspaceContainer');
+      if (!parent) return;
+
+      try {
+        const targetMatch = loadedMatchesList.find(m => String(m.matchId) === String(urlMatchIdParam) || String(m.id) === String(urlMatchIdParam));
+
+        if (!targetMatch) {
+          parent.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-exclamation-triangle" style="font-size:32px; color:var(--error);"></i>
+              <p style="margin-top: 10px;">Lobby parameters could not be synced from database channels.</p>
+              <button class="btn" style="margin-top:15px;" onclick="window.location.href='/'">Return Home</button>
+            </div>
+          `;
+          return;
+        }
+
+        selectedMatchPayload = targetMatch;
+        selectedMatchDocId = targetMatch.id;
+
+        const playersArray = Array.isArray(targetMatch.players) ? targetMatch.players : [];
+        const isUserRegistered = currentUser && playersArray.some(p => p && p.uid === currentUser.uid);
+        
+        // CHECK IF START TIME HAS PASSED
+        const now = Date.now();
+        const matchStartTimeMs = targetMatch.startTime?.seconds ? (targetMatch.startTime.seconds * 1000) : now;
+        const isStarted = now >= matchStartTimeMs;
+        const otherPlayersJoined = playersArray.some(p => p && p.uid !== targetMatch.creatorUid);
+
+        // INSTANT EXPIRED CHECK (If start time has passed and only creator was inside)
+        const isExpired = targetMatch.status === 'expired' || (isStarted && !otherPlayersJoined);
+
+        if (isExpired) {
+          parent.innerHTML = `
+            <div class="bubble-card" style="text-align: center; border-color: var(--error); padding: 40px 20px;">
+              <i class="fas fa-hourglass-end" style="font-size:54px; color:var(--error); margin-bottom:20px; text-shadow: 0 0 15px rgba(231,76,60,0.4);"></i>
+              <h3 style="font-family: var(--font-display); font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 12px; letter-spacing: 0.5px;">MATCH EXPIRED</h3>
+              <p style="color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 30px; max-width: 450px; margin-left: auto; margin-right: auto;">
+                This lobby reached its scheduled start time without other competitors joining. It has been automatically closed, and all fees/escrow prizes have been refunded to the creator.
+              </p>
+              <div style="display:flex; justify-content:center;">
+                <button class="btn" style="width: auto; padding: 12px 30px;" onclick="window.location.href='/'">
+                  <i class="fas fa-arrow-left"></i> Return to Match Feed
+                </button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const cap = getCapacityLimits(targetMatch);
+
+        // If match started and user is NOT registered, block access to prevent joining
+        if (isStarted && !isUserRegistered && targetMatch.status !== 'completed' && !targetMatch.payoutProcessed) {
+           parent.innerHTML = `
+            <div class="bubble-card" style="text-align: center; border-color: var(--error); padding: 40px 20px;">
+              <i class="fas fa-lock" style="font-size:54px; color:var(--error); margin-bottom:20px; text-shadow: 0 0 15px rgba(231,76,60,0.4);"></i>
+              <h3 style="font-family: var(--font-display); font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 12px; letter-spacing: 0.5px;">REGISTRATION CLOSED</h3>
+              <p style="color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 30px; max-width: 450px; margin-left: auto; margin-right: auto;">
+                The scheduled start time for this lobby has reached. Access is now restricted to registered participants only.
+              </p>
+              <div style="display:flex; justify-content:center;">
+                <button class="btn" style="width: auto; padding: 12px 30px;" onclick="window.location.href='/'">
+                  <i class="fas fa-arrow-left"></i> Return to Match Feed
+                </button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const entryFee = parseFloat(targetMatch.entryFee || targetMatch.entryfee || targetMatch.fee || 0) || 0;
+        const prizeAmount = parseFloat(targetMatch.prize || targetMatch.prizePool || targetMatch.prizePoolValue || targetMatch.winnings || targetMatch.winningAmount || 0) || 0;
+
+        let rewardTextVal = prizeAmount;
+        if (targetMatch.type === 'BR' && targetMatch.brType === 'nonpaid') {
+          rewardTextVal = entryFee * playersArray.length;
+        } else if (targetMatch.type === 'CS' && targetMatch.matchType === 'profit') {
+          rewardTextVal = entryFee * 2;
+        }
+
+        const displayPrizeText = rewardTextVal > 0 ? `NPR ${rewardTextVal.toFixed(2)}` : 'NPR 0.00';
+        const displayEntryText = entryFee > 0 ? `NPR ${entryFee.toFixed(2)}` : 'Free';
+        const matchTypeMode = entryFee > 0 ? "Paid" : "Free";
+
+        let brPrizeHTML = '';
+        if (targetMatch.type === 'BR' && targetMatch.brType !== 'normal') {
+          let t1, t2, t3;
+          if (targetMatch.brType === 'nonpaid') {
+            const total = entryFee * playersArray.length;
+            t1 = total * 0.35;
+            t2 = total * 0.25;
+            t3 = total * 0.15;
+          } else {
+            t1 = targetMatch.prizes?.top1 || 0;
+            t2 = targetMatch.prizes?.top2 || 0;
+            t3 = targetMatch.prizes?.top3 || 0;
+          }
+          brPrizeHTML = `
+            <div class="single-full-spec-highlight" style="margin-top: 5px; border-color: rgba(46, 204, 113, 0.2); background: rgba(46, 204, 113, 0.03);">
+              <span class="single-full-spec-lbl"><i class="fas fa-trophy" style="color:var(--success)"></i> Rank Prizes</span>
+              <span class="single-full-spec-val" style="font-size: 11px; color: var(--success);">
+                1st: ${t1.toFixed(0)} | 2nd: ${t2.toFixed(0)} | 3rd: ${t3.toFixed(0)}
+              </span>
+            </div>
+          `;
+        }
+
+        const hasCustomBannerImage = targetMatch.banner && targetMatch.banner.trim() !== '';
+        const bannerStyleAttribute = hasCustomBannerImage ? `background-image: url('${targetMatch.banner}')` : '';
+
+        let formatTitle = "Clash Squad";
+        if (targetMatch.type === 'BR') formatTitle = "Battle Royale";
+        else if (targetMatch.type === 'LW') formatTitle = "Lone Wolf";
+
+        let headerMarkup = '';
+        if (hasCustomBannerImage) {
+          headerMarkup = `
+            <div class="detail-banner" style="${bannerStyleAttribute}">
+              <div class="detail-banner-overlay">
+                <div class="premium-title-wrapper" style="padding: 10px 14px; margin-bottom: 6px;">
+                  <div class="premium-title-text" style="font-size: 22px;">${targetMatch.title || 'Esports Match'}</div>
+                </div>
+                <div class="subtitle-border-divider">
+                  <div class="platform-badge-compact">
+                    <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                    <span>${targetMatch.platform || 'Free Fire'}</span>
+                  </div>
+                  <span style="color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;"><span style="color: var(--muted);">•</span> ${formatTitle} Format</span> 
+                  <span class="lobby-id-badge">Lobby ID: <span class="highlight">#${targetMatch.matchId || targetMatch.id}</span></span>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          headerMarkup = `
+            <div class="detail-banner no-banner-image">
+              <div class="detail-banner-overlay">
+                <div class="premium-title-wrapper" style="margin-bottom: 6px;">
+                  <div class="premium-title-text">${targetMatch.title || 'Esports Match'}</div>
+                </div>
+                <div class="subtitle-border-divider" style="margin-top: 6px;">
+                  <div class="platform-badge-compact">
+                    <img src="freefireicon.png" class="game-platform-icon" onerror="this.onerror=null; this.src='https://i.ibb.co/L9H8XyQ/ff-icon.png';">
+                    <span>${targetMatch.platform || 'Free Fire'}</span>
+                  </div>
+                  <span style="color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;"><span style="color: var(--muted);">•</span> ${formatTitle} Format</span> 
+                  <span class="lobby-id-badge">Lobby ID: <span class="highlight">#${targetMatch.matchId || targetMatch.id}</span></span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        let credentialsHTML = '';
+
+        if (isUserRegistered && targetMatch.customMatchId) {
+          credentialsHTML = `
+            <div class="secure-credentials-card">
+              <div class="secure-credentials-header">
+                <i class="fas fa-key"></i> <span>Secure Match Room Credentials</span>
+              </div>
+              <div class="secure-credentials-box">
+                <div class="cred-row">
+                  <span>Room ID: <span style="color: #fff; font-weight: bold;" id="secureRoomId">${targetMatch.customMatchId}</span></span>
+                  <button class="copy-btn-tactile" onclick="copyValue('${targetMatch.customMatchId}')">Copy ID</button>
+                </div>
+                <div class="cred-row" style="margin-top: 6px;">
+                  <span>Password: <span style="color: #fff; font-weight: bold;" id="secureRoomPass">${targetMatch.matchPassword || 'No Password'}</span></span>
+                  ${targetMatch.matchPassword ? `<button class="copy-btn-tactile" onclick="copyValue('${targetMatch.matchPassword}')">Copy Pass</button>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        // Output Scaled Capacity indicators (Solo = Player/Player max, Duos/Squads = Slot/Slot max)
+        let slotProgressText = '';
+        if (cap.divisor === 1) {
+          slotProgressText = `${cap.playersCount} / ${cap.totalMaxPlayers}`;
+        } else {
+          slotProgressText = `${cap.currentSlotDisplay} / ${cap.maxSlotsLimit}`;
+        }
+
+        const throwableVal = targetMatch.limitedAmmo || targetMatch.throwableLimit || 'Yes';
+        const characterSkillVal = targetMatch.characterSkill || 'Yes';
+        const roundsVal = targetMatch.rounds || (targetMatch.type === 'LW' ? '5' : targetMatch.type === 'CS' ? '7' : 'N/A');
+        const coinVal = targetMatch.coin || (targetMatch.type === 'BR' ? 'N/A' : '9950');
+        const gunAttributeVal = targetMatch.gunAttribute || 'No';
+        const headshotModeVal = targetMatch.headshotMode || 'No';
+        const scheduledDateStr = targetMatch.startTime?.seconds ? new Date(targetMatch.startTime.seconds * 1000).toLocaleString() : 'N/A';
+
+        const hostProfile = dynamicProfileCache[targetMatch.creatorUid] || { name: targetMatch.creatorName || 'Organizer', gameUid: 'N/A' };
+        const hostName = hostProfile.name;
+        const hostGameUid = hostProfile.gameUid || 'N/A';
+
+        let playersTrayRowsHTML = '';
+        if (playersArray.length > 0) {
+          playersArray.forEach(p => {
+            if (!p) return;
+            const isMatchOwner = p.role === 'creator' || p.uid === targetMatch.creatorUid;
+            const isPlayerMe = currentUser && p.uid === currentUser.uid;
+            
+            const resolvedInfo = dynamicProfileCache[p.uid] || { 
+              name: p.gamename || p.username || 'Competitor', 
+              username: p.username ? `@${p.username}` : '@gamer', 
+              gameUid: p.gameUid || p.gameuid || 'N/A', 
+              avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(p.uid || 'fallback')}` 
+            };
+
+            const joinedDate = p.joinTime?.seconds ? new Date(p.joinTime.seconds * 1000).toLocaleString() : 'N/A';
+
+            let roleBadge = isMatchOwner ? `<span class="owner-badge">Creator Host</span>` 
+                          : isCsOrLw ? `<span class="competitor-badge" style="background: rgba(231, 76, 60, 0.15); border-color: var(--error); color: var(--error);">Opponent</span>`
+                          : `<span class="competitor-badge" style="background: rgba(46, 204, 113, 0.15); border-color: var(--success); color: var(--success);">Joined Player</span>`;
+            
+            const meBadge = isPlayerMe ? `<span class="competitor-badge">ME</span>` : '';
+
+            // Dynamic Sizing Labels inside members card (Solo displays Team: 1/Max, Duo: 2/Max, Squad: 4/Max)
+            const teamUnitString = `Team: ${cap.divisor}/${cap.totalMaxPlayers}`;
+
+            playersTrayRowsHTML += `
+              <div class="competitor-row-card">
+                <img class="competitor-avatar" src="${resolvedInfo.avatar}" alt="Avatar">
+                <div class="competitor-info">
+                  <div class="competitor-player-line1" style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <span class="competitor-player-username-tag" style="font-family: var(--font-mono); font-size: 13.5px; color: var(--accent); font-weight: 700;">${resolvedInfo.username}</span>
+                    ${roleBadge}
+                    ${meBadge}
+                  </div>
+                  <div class="competitor-player-line2-details" style="display: flex; flex-direction: column; gap: 3px; border-top: 1px dashed rgba(255, 255, 255, 0.05); padding-top: 4px;">
+                    <span class="competitor-player-ingame-label" style="font-size: 13px; color: #fff; font-weight: 700;">In-Game Nickname: <strong>${resolvedInfo.name}</strong></span>
+                    <span class="competitor-player-uid-label" style="font-size: 11.5px; color: var(--muted); font-family: var(--font-mono);">Verified Free Fire UID: <strong style="color: var(--accent);">${resolvedInfo.gameUid}</strong></span>
+                    <span style="font-size: 11.5px; color: var(--success); font-weight: 600;">${teamUnitString}</span>
+                    <span class="competitor-player-joined-label" style="font-size: 11px; color: var(--muted); font-style: italic;">Joined: ${joinedDate}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          playersTrayRowsHTML = `<p style="font-size: 11px; color: var(--muted); text-align: center; padding: 10px 0;">No registered users in this match.</p>`;
+        }
+
+        let buttonHTML = '';
+        if (isUserRegistered) {
+          buttonHTML = `
+            <button class="btn btn-already-joined" onclick="window.location.href='/My_Matches'">
+              <i class="fas fa-check-double"></i> Already Joined (View My Matches)
+            </button>
+          `;
+        } else if (cap.isLobbyFull) {
+          buttonHTML = `
+            <button class="btn" style="background: linear-gradient(135deg, var(--error) 0%, #962d22 100%) !important; color: #fff !important; cursor: not-allowed !important; box-shadow: none !important; transform: none !important;" disabled>
+              <i class="fas fa-ban"></i> Match Slot Is Full
+            </button>
+          `;
+        } else {
+          const escapedMatchTitle = (targetMatch.title || 'Match').replace(/'/g, "\\'");
+          buttonHTML = `
+            <button class="btn" onclick="checkGamerProfileBeforePurchase(${entryFee}, '${escapedMatchTitle}')">
+              <i class="fas fa-ticket-alt"></i> Purchase Entry Ticket (NPR ${entryFee.toFixed(2)})
+            </button>
+          `;
+        }
+
+        parent.innerHTML = `
+          ${headerMarkup}
+          
+          <div style="margin-top: 16px;">
+            ${credentialsHTML}
+
+            <div class="bubble-card">
+              <h3 class="section-header"><i class="fas fa-info-circle"></i> Arena Layout Specifications</h3>
+              
+              <div class="specs-metric-row">
+                <div class="spec-details-header">
+                  <i class="fas fa-microchip"></i> Game Room Configurations
+                </div>
+                
+                <div class="specs-columns-grid">
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-shield-heart"></i> Character Skill</span>
+                    <span class="spec-rule-val" style="color: var(--accent);">${characterSkillVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-cubes"></i> ${targetMatch.type === 'BR' ? 'BR Type' : 'Rounds'}</span>
+                    <span class="spec-rule-val">${targetMatch.type === 'BR' ? (targetMatch.brType === 'creator' ? 'Creator Profit' : targetMatch.brType === 'nonpaid' ? 'Non Paid Profit' : 'Normal') : roundsVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-gun"></i> Gun Attributes</span>
+                    <span class="spec-rule-val">${gunAttributeVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-coins"></i> ${targetMatch.type === 'BR' ? 'Match Duration' : 'Coins'}</span>
+                    <span class="spec-rule-val">${targetMatch.type === 'BR' ? (targetMatch.duration || targetMatch.matchDuration || '30 Min') : coinVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-crosshairs"></i> Headshot Mode</span>
+                    <span class="spec-rule-val">${headshotModeVal}</span>
+                  </div>
+                  <div class="spec-rule-row">
+                    <span class="spec-rule-lbl"><i class="fas fa-fire-burner"></i> Ammo Limit</span>
+                    <span class="spec-rule-val">${throwableVal}</span>
+                  </div>
+                </div>
+
+                ${brPrizeHTML}
+
+                <div class="single-full-spec-highlight">
+                  <span class="single-full-spec-lbl"><i class="fas fa-map-location-dot"></i> Selected Map & Size</span>
+                  <span class="single-full-spec-val">${targetMatch.map || targetMatch.mapName || 'Bermuda'} (${targetMatch.mode || targetMatch.teamSize || 'Solo'})</span>
+                </div>
+
+                <div class="single-full-spec-highlight">
+                  <span class="single-full-spec-lbl"><i class="fas fa-tags"></i> Match Type Mode</span>
+                  <span class="single-full-spec-val" style="color: var(--warning);">${matchTypeMode}</span>
+                </div>
+
+                <div class="single-full-spec-highlight">
+                  <span class="single-full-spec-lbl"><i class="fas fa-clock"></i> Scheduled Match Time</span>
+                  <span class="single-full-spec-val" style="color: var(--accent);">${scheduledDateStr}</span>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; margin-bottom:15px; gap:10px; flex-wrap:wrap;">
+                <span class="prize-badge-pill" style="font-size:13.5px; padding:8px 16px;">Winning Amount: ${displayPrizeText}</span>
+                <span class="entry-badge-pill" style="font-size:13.5px; padding:8px 16px;">Entry Fee: ${displayEntryText}</span>
+              </div>
+
+              <div class="roster-progress-container">
+                <div class="roster-progress-header">
+                  <span>Roster Seats filled</span>
+                  <span style="color: var(--accent); font-weight: bold; font-family: var(--font-mono); font-size:13.5px;">${slotProgressText}</span>
+                </div>
+                <div class="roster-progress-track">
+                  <div class="roster-progress-fill" style="width: ${(cap.playersCount / cap.totalMaxPlayers) * 100}%"></div>
+                </div>
+              </div>
+
+              <div class="creator-attribution-tag" style="margin-bottom: 15px;">
+                <i class="fas fa-crown" style="color: gold; font-size:12px;"></i>
+                <span>Created by: <strong style="color:#fff;">${hostName}</strong> <span style="font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-left:4px;">(Game UID: ${hostGameUid})</span></span>
+              </div>
+
+              <div class="input-group" style="margin-bottom: 20px;">
+                <h4 style="font-size:13px; color:var(--muted); text-transform:uppercase; font-weight:700; margin-bottom:8px;">Match Guidelines & Description</h4>
+                <div class="guidelines-desc-box">${targetMatch.description || 'No detailed instructions configured for this custom esports match.'}</div>
+              </div>
+
+              ${buttonHTML}
+            </div>
+
+            <div class="bubble-card">
+              <h3 class="section-header"><i class="fas fa-users"></i> Registered Match Competitors</h3>
+              <div class="competitors-container-list">
+                ${playersTrayRowsHTML}
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        console.error("View Render Engine Crash:", error);
+        parent.innerHTML = `
+          <div style="padding: 24px; color: #ff5555; background: rgba(255,0,0,0.1); border: 1px solid red; border-radius: 12px; margin-top: 20px;">
+            <h3><i class="fas fa-bug"></i> UI Render Failed</h3>
+            <p style="font-size: 13px;">An internal error blocked the layout rendering.</p>
+            <pre style="margin-top:10px; background: #000; padding:10px; font-size:11px; overflow-x:auto;">${error.message}</pre>
+          </div>
+        `;
+      }
+    }
+
+    function checkGamerProfileBeforePurchase(entryFee, matchTitle) {
+      if (!currentUser) {
+        showNotification("Login To Join", "info");
+        setTimeout(() => {
+          window.location.href = "/LoginAuth";
+        }, 1500);
+        return;
+      }
+      if (!currentProfileData) {
+        triggerVerificationFailureModal();
+        return;
+      }
+
+      const level = parseInt(currentProfileData?.level || 0);
+      const nickname = (currentProfileData?.gamename || '').trim();
+      const uid = (currentProfileData?.gameuid || '').trim();
+      const platform = (currentProfileData?.gamePlatform || '').trim();
+
+      if (level < 50 || !nickname || !uid || !platform) {
+        triggerVerificationFailureModal();
+      } else {
+        triggerSecureConfirmModal(entryFee, matchTitle);
+      }
+    }
+
+    function triggerVerificationFailureModal() {
+      document.getElementById('verificationModal').classList.add('show');
+    }
+
+    function redirectToProfileEditor() {
+      document.getElementById('verificationModal').classList.remove('show');
+      window.location.href = "/Profile"; 
+    }
+
+    function triggerSecureConfirmModal(amount, title) {
+      document.getElementById('confirmModalText').textContent = `Are you sure you want to register for "${title}"? NPR ${amount.toFixed(2)} will be debited from your secure account wallet.`;
+      document.getElementById('confirmModal').classList.add('show');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.remove('show');
+    }
+
+    async function commitAtomicPurchaseJoin() {
+      closeConfirmModal();
+      await executeAtomicJoinTransaction();
+    }
+
+    async function executeAtomicJoinTransaction() {
+      if (!selectedMatchPayload || !currentUser) return;
+
+      const fee = selectedMatchPayload.entryFee || 0;
+      const userId = currentUser.uid;
+
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+
+      try {
+        const matchDocRef = getPublicCollection('matches').doc(selectedMatchDocId);
+        const walletDocRef = getPrivateCollection(userId, 'wallets').doc('wallet');
+
+        const userLevel = parseInt(currentProfileData?.level || 0);
+        if (userLevel < 50) {
+          throw new Error("Lobby entry failed: Level 50+ requirement unsatisfied.");
+        }
+
+        await db.runTransaction(async (transaction) => {
+          const freshMatchSnap = await transaction.get(matchDocRef);
+          if (!freshMatchSnap.exists) {
+            throw new Error("Lobby document missing from registry nodes.");
+          }
+
+          const freshMatchData = freshMatchSnap.data();
+          const cap = getCapacityLimits(freshMatchData);
+
+          // STRICT CHECK: IF FULL, REJECT ATOMICALLY
+          if (cap.isLobbyFull) {
+            throw new Error("Match Slot Is Full. Lobby registration is closed.");
+          }
+
+          const now = Date.now();
+          const startTimeMs = freshMatchData.startTime?.seconds ? (freshMatchData.startTime.seconds * 1000) : now;
+          const otherPlayersJoined = (freshMatchData.players || []).some(p => p && p.uid !== freshMatchData.creatorUid);
+
+          // BLOCK EXPIRED JOIN handshakes
+          if (freshMatchData.status === 'expired' || (now >= startTimeMs && !otherPlayersJoined)) {
+            throw new Error("Lobby expired because no competitors joined before the start time.");
+          }
+          if (now >= startTimeMs) {
+            throw new Error("Lobby registration closed. The match start time has passed.");
+          }
+
+          const freshRoster = Array.isArray(freshMatchData.players) ? freshMatchData.players : [];
+          
+          if (freshRoster.some(p => p && p.uid === userId)) {
+            throw new Error("You are already registered inside this match roster.");
+          }
+
+          if (fee > 0) {
+            const liveWallet = await transaction.get(walletDocRef);
+            const currentBal = liveWallet.exists ? (liveWallet.data().balance || 0) : 0;
+
+            if (currentBal < fee) throw new Error("Insufficient security balance to fund entry ticket.");
+
+            transaction.set(walletDocRef, {
+              balance: currentBal - fee,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            const transRef = getPrivateCollection(userId, 'transactions').doc();
+            transaction.set(transRef, {
+              userId: userId,
+              type: 'match_entry_fee',
+              amount: -fee,
+              description: `Paid Entry Fee Ticket for Match: #${freshMatchData.matchId}`,
+              matchId: freshMatchData.matchId,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+              status: 'completed'
+            });
+          }
+
+          const newPlayerPayload = {
+            uid: userId,
+            username: currentProfileData?.username || currentUser.displayName || 'Competitor',
+            gamename: currentProfileData?.gamename || currentUser.displayName || 'Unknown',
+            gameUid: currentProfileData?.gameuid || 'N/A',
+            level: userLevel,
+            role: 'player',
+            joinTime: firebase.firestore.Timestamp.now(),
+            entryPaid: fee
+          };
+
+          const updatedPlayersRoster = [...freshRoster, newPlayerPayload];
+          transaction.update(matchDocRef, {
+            players: updatedPlayersRoster,
+            currentPlayers: updatedPlayersRoster.length,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        });
+
+        showNotification("Lobby registration successful! Ticket purchased.", "success");
+        setTimeout(() => { window.location.href = "/My_Matches"; }, 1500);
+
+      } catch (err) {
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        console.error("Atomic registration failed: ", err);
+        showNotification(err.message || "Financial transaction handshake failed.", "error");
+      }
+    }
+
+    function goBack() {
+      if (urlMatchIdParam) {
+        const url = new URL(window.location);
+        url.searchParams.delete('matchId');
+        url.searchParams.delete('id');
+        window.history.pushState({}, '', url);
+        urlMatchIdParam = null;
+        routeUserInterfaceMode();
+      } else {
+        window.location.href = "/";
+      }
+    }
+
+    function copyValue(text) {
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = text;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      showNotification("Copied to clipboard!", "success");
+    }
+
+    function showNotification(message, type = 'info') {
+      const box = document.getElementById('notificationBox');
+      box.textContent = message;
+      box.className = 'show ' + type;
+      setTimeout(() => box.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>
